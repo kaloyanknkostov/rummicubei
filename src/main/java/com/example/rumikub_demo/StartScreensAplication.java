@@ -15,6 +15,7 @@ import java.io.IOException;
 public class StartScreensAplication extends Application {
     @FXML
     private ComboBox<String> playerChoiceComboBox;
+
     @Override
     public void start(Stage stage) throws IOException {
         stage.setTitle("Hello!");
@@ -25,33 +26,44 @@ public class StartScreensAplication extends Application {
     }
 
     public void handlePlayVsAIAction(ActionEvent event) {
+        //switchScene("ErrorAI.fxml", event);
+        System.out.println("works");
     }
 
     public void handleMultiplayerAction(ActionEvent event) {
         switchScene("SelectPlayerScene.fxml", event);
     }
+
     public void handleBackToStart(ActionEvent event) {
         switchScene("Start.fxml", event);
     }
 
-    public void handlePlayerChoice(ActionEvent event){
-        switch (playerChoiceComboBox.getValue()) {
-            case "2 Players" -> {
-                System.out.println("Starting a game for 2 players");
-                switchScene("TwoPeopleNameInputScene.fxml", event);
-            }
-            case "3 Players" -> {
-                System.out.println("Starting a game for 3 players");
-                switchScene("ThreePeopleNameInputScene.fxml", event);
-            }
-            case "4 Players" -> {
-                System.out.println("Starting a game for 4 players");
-                switchScene("FourPlayerNameInput.fxml", event);
+    public void handleBackToChoice(ActionEvent event) {
+        switchScene("SelectPlayerScene.fxml", event);
+    }
+
+    public void handlePlayerChoice(ActionEvent event) {
+        if (playerChoiceComboBox.getValue() == null) {
+            switchScene("ErrorNoPlayersSelected.fxml", event);
+        } else {
+            switch (playerChoiceComboBox.getValue()) {
+                case "2 Players" -> {
+                    System.out.println("Starting a game for 2 players");
+                    switchScene("TwoPeopleNameInputScene.fxml", event);
+                }
+                case "3 Players" -> {
+                    System.out.println("Starting a game for 3 players");
+                    switchScene("ThreePeopleNameInputScene.fxml", event);
+                }
+                case "4 Players" -> {
+                    System.out.println("Starting a game for 4 players");
+                    switchScene("FourPlayerNameInput.fxml", event);
+                }
             }
         }
     }
 
-    public void switchScene(String sceneName, ActionEvent event){
+    public void switchScene(String sceneName, ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(sceneName));
             Scene scene = new Scene(root);

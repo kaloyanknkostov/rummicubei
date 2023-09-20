@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.rumikub_demo.StartScreensAplication">
    <children>
       <ImageView fitHeight="72.0" fitWidth="320.0">
          <image>
@@ -47,7 +47,7 @@
       </Pane>
       <Pane prefHeight="95.0" prefWidth="600.0">
          <children>
-            <Button layoutX="14.0" layoutY="11.0" mnemonicParsing="false" text="back" />
+            <Button layoutX="14.0" layoutY="11.0" mnemonicParsing="false" text="back" onAction="#handleBackToChoice"/>
             <Button layoutX="260.0" layoutY="-9.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="81.0" text="start game" />
          </children>
       </Pane>
