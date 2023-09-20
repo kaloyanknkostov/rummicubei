@@ -66,6 +66,6 @@
     </Pane>
     <Pane prefHeight="200.0" prefWidth="200.0">
         <Button layoutX="27.0" layoutY="16.0" mnemonicParsing="false" text="back" onAction="#handleBackToChoice"/>
-        <Button layoutX="263.0" layoutY="16.0" mnemonicParsing="false" text="start game"/>
+        <Button layoutX="263.0" layoutY="16.0" mnemonicParsing="false" text="start game" onAction="#handleStartGame"/>
     </Pane>
 </VBox>

@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-      prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-    <TextArea layoutX="168.0" layoutY="118.0" prefHeight="82.0" prefWidth="265.0"
-              text="You can not play against the AI yet (it's still learning!). Try our &#10;multiplayer game-mode instead! "
-              wrapText="true">
-        <font>
-            <Font size="16.0"/>
-        </font>
-    </TextArea>
-    <Button layoutX="273.0" layoutY="301.0" mnemonicParsing="false" text="Back"/>
-    <Text layoutX="277.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error">
-        <font>
-            <Font size="18.0"/>
-        </font>
-    </Text>
-</Pane>
+
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/18.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.GUI.StartScreensApplication">
+
+    <AnchorPane VBox.vgrow="ALWAYS">
+
+        <Label layoutX="110.0" layoutY="120.0" prefHeight="82.0" prefWidth="400.0"
+               text="You can not play against the AI yet (it's still learning!). Try our multiplayer game-mode instead!"
+               wrapText="true">
+            <font>
+                <Font size="16.0"/>
+            </font>
+            <textAlignment>CENTER</textAlignment>
+        </Label>
+
+        <Text layoutX="277.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Text>
+
+        <Button layoutX="200" layoutY="300" mnemonicParsing="false" text="Back" prefHeight="50" prefWidth="200" onAction="#handleBackToStart"/>
+
+
+    </AnchorPane>
+</VBox>

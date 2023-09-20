@@ -8,13 +8,21 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.util.Objects;
 
 public class StartScreensApplication extends Application {
     @FXML
+    public TextField firstPlayerName;
+    @FXML
+    public TextField secondPlayerName;
+    @FXML
     private ComboBox<String> playerChoiceComboBox;
+
+    private int numberOfPlayers;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -25,9 +33,16 @@ public class StartScreensApplication extends Application {
         stage.show();
     }
 
-    public void handlePlayVsAIAction(ActionEvent event) {
+    public void handleStartGame(ActionEvent event) {
+        System.out.println("checkNames:" + checkNames());
+        if (checkNames()) {
+            switchScene("GamePane.fxml", event);
+        }
+        //needs to save names for now it's here but should be moved
+    }
+
+    public void handleSingleAction(ActionEvent event) {
         switchScene("ErrorAI.fxml", event);
-        System.out.println("works");
     }
 
     public void handleMultiplayerAction(ActionEvent event) {
@@ -49,19 +64,24 @@ public class StartScreensApplication extends Application {
             switch (playerChoiceComboBox.getValue()) {
                 case "2 Players" -> {
                     System.out.println("Starting a game for 2 players");
+                    numberOfPlayers = 2;
+                    System.out.println("number of players is: " + numberOfPlayers);
                     switchScene("TwoPeopleNameInputScene.fxml", event);
                 }
                 case "3 Players" -> {
                     System.out.println("Starting a game for 3 players");
+                    numberOfPlayers = 3;
                     switchScene("ThreePeopleNameInputScene.fxml", event);
                 }
                 case "4 Players" -> {
                     System.out.println("Starting a game for 4 players");
+                    numberOfPlayers = 4;
                     switchScene("FourPlayerNameInput.fxml", event);
                 }
             }
         }
     }
+
 
     public void switchScene(String sceneName, ActionEvent event) {
         try {
@@ -72,6 +92,16 @@ public class StartScreensApplication extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean checkNames() {
+        System.out.println("number of players is: " + numberOfPlayers);
+        if (numberOfPlayers == 2) {
+            System.out.println("name one: " + firstPlayerName);
+            System.out.println("name two: " + secondPlayerName);
+            return (!(firstPlayerName == null || secondPlayerName == null));
+        }
+        return true;
     }
 
     public static void main(String[] args) {

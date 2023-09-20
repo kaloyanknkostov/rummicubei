@@ -15,13 +15,13 @@
                 <Font size="18.0"/>
             </font>
         </Label>
-        <Button layoutX="247.0" layoutY="220.0" mnemonicParsing="false" prefHeight="58.0" prefWidth="146.0"
-                text="SinglePlayer" onAction="#handleMultiplayerAction"/>
         <Button layoutX="247.0" layoutY="296.0" mnemonicParsing="false" prefHeight="58.0" prefWidth="146.0"
                 text="Multiplayer" onAction="#handleMultiplayerAction"/>
         <ImageView fitHeight="251.0" fitWidth="601.0" layoutX="108.0" layoutY="28.0" pickOnBounds="true"
                    preserveRatio="true">
             <Image url="@/Rummikub-Logo.png"/>
         </ImageView>
+        <Button layoutX="247.0" layoutY="220.0" mnemonicParsing="false" prefHeight="58.0" prefWidth="146.0"
+                text="SinglePlayer" onAction="#handleSingleAction"/>
     </AnchorPane>
 </VBox>
