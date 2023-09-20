@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Text?>
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
       prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.GUI.StartScreensAplication">
+      fx:controller="com.example.GUI.StartScreensApplication">
     <TextArea layoutX="168.0" layoutY="118.0" prefHeight="82.0" prefWidth="265.0"
               text="Please select how many players you are playing with " wrapText="true">
         <font>

@@ -10,14 +10,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.Objects;
 
-public class StartScreensAplication extends Application {
+public class StartScreensApplication extends Application {
     @FXML
     private ComboBox<String> playerChoiceComboBox;
 
     @Override
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("Start.fxml"));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Start.fxml")));
         Scene scene = new Scene(root);
         stage.setTitle("Hello!");
         stage.setScene(scene);
@@ -64,7 +65,7 @@ public class StartScreensAplication extends Application {
 
     public void switchScene(String sceneName, ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(sceneName));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(sceneName)));
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
