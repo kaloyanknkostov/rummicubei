@@ -12,7 +12,7 @@
    <children>
       <ImageView fitHeight="72.0" fitWidth="320.0">
          <image>
-            <Image url="RummikubSmallLogo.png" />
+            <Image url="@/RummikubSmallLogo.png" />
          </image>
       </ImageView>
       <Pane prefHeight="375.0" prefWidth="600.0">

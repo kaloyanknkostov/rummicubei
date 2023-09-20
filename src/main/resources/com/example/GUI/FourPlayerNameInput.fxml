@@ -14,7 +14,7 @@
       prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.GUI.StartScreensApplication">
     <ImageView fitHeight="72.0" fitWidth="320.0">
-        <Image url="RummikubSmallLogo.png"/>
+        <Image url="@/RummikubSmallLogo.png"/>
     </ImageView>
     <Pane prefHeight="200.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
         <Label alignment="TOP_LEFT" layoutX="137.0" layoutY="23.0" text="Player 1">
