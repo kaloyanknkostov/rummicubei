@@ -22,7 +22,7 @@
                 <Font size="24.0"/>
             </font>
         </Label>
-        <TextField layoutX="260.0" layoutY="15.0">
+        <TextField fx:id="firstPlayerName" layoutX="260.0" layoutY="15.0">
             <font>
                 <Font size="24.0"/>
             </font>
@@ -34,7 +34,7 @@
                 <Font size="24.0"/>
             </font>
         </Label>
-        <TextField layoutX="261.0" layoutY="10.0">
+        <TextField fx:id="secondPlayerName" layoutX="261.0" layoutY="10.0">
             <font>
                 <Font size="24.0"/>
             </font>
@@ -46,14 +46,14 @@
                 <Font size="24.0"/>
             </font>
         </Label>
-        <TextField layoutX="260.0" layoutY="10.0">
+        <TextField fx:id="thirdPlayerName" layoutX="260.0" layoutY="10.0">
             <font>
                 <Font size="24.0"/>
             </font>
         </TextField>
     </Pane>
     <Pane prefHeight="200.0" prefWidth="200.0">
-        <TextField layoutX="260.0" layoutY="11.0">
+        <TextField fx:id="fourthPlayerName" layoutX="260.0" layoutY="11.0">
             <font>
                 <Font size="24.0"/>
             </font>

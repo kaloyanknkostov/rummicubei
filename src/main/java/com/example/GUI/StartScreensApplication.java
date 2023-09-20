@@ -20,9 +20,13 @@ public class StartScreensApplication extends Application {
     @FXML
     public TextField secondPlayerName;
     @FXML
+    public TextField thirdPlayerName;
+    @FXML
+    public TextField fourthPlayerName;
+    @FXML
     private ComboBox<String> playerChoiceComboBox;
 
-    private int numberOfPlayers;
+    private final GameModel gameModel = GameModel.getInstance();
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -38,7 +42,7 @@ public class StartScreensApplication extends Application {
         if (checkNames()) {
             switchScene("GamePane.fxml", event);
         }
-        //needs to save names for now it's here but should be moved
+        //needs to save names for now it's here but should be moved to game logic
     }
 
     public void handleSingleAction(ActionEvent event) {
@@ -64,18 +68,17 @@ public class StartScreensApplication extends Application {
             switch (playerChoiceComboBox.getValue()) {
                 case "2 Players" -> {
                     System.out.println("Starting a game for 2 players");
-                    numberOfPlayers = 2;
-                    System.out.println("number of players is: " + numberOfPlayers);
+                    gameModel.setNumberOfPlayers(2);
                     switchScene("TwoPeopleNameInputScene.fxml", event);
                 }
                 case "3 Players" -> {
                     System.out.println("Starting a game for 3 players");
-                    numberOfPlayers = 3;
+                    gameModel.setNumberOfPlayers(3);
                     switchScene("ThreePeopleNameInputScene.fxml", event);
                 }
                 case "4 Players" -> {
                     System.out.println("Starting a game for 4 players");
-                    numberOfPlayers = 4;
+                    gameModel.setNumberOfPlayers(4);
                     switchScene("FourPlayerNameInput.fxml", event);
                 }
             }
@@ -95,13 +98,20 @@ public class StartScreensApplication extends Application {
     }
 
     public boolean checkNames() {
-        System.out.println("number of players is: " + numberOfPlayers);
-        if (numberOfPlayers == 2) {
-            System.out.println("name one: " + firstPlayerName);
-            System.out.println("name two: " + secondPlayerName);
-            return (!(firstPlayerName == null || secondPlayerName == null));
+        switch (gameModel.getNumberOfPlayers()) {
+            case 2 -> {
+                return (!(firstPlayerName.getCharacters().isEmpty() || secondPlayerName.getCharacters().isEmpty()));
+            }
+            case 3 -> {
+                return (!(firstPlayerName.getCharacters().isEmpty() || secondPlayerName.getCharacters().isEmpty() || thirdPlayerName.getCharacters().isEmpty()));
+            }
+            case 4 -> {
+                return (!(firstPlayerName.getCharacters().isEmpty() || secondPlayerName.getCharacters().isEmpty() || thirdPlayerName.getCharacters().isEmpty() || fourthPlayerName.getCharacters().isEmpty()));
+            }
+            default -> {
+                return false;
+            }
         }
-        return true;
     }
 
     public static void main(String[] args) {
