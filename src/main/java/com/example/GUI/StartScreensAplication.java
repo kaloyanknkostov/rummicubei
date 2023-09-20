@@ -1,4 +1,4 @@
-package com.example.rumikub_demo;
+package com.example.GUI;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
