@@ -3,6 +3,6 @@ module com.example.rumikub_demo {
     requires javafx.fxml;
 
 
-    opens com.example.rumikub_demo to javafx.fxml;
-    exports com.example.rumikub_demo;
+    opens com.example.GUI to javafx.fxml;
+    exports com.example.GUI;
 }

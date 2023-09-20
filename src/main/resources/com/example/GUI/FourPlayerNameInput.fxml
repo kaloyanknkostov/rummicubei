@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.GUI.StartScreensAplication">
+    <ImageView fitHeight="72.0" fitWidth="320.0">
+        <Image url="RummikubSmallLogo.png"/>
+    </ImageView>
+    <Pane prefHeight="200.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+        <Label alignment="TOP_LEFT" layoutX="137.0" layoutY="23.0" text="Player 1">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </Label>
+        <TextField layoutX="260.0" layoutY="15.0">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </TextField>
+    </Pane>
+    <Pane prefHeight="200.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+        <Label layoutX="137.0" layoutY="18.0" text="Player 2">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </Label>
+        <TextField layoutX="261.0" layoutY="10.0">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </TextField>
+    </Pane>
+    <Pane prefHeight="200.0" prefWidth="200.0">
+        <Label layoutX="137.0" layoutY="18.0" text="Player 3">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </Label>
+        <TextField layoutX="260.0" layoutY="10.0">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </TextField>
+    </Pane>
+    <Pane prefHeight="200.0" prefWidth="200.0">
+        <TextField layoutX="260.0" layoutY="11.0">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </TextField>
+        <Label layoutX="137.0" layoutY="16.0" text="Player 4">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </Label>
+    </Pane>
+    <Pane prefHeight="200.0" prefWidth="200.0">
+        <Button layoutX="27.0" layoutY="16.0" mnemonicParsing="false" text="back" onAction="#handleBackToChoice"/>
+        <Button layoutX="263.0" layoutY="16.0" mnemonicParsing="false" text="start game"/>
+    </Pane>
+</VBox>
