@@ -7,36 +7,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class StartScreensAplication extends Application {
     @FXML
     private ComboBox<String> playerChoiceComboBox;
-    @FXML
-    private Button singlePlayerButton;
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Start.fxml"));
-        Parent root = loader.load();
-
-        StartScreensAplication controller = loader.getController();
-        controller.singlePlayerButton.setOnAction(controller::handlePlayVsAIAction);
-
+        Parent root = FXMLLoader.load(getClass().getResource("Start.fxml"));
         Scene scene = new Scene(root);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
     }
 
-    public void handleWork(ActionEvent event){
-        System.out.println("work");
-        switchScene("ErrorAI.fxml", event);
-    }
     public void handlePlayVsAIAction(ActionEvent event) {
         switchScene("ErrorAI.fxml", event);
         System.out.println("works");
