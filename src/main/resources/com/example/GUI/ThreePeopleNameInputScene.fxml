@@ -10,60 +10,50 @@
 <?import javafx.scene.text.Font?>
 
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.GUI.StartScreensApplication">
-   <children>
-      <ImageView fitHeight="72.0" fitWidth="320.0">
-         <image>
-            <Image url="RummikubSmallLogo.png" />
-         </image>
-      </ImageView>
-      <Pane prefHeight="200.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
-         <children>
-            <Label alignment="TOP_LEFT" layoutX="139.0" layoutY="23.0" text="Player 1">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Label>
-            <TextField layoutX="260.0" layoutY="15.0">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </TextField>
-         </children>
-      </Pane>
-      <Pane prefHeight="200.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
-         <children>
-            <Label layoutX="137.0" layoutY="27.0" text="Player 2">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Label>
-            <TextField layoutX="260.0" layoutY="19.0">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </TextField>
-         </children>
-      </Pane>
-      <Pane prefHeight="200.0" prefWidth="200.0">
-         <children>
-            <Label layoutX="137.0" layoutY="31.0" text="Player 3">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Label>
-            <TextField layoutX="260.0" layoutY="23.0">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </TextField>
-         </children>
-      </Pane>
-      <Pane prefHeight="200.0" prefWidth="200.0">
-         <children>
-            <Button layoutX="27.0" layoutY="29.0" mnemonicParsing="false" text="back" onAction="#handleBackToChoice"/>
-            <Button layoutX="263.0" layoutY="29.0" mnemonicParsing="false" text="start game" />
-         </children>
-      </Pane>
-   </children>
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.GUI.StartScreensApplication">
+   <ImageView fitHeight="72.0" fitWidth="320.0">
+      <Image url="@/RummikubSmallLogo.png"/>
+   </ImageView>
+   <Pane prefHeight="200.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+      <Label alignment="TOP_LEFT" layoutX="139.0" layoutY="23.0" text="Player 1">
+         <font>
+            <Font size="24.0"/>
+         </font>
+      </Label>
+      <TextField layoutX="260.0" layoutY="15.0">
+         <font>
+            <Font size="24.0"/>
+         </font>
+      </TextField>
+   </Pane>
+   <Pane prefHeight="200.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+      <Label layoutX="137.0" layoutY="27.0" text="Player 2">
+         <font>
+            <Font size="24.0"/>
+         </font>
+      </Label>
+      <TextField layoutX="260.0" layoutY="19.0">
+         <font>
+            <Font size="24.0"/>
+         </font>
+      </TextField>
+   </Pane>
+   <Pane prefHeight="200.0" prefWidth="200.0">
+      <Label layoutX="137.0" layoutY="31.0" text="Player 3">
+         <font>
+            <Font size="24.0"/>
+         </font>
+      </Label>
+      <TextField layoutX="260.0" layoutY="23.0">
+         <font>
+            <Font size="24.0"/>
+         </font>
+      </TextField>
+   </Pane>
+   <Pane prefHeight="200.0" prefWidth="200.0">
+      <Button layoutX="27.0" layoutY="29.0" mnemonicParsing="false" text="back" onAction="#handleBackToChoice"/>
+      <Button layoutX="263.0" layoutY="29.0" mnemonicParsing="false" text="start game"/>
+   </Pane>
 </VBox>
