@@ -14,7 +14,7 @@
    <children>
       <ImageView fitHeight="72.0" fitWidth="320.0">
          <image>
-            <Image url="@../../Rummikublogo.png" />
+            <Image url="RummikubSmallLogo.png" />
          </image>
       </ImageView>
       <Pane prefHeight="162.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
