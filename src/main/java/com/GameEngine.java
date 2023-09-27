@@ -2,16 +2,23 @@ package com;
 import java.util.ArrayList;
 
 public class GameEngine {
-    // private ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
-    public GameEngine(){
-        // input number of real players and number of bots
-        // add other game options
+    int numberOfRealPlayers;
+    int numberOfBots;
+    boolean endGame;
+    //private ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
+    public GameEngine(int numberOfRealPlayers, int numberOfBots){
+        this.numberOfRealPlayers=numberOfRealPlayers;
+        this.numberOfBots =numberOfBots;
+        endGame=false;
+        // add other game options such as bot difficulty
     }
 
     public void gameLoop(){
+        generateTiles();
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
+        while (!endGame){
         gameTurn();
-        isGameEnding();
+        isGameEnding();}
     }
 
     private void gameTurn(){
@@ -21,9 +28,14 @@ public class GameEngine {
         // if valid then end turn
     }
     private boolean isGameEnding(){ // check game ending conditions
-        // Quit button was pressed
-        // someone won
-        // pot of Tiles is empty
+        /*conditions still need to add:
+         * -quit button is pressed
+         * -deck of current player is empty
+         */
+        /*if(potOfTiles.size()==0){
+            return true;
+        }*/
+
         return false;
     }
 
@@ -32,7 +44,21 @@ public class GameEngine {
     }
 
     private void generateTiles(){
-        // Generate tiles at the start of the game and put them into the pot of Tiles
+        boolean isJoker= true;
+        /*potOfTiles.add(new Tile(0,"",isJoker));
+        potOfTiles.add(new Tile(0,"",isJoker));
+        isJoker = false;
+        for(int i=1;i<14;i++){
+         potOfTiles.add(new Tile(i,"red",isJoker));
+        }
+        for(int i=1;i<14;i++){
+         potOfTiles.add(new Tile(i,"blue",isJoker));
+        }for(int i=1;i<14;i++){
+         potOfTiles.add(new Tile(i,"black",isJoker));
+        }
+        for(int i=1;i<14;i++){
+         potOfTiles.add(new Tile(i,"orange",isJoker));
+        }*/
     }
 
 }
