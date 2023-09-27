@@ -1,8 +1,19 @@
-package com;
+package com.gameEngine;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 
+@Data
+@Getter
+@Setter
 public class GameEngine {
-    // private ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
+
+
+    //private ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
+    private ArrayList<Player> listOfPlayer = new ArrayList<>();
+
     public GameEngine(){
         // input number of real players and number of bots
         // add other game options
