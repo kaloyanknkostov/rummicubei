@@ -30,17 +30,16 @@ public class GameEngine {
             currentPlayerIndex++;
         }
         Player currentplayer = listOfPlayers.get(currentPlayerIndex);
-        
+
         // Simulate the turn of one player (either bot or normal)
         // waiting for the new board that we get from the gui#  
         // Check if it is valid -> if not wait for new board
         // if valid then end turn
     }
     private boolean isGameEnding(){ // check game ending conditions
-        /*conditions still need to add:
-         * -quit button is pressed
-         * -deck of current player is empty
-         */
+        if(listOfPlayers.get(currentPlayerIndex).getdeck.getSize()==0){
+            return true;
+        }
         if(potOfTiles.size()==0){
             return true;
         }
