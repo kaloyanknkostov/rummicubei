@@ -22,5 +22,8 @@ public class Tile {
         return this.isJoker;
     }
 
+    public void printTile() {
+        System.out.println(this.getColor() + " " + this.getNumber());
+    }
 
 }
