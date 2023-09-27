@@ -5,7 +5,9 @@ public class GameEngine {
     int numberOfRealPlayers;
     int numberOfBots;
     boolean endGame;
-    //private ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
+    int currentPlayerIndex;
+    private ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
+    private ArrayList<Player> listOfPlayers = new ArrayList<Player>();
     public GameEngine(int numberOfRealPlayers, int numberOfBots){
         this.numberOfRealPlayers=numberOfRealPlayers;
         this.numberOfBots =numberOfBots;
@@ -22,8 +24,15 @@ public class GameEngine {
     }
 
     private void gameTurn(){
+        if(currentPlayerIndex==listOfPlayers.size()){
+            currentPlayerIndex=0;
+        } else{
+            currentPlayerIndex++;
+        }
+        Player currentplayer = listOfPlayers.get(currentPlayerIndex);
+        
         // Simulate the turn of one player (either bot or normal)
-        // waiting for the new board that we get from the gui#
+        // waiting for the new board that we get from the gui#  
         // Check if it is valid -> if not wait for new board
         // if valid then end turn
     }
@@ -32,9 +41,9 @@ public class GameEngine {
          * -quit button is pressed
          * -deck of current player is empty
          */
-        /*if(potOfTiles.size()==0){
+        if(potOfTiles.size()==0){
             return true;
-        }*/
+        }
 
         return false;
     }
@@ -45,7 +54,7 @@ public class GameEngine {
 
     private void generateTiles(){
         boolean isJoker= true;
-        /*potOfTiles.add(new Tile(0,"",isJoker));
+        potOfTiles.add(new Tile(0,"",isJoker));
         potOfTiles.add(new Tile(0,"",isJoker));
         isJoker = false;
         for(int i=1;i<14;i++){
@@ -58,7 +67,7 @@ public class GameEngine {
         }
         for(int i=1;i<14;i++){
          potOfTiles.add(new Tile(i,"orange",isJoker));
-        }*/
+        }
     }
 
 }
