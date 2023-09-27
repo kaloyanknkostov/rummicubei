@@ -1,5 +1,9 @@
-import java.util.ArrayList;
+package com.gameEngine;
 
+import lombok.Getter;
+
+import java.util.ArrayList;
+@Getter
 public class Board {
 
     private ArrayList<Set> setList;
@@ -15,7 +19,4 @@ public class Board {
         return true;
     }
 
-    public ArrayList<Set> getSetList() {
-        return this.setList;
-    }
 }
