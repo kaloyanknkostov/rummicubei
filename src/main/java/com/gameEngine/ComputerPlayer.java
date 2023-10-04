@@ -32,4 +32,22 @@ public class ComputerPlayer implements Player
         // AI PART
         return board;
     }
+
+    @Override
+    public String setUsername() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setUsername'");
+    }
+
+    @Override
+    public Boolean setIsOut() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setIsOut'");
+    }
+
+    @Override
+    public ArrayList<Tile> setDeckOfTiles() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setDeckOfTiles'");
+    }
 }
