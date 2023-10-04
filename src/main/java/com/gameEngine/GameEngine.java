@@ -7,7 +7,7 @@ public class GameEngine {
     int numberOfRealPlayers;
     int numberOfBots;
     boolean endGame;
-    int currentPlayerIndex;
+    int currentPlayerIndex=0;
     private ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
     private ArrayList<Player> listOfPlayers = new ArrayList<Player>();
     public GameEngine(int numberOfRealPlayers, int numberOfBots){
@@ -52,6 +52,13 @@ public class GameEngine {
     private boolean isTurnValid(){
         return false;
     }
+    private Tile drawTile(){
+        int index= (int)Math.random()*potOfTiles.size();
+        Tile a=potOfTiles.get(index);
+        potOfTiles.remove(index);
+        return a;
+    }
+    
 
     private void generateTiles(){
         boolean isJoker= true;
