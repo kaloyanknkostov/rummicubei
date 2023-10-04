@@ -1,8 +1,6 @@
 package com.gameEngine;
 
-import lombok.Getter;
 
-@Getter
 public class Tile
 {
 
@@ -17,5 +15,27 @@ public class Tile
         this.isJoker = isJoker;
     }
 
+    public int getNumber() {
+        return number;
+    }
 
+    public String getColor() {
+        return color;
+    }
+
+    public boolean isJoker() {
+        return isJoker;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public void setJoker(boolean joker) {
+        isJoker = joker;
+    }
 }

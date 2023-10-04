@@ -1,11 +1,9 @@
 package com.gameEngine;
 
-import lombok.Getter;
-import lombok.Setter;
+
 
 import java.util.ArrayList;
-@Setter
-@Getter
+
 public class HumanPlayer implements Player
 {
     private String username;
@@ -31,19 +29,32 @@ public class HumanPlayer implements Player
         Board board=new Board();
         return board;
     }
-    //TODO fix the set methods
+
     @Override
-    public String setUsername() {
-        return null;
+    public String getUsername() {
+        return username;
     }
 
     @Override
-    public Boolean setIsOut() {
-        return null;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Boolean getIsOut() {
+        return isOut;
+    }
+
+    public void setIsOut(Boolean out) {
+        isOut = out;
     }
 
     @Override
-    public ArrayList<Tile> setDeckOfTiles() {
-        return null;
+    public ArrayList<Tile> getDeckOfTiles() {
+        return deckOfTiles;
+    }
+
+    @Override
+    public void setDeckOfTiles(ArrayList<Tile> deckOfTiles) {
+        this.deckOfTiles = deckOfTiles;
     }
 }

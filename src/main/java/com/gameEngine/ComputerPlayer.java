@@ -1,11 +1,9 @@
 package com.gameEngine;
 
-import lombok.Getter;
-import lombok.Setter;
+
 
 import java.util.ArrayList;
-@Setter
-@Getter
+
 public class ComputerPlayer implements Player
 {
     String username;
@@ -34,20 +32,30 @@ public class ComputerPlayer implements Player
     }
 
     @Override
-    public String setUsername() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setUsername'");
+    public String getUsername() {
+        return username;
     }
 
     @Override
-    public Boolean setIsOut() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setIsOut'");
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Boolean getIsOut() {
+        return isOut;
+    }
+
+    public void setIsOut(Boolean out) {
+        isOut = out;
     }
 
     @Override
-    public ArrayList<Tile> setDeckOfTiles() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setDeckOfTiles'");
+    public ArrayList<Tile> getDeckOfTiles() {
+        return deckOfTiles;
+    }
+
+    @Override
+    public void setDeckOfTiles(ArrayList<Tile> deckOfTiles) {
+        this.deckOfTiles = deckOfTiles;
     }
 }

@@ -11,7 +11,7 @@ public interface Player
      String getUsername();
      Boolean getIsOut();
      ArrayList<Tile> getDeckOfTiles();
-     String setUsername();
-    Boolean setIsOut();
-    ArrayList<Tile> setDeckOfTiles();
+     void setUsername(String username);
+    void setIsOut(Boolean isOut);
+    void setDeckOfTiles(ArrayList<Tile> list);
 }
