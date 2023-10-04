@@ -1,3 +1,4 @@
+package com;
 public class Tile {
 
     private int number;
