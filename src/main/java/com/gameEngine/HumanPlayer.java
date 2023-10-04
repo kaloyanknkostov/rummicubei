@@ -8,8 +8,8 @@ import java.util.ArrayList;
 @Getter
 public class HumanPlayer implements Player
 {
-    String username;
-    Boolean isOut;
+    private String username;
+    private Boolean isOut;
     private ArrayList<Tile> deckOfTiles;
 
     public HumanPlayer(String username)
@@ -30,5 +30,20 @@ public class HumanPlayer implements Player
         // get Board from GUI
         Board board=new Board();
         return board;
+    }
+    //TODO fix the set methods
+    @Override
+    public String setUsername() {
+        return null;
+    }
+
+    @Override
+    public Boolean setIsOut() {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Tile> setDeckOfTiles() {
+        return null;
     }
 }

@@ -10,8 +10,6 @@ public class GameEngine {
     int currentPlayerIndex;
     private ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
     private ArrayList<Player> listOfPlayers = new ArrayList<Player>();
-    private ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
-    private ArrayList<Player> players = new ArrayList<Player>();
     public GameEngine(int numberOfRealPlayers, int numberOfBots){
         this.numberOfRealPlayers=numberOfRealPlayers;
         this.numberOfBots =numberOfBots;
@@ -42,13 +40,13 @@ public class GameEngine {
         // if valid then end turn
     }
     private boolean isGameEnding(){ // check game ending conditions
-        if(listOfPlayers.get(currentPlayerIndex).getdeck.getSize()==0){
-            return true;
-        }
-        if(potOfTiles.size()==0){
+        if(listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().size()==0){
             return true;
         }
 
+        if(potOfTiles.size()==0){
+            return true;
+        }
         return false;
     }
 
@@ -83,12 +81,12 @@ public class GameEngine {
         for (int i = 0; i <numberOfRealPlayers ; i++)
         {
             Player player=new HumanPlayer("test");
-            players.add(player);
+            listOfPlayers.add(player);
         }
         for (int i = 0; i <numberOfBots ; i++)
         {
             Player player=new ComputerPlayer("test");
-            players.add(player);
+            listOfPlayers.add(player);
         }
     }
 
