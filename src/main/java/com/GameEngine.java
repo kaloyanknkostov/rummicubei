@@ -2,6 +2,8 @@ package com;
 import java.util.ArrayList;
 
 public class GameEngine {
+    Board board = new Board();
+
     int numberOfRealPlayers;
     int numberOfBots;
     boolean endGame;
@@ -19,7 +21,7 @@ public class GameEngine {
         generateTiles();
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
         while (!endGame){
-        gameTurn();
+        gameTurn();//maybe we should create 2 functions, one which sets everything up and sends board, and one whcih can recieve a new board from gui and check for specific conditions
         isGameEnding();}
     }
 
@@ -35,6 +37,10 @@ public class GameEngine {
         // waiting for the new board that we get from the gui#  
         // Check if it is valid -> if not wait for new board
         // if valid then end turn
+        if(board.checkBoardValidity()){
+            return;
+        }else{//....
+        }
     }
     private boolean isGameEnding(){ // check game ending conditions
         if(listOfPlayers.get(currentPlayerIndex).getdeck.getSize()==0){
