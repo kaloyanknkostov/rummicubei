@@ -27,12 +27,11 @@ public class GameEngine {
     }
 
     private void gameTurn(){
-        if(currentPlayerIndex==listOfPlayers.size()){
+        if(currentPlayerIndex==listOfPlayers.size()-1){
             currentPlayerIndex=0;
         } else{
             currentPlayerIndex++;
         }
-        Player currentplayer = listOfPlayers.get(currentPlayerIndex);
 
         // Simulate the turn of one player (either bot or normal)
         // waiting for the new board that we get from the gui#
@@ -81,11 +80,13 @@ public class GameEngine {
         for (int i = 0; i <numberOfRealPlayers ; i++)
         {
             Player player=new HumanPlayer("test");
+            System.out.println("Added one");
             listOfPlayers.add(player);
         }
         for (int i = 0; i <numberOfBots ; i++)
         {
             Player player=new ComputerPlayer("test");
+            System.out.println("Added one");
             listOfPlayers.add(player);
         }
     }
