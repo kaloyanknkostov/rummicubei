@@ -1,4 +1,4 @@
-package com;
+package com.gameEngine;
 import java.util.ArrayList;
 
 public class GameEngine {
@@ -10,15 +10,18 @@ public class GameEngine {
     int currentPlayerIndex;
     private ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
     private ArrayList<Player> listOfPlayers = new ArrayList<Player>();
+    private ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
+    private ArrayList<Player> players = new ArrayList<Player>();
     public GameEngine(int numberOfRealPlayers, int numberOfBots){
         this.numberOfRealPlayers=numberOfRealPlayers;
         this.numberOfBots =numberOfBots;
         endGame=false;
-        // add other game options such as bot difficulty
+
     }
 
     public void gameLoop(){
         generateTiles();
+        addPlayers();
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
         while (!endGame){
         gameTurn();//maybe we should create 2 functions, one which sets everything up and sends board, and one whcih can recieve a new board from gui and check for specific conditions
@@ -34,13 +37,9 @@ public class GameEngine {
         Player currentplayer = listOfPlayers.get(currentPlayerIndex);
 
         // Simulate the turn of one player (either bot or normal)
-        // waiting for the new board that we get from the gui#  
+        // waiting for the new board that we get from the gui#
         // Check if it is valid -> if not wait for new board
         // if valid then end turn
-        if(board.checkBoardValidity()){
-            return;
-        }else{//....
-        }
     }
     private boolean isGameEnding(){ // check game ending conditions
         if(listOfPlayers.get(currentPlayerIndex).getdeck.getSize()==0){
@@ -74,5 +73,27 @@ public class GameEngine {
          potOfTiles.add(new Tile(i,"orange",isJoker));
         }
     }
+
+    /**
+     * Add players to a list for looping in the game loop
+     * @TODO add usernames thah come from the gui if needed
+     */
+    public  void addPlayers()
+    {
+        for (int i = 0; i <numberOfRealPlayers ; i++)
+        {
+            Player player=new HumanPlayer("test");
+            players.add(player);
+        }
+        for (int i = 0; i <numberOfBots ; i++)
+        {
+            Player player=new ComputerPlayer("test");
+            players.add(player);
+        }
+    }
+
+
+
+
 
 }

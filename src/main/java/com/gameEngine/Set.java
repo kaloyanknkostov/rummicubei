@@ -1,3 +1,5 @@
+package com.gameEngine;
+
 import java.util.ArrayList;
 
 public class Set {
@@ -12,7 +14,7 @@ public class Set {
 
     public void addTile(Tile tile) {
 
-        if(tile.getIsJoker()==true) {
+        if(tile.isJoker()) {
             tilesList.add(tile);
         } else if(tilesList.isEmpty()) {
             tilesList.add(tile);
