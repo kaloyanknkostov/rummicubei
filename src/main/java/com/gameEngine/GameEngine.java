@@ -86,17 +86,21 @@ public class GameEngine {
     {
         for (int i = 0; i <numberOfRealPlayers ; i++)
         {
-            Player realplayer=new HumanPlayer("test");
-            
+            listOfPlayers.add(new HumanPlayer("test"));            
             System.out.println("Added one");
-
-            listOfPlayers.add(realplayer);
+            for(int k=0;k<15;k++){
+                listOfPlayers.get(listOfPlayers.size()-1).drawTile(drawTile());
+            }
+            
         }
         for (int i = 0; i <numberOfBots ; i++)
-        {
-            Player aiplayer=new ComputerPlayer("test");
+        { 
+            listOfPlayers.add(new ComputerPlayer("test"));
             System.out.println("Added one");
-            listOfPlayers.add(aiplayer);
+           
+              for(int k=0;k<15;k++){
+                listOfPlayers.get(listOfPlayers.size()-1).drawTile(drawTile());
+            }
         }
     }
 
