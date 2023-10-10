@@ -1,6 +1,7 @@
 package com.gameEngine;
-import java.util.ArrayList;
+import com.example.GUI.StartScreensApplication;
 
+import java.util.ArrayList;
 public class GameEngine {
     Board board = new Board();
 
@@ -10,14 +11,15 @@ public class GameEngine {
     int currentPlayerIndex=0;
     private ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
     private ArrayList<Player> listOfPlayers = new ArrayList<Player>();
+    StartScreensApplication startScreensApplication = new StartScreensApplication();
     public GameEngine(int numberOfRealPlayers, int numberOfBots){
         this.numberOfRealPlayers=numberOfRealPlayers;
         this.numberOfBots =numberOfBots;
         endGame=false;
-
     }
 
     public void gameLoop(){
+        //startScreensApplication.main(args);
         generateTiles();
         addPlayers();
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
