@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import com.gameEngine.GameRunner;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -25,6 +26,7 @@ public class StartScreensApplication extends Application {
     @FXML
     private ComboBox<String> playerChoiceComboBox;
 
+
     private final GameModel gameModel = GameModel.getInstance();
 
     @Override
@@ -39,7 +41,10 @@ public class StartScreensApplication extends Application {
     public void handleStartGame(ActionEvent event) {
         System.out.println("checkNames:" + checkNames());
         if (checkNames()) {
+            GameRunner.gameStartSignal.complete(null);
             switchScene("GamePane.fxml", event);
+        } else {
+            switchScene("ErrorNoName.fxml", event);
         }
         //needs to save names for now it's here but should be moved to game logic
     }
@@ -58,6 +63,16 @@ public class StartScreensApplication extends Application {
 
     public void handleBackToChoice(ActionEvent event) {
         switchScene("SelectPlayerScene.fxml", event);
+    }
+    public void handleBackToName(ActionEvent event) {
+        int x = gameModel.getNumberOfPlayers();
+        if(x==2){
+            switchScene("TwoPeopleNameInputScene.fxml", event);
+        }  if(x==3){
+            switchScene("ThreePeopleNameInputScene.fxml", event);
+        }  if(x==4) {
+            switchScene("FourPeopleNameInputScene.fxml", event);
+        }
     }
 
     public void handlePlayerChoice(ActionEvent event) {
@@ -99,6 +114,7 @@ public class StartScreensApplication extends Application {
     public boolean checkNames() {
         switch (gameModel.getNumberOfPlayers()) {
             case 2 -> {
+
                 return (!(firstPlayerName.getCharacters().isEmpty() || secondPlayerName.getCharacters().isEmpty()));
             }
             case 3 -> {
@@ -112,7 +128,6 @@ public class StartScreensApplication extends Application {
             }
         }
     }
-
     public static void main(String[] args) {
         launch();
     }
