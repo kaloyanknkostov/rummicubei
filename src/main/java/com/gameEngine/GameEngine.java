@@ -76,7 +76,7 @@ public class GameEngine {
          potOfTiles.add(new Tile(i,"black",isJoker,"src\\main\\resources\\Tiles\\painted_tile__black_"+i+".png"));
         }
         for(int i=1;i<14;i++){
-         potOfTiles.add(new Tile(i,"orange",isJoker,"src\\main\\resources\\Tiles\\painted_tile_yellow_"+i+".png"));
+         potOfTiles.add(new Tile(i,"yellow",isJoker,"src\\main\\resources\\Tiles\\painted_tile_yellow_"+i+".png"));
         }
     }
 
