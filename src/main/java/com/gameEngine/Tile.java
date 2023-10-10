@@ -7,12 +7,13 @@ public class Tile
     private int number;
     private String color;
     private boolean isJoker;
-
-    public Tile(int number, String color, boolean isJoker)
+    private String pictureName;
+    public Tile(int number, String color, boolean isJoker, String pictureName)
     {
         this.number = number;
         this.color = color;
         this.isJoker = isJoker;
+        this.pictureName=pictureName;
     }
 
     public int getNumber() {
@@ -37,5 +38,8 @@ public class Tile
 
     public void setJoker(boolean joker) {
         isJoker = joker;
+    }
+    public String getPicture(){
+        return pictureName;
     }
 }
