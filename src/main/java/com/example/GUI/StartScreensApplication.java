@@ -71,7 +71,7 @@ public class StartScreensApplication extends Application {
         }  if(x==3){
             switchScene("ThreePeopleNameInputScene.fxml", event);
         }  if(x==4) {
-            switchScene("FourPeopleNameInputScene.fxml", event);
+            switchScene("FourPlayerNameInput.fxml", event);
         }
     }
 

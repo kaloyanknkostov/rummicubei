@@ -41,8 +41,8 @@
         </TextField>
     </Pane>
     <Pane prefHeight="95.0" prefWidth="600.0">
-        <Button layoutX="14.0" layoutY="11.0" mnemonicParsing="false" text="back" onAction="#handleBackToChoice"/>
-        <Button layoutX="260.0" layoutY="-9.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="81.0"
-                text="start game" onAction="#handleStartGame"/>
+        <Button layoutX="15.0" layoutY="6.0" mnemonicParsing="false" text="Back" onAction="#handleBackToChoice"/>
+        <Button layoutX="260.0" layoutY="6.0" mnemonicParsing="false"
+                text="Start Game" onAction="#handleStartGame"/>
     </Pane>
 </VBox>
