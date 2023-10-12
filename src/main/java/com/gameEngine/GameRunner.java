@@ -24,16 +24,6 @@ public class GameRunner {
         // Start the game logic
         GameEngine game = new GameEngine(model.getNumberOfPlayers(),0);
         // Launch the GUI in its own thread
-        Thread guiThread = new Thread(() -> {
-            StartScreensApplication.launch(StartScreensApplication.class);
-        });
-        guiThread.start();
-
-        // Wait for the game to be signaled to start
-        gameStartSignal.join();
-        GameModel model = GameModel.getInstance();
-        // Start the game logic
-        GameEngine game = new GameEngine(model.getNumberOfPlayers(),0);
         game.gameLoop();
     }
 }

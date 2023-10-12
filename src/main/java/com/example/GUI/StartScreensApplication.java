@@ -98,16 +98,7 @@ public class StartScreensApplication extends Application {
     public void handleBackToChoice(ActionEvent event) {
         switchScene("SelectPlayerScene.fxml", event);
     }
-    public void handleBackToName(ActionEvent event) {
-        int x = gameModel.getNumberOfPlayers();
-        if(x==2){
-            switchScene("TwoPeopleNameInputScene.fxml", event);
-        }  if(x==3){
-            switchScene("ThreePeopleNameInputScene.fxml", event);
-        }  if(x==4) {
-            switchScene("FourPlayerNameInput.fxml", event);
-        }
-    }
+   
     public void handleBackToName(ActionEvent event) {
         int x = gameModel.getNumberOfPlayers();
         if(x==2){
