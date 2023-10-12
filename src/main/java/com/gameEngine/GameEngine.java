@@ -10,7 +10,7 @@ public class GameEngine {
     boolean endGame;
     int currentPlayerIndex=0;
     private ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
-    private ArrayList<Player> listOfPlayers = new ArrayList<Player>();
+    public ArrayList<Player> listOfPlayers = new ArrayList<Player>();
     StartScreensApplication startScreensApplication = new StartScreensApplication();
     public GameEngine(int numberOfRealPlayers, int numberOfBots){
         this.numberOfRealPlayers=numberOfRealPlayers;
@@ -78,6 +78,9 @@ public class GameEngine {
         for(int i=1;i<14;i++){
          potOfTiles.add(new Tile(i,"yellow",isJoker,"src\\main\\resources\\Tiles\\painted_tile_yellow_"+i+".png"));
         }
+    }
+    public Player getCurrentPlayer(){
+        return listOfPlayers.get(currentPlayerIndex);
     }
 
     /**

@@ -1,4 +1,5 @@
 package com.example.GUI;
+import com.gameEngine.GameEngine;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,6 +10,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import com.gameEngine.GameRunner;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.layout.AnchorPane;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.fxml.Initializable;
+
 
 import java.io.IOException;
 import java.util.Objects;
@@ -25,6 +37,7 @@ public class StartScreensApplication extends Application {
     @FXML
     private ComboBox<String> playerChoiceComboBox;
 
+
     private final GameModel gameModel = GameModel.getInstance();
 
     @Override
@@ -35,14 +48,39 @@ public class StartScreensApplication extends Application {
         stage.setScene(scene);
         stage.show();
     }
+    @FXML
+    ImageView p00;
+    @FXML
+    ImageView p01;
 
-    public void handleStartGame(ActionEvent event) {
+    public void handleStartGame(ActionEvent event) throws IOException {
         System.out.println("checkNames:" + checkNames());
         if (checkNames()) {
-            switchScene("GamePane.fxml", event);
+            GameRunner.gameStartSignal.complete(null);
+           // switchScene("GamePane.fxml", event);
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("GamePane.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            StartScreensApplication controller = loader.getController();
+
+            Image ima = new Image("painted_tile_black_3.png"); 
+            
+
+            controller.p00.setImage(ima);
+
+            System.out.println("checkNames:" + checkNames());
+
+
+            } else {
+            switchScene("ErrorNoName.fxml", event);
         }
         //needs to save names for now it's here but should be moved to game logic
     }
+
+
 
     public void handleSingleAction(ActionEvent event) {
         switchScene("ErrorAI.fxml", event);
@@ -58,6 +96,16 @@ public class StartScreensApplication extends Application {
 
     public void handleBackToChoice(ActionEvent event) {
         switchScene("SelectPlayerScene.fxml", event);
+    }
+    public void handleBackToName(ActionEvent event) {
+        int x = gameModel.getNumberOfPlayers();
+        if(x==2){
+            switchScene("TwoPeopleNameInputScene.fxml", event);
+        }  if(x==3){
+            switchScene("ThreePeopleNameInputScene.fxml", event);
+        }  if(x==4) {
+            switchScene("FourPlayerNameInput.fxml", event);
+        }
     }
 
     public void handlePlayerChoice(ActionEvent event) {
@@ -99,6 +147,7 @@ public class StartScreensApplication extends Application {
     public boolean checkNames() {
         switch (gameModel.getNumberOfPlayers()) {
             case 2 -> {
+
                 return (!(firstPlayerName.getCharacters().isEmpty() || secondPlayerName.getCharacters().isEmpty()));
             }
             case 3 -> {
@@ -112,8 +161,8 @@ public class StartScreensApplication extends Application {
             }
         }
     }
-
     public static void main(String[] args) {
+
         launch();
     }
 }
