@@ -36,6 +36,7 @@ public class StartScreensApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        instance = this;
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Start.fxml")));
         Scene scene = new Scene(root);
         stage.setTitle("Hello!");
@@ -83,7 +84,18 @@ public class StartScreensApplication extends Application {
     @FXML
     ImageView p91;
     //ImageView[] playerboard={p00,p10,p20,p30,p40,p50,p60,p70,p80,p90,p01,p11,p21,p31,p41,p51,p61,p71,p81,p91};
+    private static StartScreensApplication instance;
 
+    // Step 1: Private constructor
+    public StartScreensApplication() {}
+
+    // Step 3: Public static method to get the instance
+    public static StartScreensApplication getInstance() {
+        if (instance == null) {
+            instance = new StartScreensApplication();
+        }
+        return instance;
+    }
 
     public void handleStartGame(ActionEvent event) throws IOException {
         System.out.println("checkNames:" + checkNames());
@@ -95,9 +107,9 @@ public class StartScreensApplication extends Application {
     }
 
     public void playerTurn(){
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("GamePane.fxml"));
+        //FXMLLoader loader = new FXMLLoader(getClass().getResource("GamePane.fxml"));
 
-        StartScreensApplication controller = loader.getController();
+       // StartScreensApplication controller = loader.getController();
         ImageView[] playerboard={controller.p00,controller.p10,controller.p20,controller.p30,controller.p40,controller.p50,controller.p60,controller.p70,controller.p80,controller.p90,controller.p01,controller.p11,controller.p21,controller.p31,controller.p41,controller.p51,controller.p61,controller.p71,controller.p81,controller.p91};
 
         controller.p20.setImage(new Image("painted_tile_black_3.png"));

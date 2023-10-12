@@ -13,7 +13,7 @@ public class GameEngine {
     static int currentPlayerIndex=0;
     private static ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
     public static ArrayList<Player> listOfPlayers = new ArrayList<Player>();
-    StartScreensApplication startScreensApplication = new StartScreensApplication();
+    private static StartScreensApplication startScreensApplication = StartScreensApplication.getInstance();
 
     public static void gameLoop(){
         //startScreensApplication.main(args);
@@ -55,17 +55,13 @@ public class GameEngine {
 
     private static void gameTurn(){
         gameModel.setCurrentPlayer(getCurrentPlayer());
+        startScreensApplication.playerTurn(); // Assuming playerTurn is a method in StartScreensApplication
         System.out.print("The game turn is running");
         if(currentPlayerIndex==listOfPlayers.size()-1){
             currentPlayerIndex=0;
         } else{
             currentPlayerIndex++;
         }
-
-        // Simulate the turn of one player (either bot or normal)
-        // waiting for the new board that we get from the gui#
-        // Check if it is valid -> if not wait for new board
-        // if valid then end turn
     }
     private static boolean isGameEnding(){ // check game ending conditions
         if(listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().size()==0){
