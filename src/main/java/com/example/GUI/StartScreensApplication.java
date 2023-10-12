@@ -53,6 +53,43 @@ public class StartScreensApplication extends Application {
     ImageView p00;
     @FXML
     ImageView p01;
+    @FXML
+    ImageView p10;
+    @FXML
+    ImageView p11;
+    @FXML
+    ImageView p20;
+    @FXML
+    ImageView p21;
+    @FXML
+    ImageView p30;
+    @FXML
+    ImageView p31;
+    @FXML
+    ImageView p40;
+    @FXML
+    ImageView p41;
+    @FXML
+    ImageView p50;
+    @FXML
+    ImageView p51;
+    @FXML
+    ImageView p60;
+    @FXML
+    ImageView p61;
+    @FXML
+    ImageView p70;
+    @FXML
+    ImageView p71;
+    @FXML
+    ImageView p80;
+    @FXML
+    ImageView p81;
+    @FXML
+    ImageView p90;
+    @FXML
+    ImageView p91;
+    ImageView[] playerboard = {p00, p10, p20, p30, p40 ,p50,p60,p70,p80,p90,p01,p11,p21,p31,p41,p51,p61,p71,p81,p91};
 
     public void handleStartGame(ActionEvent event) throws IOException {
         System.out.println("checkNames:" + checkNames());
@@ -67,10 +104,15 @@ public class StartScreensApplication extends Application {
             stage.setScene(scene);
             StartScreensApplication controller = loader.getController();
 
-            Image ima = new Image("painted_tile_black_3.png"); 
+            Image ima = new Image("painted_tile_black_3.png");
+            int numOfTiles = GameRunner.game.getCurrentPlayer().getDeckOfTiles().size();
+            for (int i = 0; i < numOfTiles; i++) {
+                String test = GameRunner.game.getCurrentPlayer().getDeckOfTiles().get(i).getPicture();
+                controller.playerboard[i].setImage(new Image(test));
+            }
             
 
-            controller.p00.setImage(ima);
+            
 
             System.out.println("checkNames:" + checkNames());
 
