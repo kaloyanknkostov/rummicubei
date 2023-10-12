@@ -38,6 +38,7 @@ public class StartScreensApplication extends Application {
     private ComboBox<String> playerChoiceComboBox;
 
 
+
     private final GameModel gameModel = GameModel.getInstance();
 
     @Override
@@ -107,6 +108,16 @@ public class StartScreensApplication extends Application {
             switchScene("FourPlayerNameInput.fxml", event);
         }
     }
+    public void handleBackToName(ActionEvent event) {
+        int x = gameModel.getNumberOfPlayers();
+        if(x==2){
+            switchScene("TwoPeopleNameInputScene.fxml", event);
+        }  if(x==3){
+            switchScene("ThreePeopleNameInputScene.fxml", event);
+        }  if(x==4) {
+            switchScene("FourPlayerNameInput.fxml", event);
+        }
+    }
 
     public void handlePlayerChoice(ActionEvent event) {
         if (playerChoiceComboBox.getValue() == null) {
@@ -147,6 +158,7 @@ public class StartScreensApplication extends Application {
     public boolean checkNames() {
         switch (gameModel.getNumberOfPlayers()) {
             case 2 -> {
+
 
                 return (!(firstPlayerName.getCharacters().isEmpty() || secondPlayerName.getCharacters().isEmpty()));
             }

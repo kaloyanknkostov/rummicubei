@@ -31,8 +31,8 @@
          </items>
       </ComboBox>
 
-      <Button layoutX="266.0" layoutY="261.0" mnemonicParsing="false" text="Continue"
+      <Button layoutX="266.0" layoutY="289.0" mnemonicParsing="false" text="Continue"
               onAction="#handlePlayerChoice"/>
-      <Button layoutX="14.0" layoutY="261.0" mnemonicParsing="false" text="Back" onAction="#handleBackToStart"/>
+      <Button layoutX="15.0" layoutY="289.0" mnemonicParsing="false" text="Back" onAction="#handleBackToStart"/>
    </Pane>
 </VBox>
