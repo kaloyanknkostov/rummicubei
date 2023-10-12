@@ -89,12 +89,14 @@ public class StartScreensApplication extends Application {
     ImageView p90;
     @FXML
     ImageView p91;
-    ImageView[] playerboard = {p00, p10, p20, p30, p40 ,p50,p60,p70,p80,p90,p01,p11,p21,p31,p41,p51,p61,p71,p81,p91};
+    //ImageView[] playerboard={p00,p10,p20,p30,p40,p50,p60,p70,p80,p90,p01,p11,p21,p31,p41,p51,p61,p71,p81,p91};
+
 
     public void handleStartGame(ActionEvent event) throws IOException {
         System.out.println("checkNames:" + checkNames());
         if (checkNames()) {
             GameRunner.gameStartSignal.complete(null);
+            GameEngine game = new GameEngine(gameModel.getNumberOfPlayers(), 0);
            // switchScene("GamePane.fxml", event);
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("GamePane.fxml"));
@@ -102,13 +104,19 @@ public class StartScreensApplication extends Application {
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
+
             StartScreensApplication controller = loader.getController();
+            ImageView[] playerboard={controller.p00,controller.p10,controller.p20,controller.p30,controller.p40,controller.p50,controller.p60,controller.p70,controller.p80,controller.p90,controller.p01,controller.p11,controller.p21,controller.p31,controller.p41,controller.p51,controller.p61,controller.p71,controller.p81,controller.p91};
+
+            controller.p20.setImage(new Image("painted_tile_black_3.png"));
+            controller.p30.setImage(new Image("painted_tile_black_3.png"));
 
             Image ima = new Image("painted_tile_black_3.png");
-            int numOfTiles = GameRunner.game.getCurrentPlayer().getDeckOfTiles().size();
+            int numOfTiles = game.getCurrentPlayer().getDeckOfTiles().size();
+            
             for (int i = 0; i < numOfTiles; i++) {
-                String test = GameRunner.game.getCurrentPlayer().getDeckOfTiles().get(i).getPicture();
-                controller.playerboard[i].setImage(new Image(test));
+                String test = game.getCurrentPlayer().getDeckOfTiles().get(i).getPicture();
+                playerboard[i].setImage(new Image(test));
             }
             
 
@@ -206,8 +214,5 @@ public class StartScreensApplication extends Application {
             }
         }
     }
-    public static void main(String[] args) {
-
-        launch();
-    }
+   
 }

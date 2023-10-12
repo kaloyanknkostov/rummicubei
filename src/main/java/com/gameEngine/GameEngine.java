@@ -16,12 +16,13 @@ public class GameEngine {
         this.numberOfRealPlayers=numberOfRealPlayers;
         this.numberOfBots =numberOfBots;
         endGame=false;
+        generateTiles();
+        addPlayers();
     }
 
     public void gameLoop(){
         //startScreensApplication.main(args);
-        generateTiles();
-        addPlayers();
+       
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
         while (!endGame){
         gameTurn();//maybe we should create 2 functions, one which sets everything up and sends board, and one whcih can recieve a new board from gui and check for specific conditions
