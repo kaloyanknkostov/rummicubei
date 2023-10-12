@@ -10,16 +10,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import com.gameEngine.GameRunner;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.layout.AnchorPane;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.fxml.Initializable;
 
 
 import java.io.IOException;
@@ -95,38 +88,33 @@ public class StartScreensApplication extends Application {
     public void handleStartGame(ActionEvent event) throws IOException {
         System.out.println("checkNames:" + checkNames());
         if (checkNames()) {
-            GameRunner.gameStartSignal.complete(null);
-            GameEngine game = new GameEngine(gameModel.getNumberOfPlayers(), 0);
-           // switchScene("GamePane.fxml", event);
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("GamePane.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(scene);
-
-            StartScreensApplication controller = loader.getController();
-            ImageView[] playerboard={controller.p00,controller.p10,controller.p20,controller.p30,controller.p40,controller.p50,controller.p60,controller.p70,controller.p80,controller.p90,controller.p01,controller.p11,controller.p21,controller.p31,controller.p41,controller.p51,controller.p61,controller.p71,controller.p81,controller.p91};
-
-            controller.p20.setImage(new Image("painted_tile_black_3.png"));
-            controller.p30.setImage(new Image("painted_tile_black_3.png"));
-
-            Image ima = new Image("painted_tile_black_3.png");
-            int numOfTiles = game.getCurrentPlayer().getDeckOfTiles().size();
-            
-            for (int i = 0; i < numOfTiles; i++) {
-                String test = game.getCurrentPlayer().getDeckOfTiles().get(i).getPicture();
-                playerboard[i].setImage(new Image(test));
-            }
-            
-
-            
-
-            System.out.println("checkNames:" + checkNames());
-
-
-            } else {
-            switchScene("ErrorNoName.fxml", event);
+            System.out.print("checkNames passed");
+            gameModel.setStartGame(true);
+            switchScene("GamePane.fxml", event);
+//            GameEngine game = new GameEngine(gameModel.getNumberOfPlayers(), 0);
+//           // switchScene("GamePane.fxml", event);
+//
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("GamePane.fxml"));
+//            Parent root = loader.load();
+//            Scene scene = new Scene(root);
+//            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+//            stage.setScene(scene);
+//
+//            StartScreensApplication controller = loader.getController();
+//            ImageView[] playerboard={controller.p00,controller.p10,controller.p20,controller.p30,controller.p40,controller.p50,controller.p60,controller.p70,controller.p80,controller.p90,controller.p01,controller.p11,controller.p21,controller.p31,controller.p41,controller.p51,controller.p61,controller.p71,controller.p81,controller.p91};
+//
+//            controller.p20.setImage(new Image("painted_tile_black_3.png"));
+//            controller.p30.setImage(new Image("painted_tile_black_3.png"));
+//
+//            Image ima = new Image("painted_tile_black_3.png");
+//            int numOfTiles = game.getCurrentPlayer().getDeckOfTiles().size();
+//
+//            for (int i = 0; i < numOfTiles; i++) {
+//                String test = game.getCurrentPlayer().getDeckOfTiles().get(i).getPicture();
+//                playerboard[i].setImage(new Image(test));
+//            }
+//            } else {
+//            switchScene("ErrorNoName.fxml", event);
         }
         //needs to save names for now it's here but should be moved to game logic
     }

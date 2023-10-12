@@ -3,6 +3,15 @@ package com.example.GUI;
 public class GameModel {
     private static GameModel instance;
 
+    public boolean isStartGame() {
+        return startGame;
+    }
+
+    public void setStartGame(boolean startGame) {
+        this.startGame = startGame;
+    }
+
+    private boolean startGame = false;
     private int numberOfPlayers = 0;
     private String[] players;
     private GameModel() {}
@@ -29,5 +38,6 @@ public class GameModel {
     public void setNumberOfPlayers(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
     }
+
 }
 
