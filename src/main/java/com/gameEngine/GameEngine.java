@@ -64,19 +64,19 @@ public class GameEngine {
 
     private void generateTiles(){
         boolean isJoker= true;
-        potOfTiles.add(new Tile(0,"",isJoker,"src\\main\\resources\\Tiles\\painted_tile_1.png"));
-        potOfTiles.add(new Tile(0,"",isJoker,"src\\main\\resources\\Tiles\\painted_tile_3.png"));
+        potOfTiles.add(new Tile(0,"",isJoker,"painted_tile_1.png"));
+        potOfTiles.add(new Tile(0,"",isJoker,"painted_tile_3.png"));
         isJoker = false;
         for(int i=1;i<14;i++){
-         potOfTiles.add(new Tile(i,"red",isJoker,"src\\main\\resources\\Tiles\\painted_tile_red_"+i+".png"));
+         potOfTiles.add(new Tile(i,"red",isJoker,"painted_tile_red_"+i+".png"));
         }
         for(int i=1;i<14;i++){
-         potOfTiles.add(new Tile(i,"blue",isJoker,"src\\main\\resources\\Tiles\\painted_tile_blue_"+i+".png"));
+         potOfTiles.add(new Tile(i,"blue",isJoker,"painted_tile_blue_"+i+".png"));
         }for(int i=1;i<14;i++){
-         potOfTiles.add(new Tile(i,"black",isJoker,"src\\main\\resources\\Tiles\\painted_tile__black_"+i+".png"));
+         potOfTiles.add(new Tile(i,"black",isJoker,"painted_tile__black_"+i+".png"));
         }
         for(int i=1;i<14;i++){
-         potOfTiles.add(new Tile(i,"yellow",isJoker,"src\\main\\resources\\Tiles\\painted_tile_yellow_"+i+".png"));
+         potOfTiles.add(new Tile(i,"yellow",isJoker,"painted_tile_yellow_"+i+".png"));
         }
     }
     public Player getCurrentPlayer(){

@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 public class GameRunner {
 
     public static CompletableFuture<Void> gameStartSignal = new CompletableFuture<>();
-    public GameEngine game;
+    public static GameEngine game;
 
     public static void main(String[] args) {
         // Launch the GUI in its own thread
