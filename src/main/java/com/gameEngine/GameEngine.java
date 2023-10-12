@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public class GameEngine {
     Board board = new Board();
-    int numberOfRealPlayers;
-    int numberOfBots;
+    private static int numberOfRealPlayers;
+    private static int numberOfBots;
     static boolean endGame;
     private static final GameModel gameModel = GameModel.getInstance();
     static int currentPlayerIndex=0;
@@ -24,7 +24,15 @@ public class GameEngine {
         isGameEnding();}
     }
 
+//    public GameEngine(int numberOfRealPlayers, int numberOfBots){
+//        this.numberOfRealPlayers=numberOfRealPlayers;
+//        this.numberOfBots =numberOfBots;
+//        endGame=false;
+//        generateTiles();
+//        addPlayers();
+//    }
     public static void main(String[] args) {
+
         Thread guiThread = new Thread(() -> {
             StartScreensApplication.launch(StartScreensApplication.class);
         });
@@ -37,10 +45,16 @@ public class GameEngine {
                 e.printStackTrace();
             }
         }
+        numberOfRealPlayers= gameModel.getNumberOfPlayers();
+        numberOfBots =0;
+        endGame=false;
+        generateTiles();
+        addPlayers();
         gameLoop();
     }
 
     private static void gameTurn(){
+        gameModel.setCurrentPlayer(getCurrentPlayer());
         System.out.print("The game turn is running");
         if(currentPlayerIndex==listOfPlayers.size()-1){
             currentPlayerIndex=0;
@@ -67,7 +81,7 @@ public class GameEngine {
     private boolean isTurnValid(){
         return false;
     }
-    private Tile drawTile(){
+    private static Tile drawTile(){
         int index= (int)Math.random()*potOfTiles.size();
         Tile a=potOfTiles.get(index);
         potOfTiles.remove(index);
@@ -75,7 +89,7 @@ public class GameEngine {
     }
     
 
-    private void generateTiles(){
+    private static void generateTiles(){
         boolean isJoker= true;
         potOfTiles.add(new Tile(0,"",isJoker,"painted_tile_1.png"));
         potOfTiles.add(new Tile(0,"",isJoker,"painted_tile_3.png"));
@@ -92,7 +106,7 @@ public class GameEngine {
          potOfTiles.add(new Tile(i,"yellow",isJoker,"painted_tile_yellow_"+i+".png"));
         }
     }
-    public Player getCurrentPlayer(){
+    public static Player getCurrentPlayer(){
         return listOfPlayers.get(currentPlayerIndex);
     }
 
@@ -100,7 +114,7 @@ public class GameEngine {
      * Add players to a list for looping in the game loop
      * @TODO add usernames thah come from the gui if needed
      */
-    public  void addPlayers()
+    public static void addPlayers()
     {
         for (int i = 0; i <numberOfRealPlayers ; i++)
         {

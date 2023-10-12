@@ -91,35 +91,26 @@ public class StartScreensApplication extends Application {
             System.out.print("checkNames passed");
             gameModel.setStartGame(true);
             switchScene("GamePane.fxml", event);
-//            GameEngine game = new GameEngine(gameModel.getNumberOfPlayers(), 0);
-//           // switchScene("GamePane.fxml", event);
-//
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("GamePane.fxml"));
-//            Parent root = loader.load();
-//            Scene scene = new Scene(root);
-//            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-//            stage.setScene(scene);
-//
-//            StartScreensApplication controller = loader.getController();
-//            ImageView[] playerboard={controller.p00,controller.p10,controller.p20,controller.p30,controller.p40,controller.p50,controller.p60,controller.p70,controller.p80,controller.p90,controller.p01,controller.p11,controller.p21,controller.p31,controller.p41,controller.p51,controller.p61,controller.p71,controller.p81,controller.p91};
-//
-//            controller.p20.setImage(new Image("painted_tile_black_3.png"));
-//            controller.p30.setImage(new Image("painted_tile_black_3.png"));
-//
-//            Image ima = new Image("painted_tile_black_3.png");
-//            int numOfTiles = game.getCurrentPlayer().getDeckOfTiles().size();
-//
-//            for (int i = 0; i < numOfTiles; i++) {
-//                String test = game.getCurrentPlayer().getDeckOfTiles().get(i).getPicture();
-//                playerboard[i].setImage(new Image(test));
-//            }
-//            } else {
-//            switchScene("ErrorNoName.fxml", event);
         }
-        //needs to save names for now it's here but should be moved to game logic
     }
 
+    public void playerTurn(){
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("GamePane.fxml"));
 
+        StartScreensApplication controller = loader.getController();
+        ImageView[] playerboard={controller.p00,controller.p10,controller.p20,controller.p30,controller.p40,controller.p50,controller.p60,controller.p70,controller.p80,controller.p90,controller.p01,controller.p11,controller.p21,controller.p31,controller.p41,controller.p51,controller.p61,controller.p71,controller.p81,controller.p91};
+
+        controller.p20.setImage(new Image("painted_tile_black_3.png"));
+        controller.p30.setImage(new Image("painted_tile_black_3.png"));
+
+        Image ima = new Image("painted_tile_black_3.png");
+        int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
+
+        for (int i = 0; i < numOfTiles; i++) {
+            String test = gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getPicture();
+            playerboard[i].setImage(new Image(test));
+        }
+    }
 
     public void handleSingleAction(ActionEvent event) {
         switchScene("ErrorAI.fxml", event);

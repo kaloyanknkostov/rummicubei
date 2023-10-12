@@ -1,7 +1,24 @@
 package com.example.GUI;
 
+import com.gameEngine.Player;
+
 public class GameModel {
     private static GameModel instance;
+    private boolean startGame = false;
+    private int numberOfPlayers = 0;
+    private String[] players;
+    private Player currentPlayer;
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    private GameModel() {
+    }
 
     public boolean isStartGame() {
         return startGame;
@@ -10,11 +27,6 @@ public class GameModel {
     public void setStartGame(boolean startGame) {
         this.startGame = startGame;
     }
-
-    private boolean startGame = false;
-    private int numberOfPlayers = 0;
-    private String[] players;
-    private GameModel() {}
 
     public static GameModel getInstance() {
         if (instance == null) {
