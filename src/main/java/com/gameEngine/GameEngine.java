@@ -3,21 +3,19 @@ import com.example.GUI.GameModel;
 import com.example.GUI.StartScreensApplication;
 
 import java.util.ArrayList;
-import java.util.concurrent.CompletableFuture;
 
 public class GameEngine {
     Board board = new Board();
-    public static GameEngine game;
     int numberOfRealPlayers;
     int numberOfBots;
-    boolean endGame;
+    static boolean endGame;
     private static final GameModel gameModel = GameModel.getInstance();
-    int currentPlayerIndex=0;
-    private ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
-    public ArrayList<Player> listOfPlayers = new ArrayList<Player>();
+    static int currentPlayerIndex=0;
+    private static ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
+    public static ArrayList<Player> listOfPlayers = new ArrayList<Player>();
     StartScreensApplication startScreensApplication = new StartScreensApplication();
 
-    public void gameLoop(){
+    public static void gameLoop(){
         //startScreensApplication.main(args);
        
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
@@ -25,24 +23,24 @@ public class GameEngine {
         gameTurn();//maybe we should create 2 functions, one which sets everything up and sends board, and one whcih can recieve a new board from gui and check for specific conditions
         isGameEnding();}
     }
+
     public static void main(String[] args) {
-        StartScreensApplication.launch(StartScreensApplication.class);
+        Thread guiThread = new Thread(() -> {
+            StartScreensApplication.launch(StartScreensApplication.class);
+        });
+        guiThread.start();
         while (!gameModel.isStartGame()) {
             System.out.print(gameModel.isStartGame());
-            // Pause for a short duration before checking again, to avoid busy-waiting
             try {
-                Thread.sleep(100);  // waits for 100 milliseconds
+                Thread.sleep(1000);  // waits for 100 milliseconds
             } catch (InterruptedException e) {
-                // Handle interruption
                 e.printStackTrace();
             }
         }
-        System.out.printf("WORKSSSSSSSSSSSSSSSSSS");
-        GameModel model = GameModel.getInstance();
-        game.gameLoop();
+        gameLoop();
     }
 
-    private void gameTurn(){
+    private static void gameTurn(){
         System.out.print("The game turn is running");
         if(currentPlayerIndex==listOfPlayers.size()-1){
             currentPlayerIndex=0;
@@ -55,7 +53,7 @@ public class GameEngine {
         // Check if it is valid -> if not wait for new board
         // if valid then end turn
     }
-    private boolean isGameEnding(){ // check game ending conditions
+    private static boolean isGameEnding(){ // check game ending conditions
         if(listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().size()==0){
             return true;
         }
