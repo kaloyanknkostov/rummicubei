@@ -107,13 +107,9 @@ public class StartScreensApplication extends Application {
     }
 
     public void playerTurn(){
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("GamePane.fxml"));
 
-        StartScreensApplication controller = loader.getController();
-        ImageView[] playerboard={controller.p00,controller.p10,controller.p20,controller.p30,controller.p40,controller.p50,controller.p60,controller.p70,controller.p80,controller.p90,controller.p01,controller.p11,controller.p21,controller.p31,controller.p41,controller.p51,controller.p61,controller.p71,controller.p81,controller.p91};
+        ImageView[] playerboard={p00,p10,p20,p30,p40,p50,p60,p70,p80,p90,p01,p11,p21,p31,p41,p51,p61,p71,p81,p91};
 
-        controller.p20.setImage(new Image("painted_tile_black_3.png"));
-        controller.p30.setImage(new Image("painted_tile_black_3.png"));
 
         Image ima = new Image("painted_tile_black_3.png");
         int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
