@@ -36,21 +36,18 @@ public class GameEngine {
     }
 
     public static void gameLoop(){
-        //startScreensApplication.main(args);
         addPlayers();
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
+        gameTurn();
         while (!endGame){
-            gameTurn();
-            while (true){
-                if (gameModel.isNextTurn()){
-                    gameModel.setNextTurn(false);
-                    gameTurn();
-                }else{
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            if (gameModel.isNextTurn()){
+                gameModel.setNextTurn(false);
+                gameTurn();
+            }else{
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
