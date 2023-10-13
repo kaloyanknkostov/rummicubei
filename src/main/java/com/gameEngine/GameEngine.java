@@ -13,29 +13,8 @@ public class GameEngine {
     static int currentPlayerIndex=0;
     private static ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
     public static ArrayList<Player> listOfPlayers = new ArrayList<Player>();
-    private static StartScreensApplication startScreensApplication = StartScreensApplication.getInstance();
 
-    public static void gameLoop(){
-        //startScreensApplication.main(args);
-       
-        // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
-        while (!endGame){
-        gameTurn();//maybe we should create 2 functions, one which sets everything up and sends board, and one whcih can recieve a new board from gui and check for specific conditions
-            try {
-                Thread.sleep(5000);  // waits for 100 milliseconds
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            isGameEnding();}
-    }
 
-//    public GameEngine(int numberOfRealPlayers, int numberOfBots){
-//        this.numberOfRealPlayers=numberOfRealPlayers;
-//        this.numberOfBots =numberOfBots;
-//        endGame=false;
-//        generateTiles();
-//        addPlayers();
-//    }
     public static void main(String[] args) {
 
         Thread guiThread = new Thread(() -> {
@@ -43,7 +22,6 @@ public class GameEngine {
         });
         guiThread.start();
         while (!gameModel.isStartGame()) {
-            System.out.print(gameModel.isStartGame());
             try {
                 Thread.sleep(1000);  // waits for 100 milliseconds
             } catch (InterruptedException e) {
@@ -52,10 +30,25 @@ public class GameEngine {
         }
         numberOfRealPlayers= gameModel.getNumberOfPlayers();
         numberOfBots =0;
-        endGame=false;
+        endGame = false;
         generateTiles();
-        addPlayers();
         gameLoop();
+    }
+
+    public static void gameLoop(){
+        //startScreensApplication.main(args);
+        addPlayers();
+        // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
+        while (!endGame){
+            gameTurn();//maybe we should create 2 functions, one which sets everything up and sends board, and one whcih can recieve a new board from gui and check for specific conditions
+            while (!gameModel.isNextTurn()){
+                try {
+                    Thread.sleep(5000);  // waits for 100 milliseconds
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            isGameEnding();}
     }
 
     private static void gameTurn(){
@@ -113,7 +106,7 @@ public class GameEngine {
 
     /**
      * Add players to a list for looping in the game loop
-     * @TODO add usernames thah come from the gui if needed
+     * @TODO add usernames that come from the gui if needed
      */
     public static void addPlayers()
     {
