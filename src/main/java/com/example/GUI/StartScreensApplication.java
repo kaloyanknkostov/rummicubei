@@ -16,10 +16,8 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
-
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
 
 import java.io.IOException;
 import java.util.Objects;
@@ -67,6 +65,7 @@ public class StartScreensApplication extends Application {
         }
         return instance;
     }
+
     public void handleStartGame(ActionEvent event) {
         if (helper.checkNames(firstPlayerName, secondPlayerName, thirdPlayerName, fourthPlayerName)) {
             System.out.print("checkNames passed");
@@ -142,7 +141,6 @@ public class StartScreensApplication extends Application {
             e.printStackTrace();
         }
     }
-
 
     public void playerTurn() {
         try {
