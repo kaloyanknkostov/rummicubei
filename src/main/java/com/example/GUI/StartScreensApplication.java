@@ -59,6 +59,7 @@ public class StartScreensApplication extends Application {
     public StartScreensApplication() {
     }
 
+    @SuppressWarnings("unused")
     public static StartScreensApplication getInstance() {
         if (instance == null) {
             instance = new StartScreensApplication();
@@ -78,8 +79,7 @@ public class StartScreensApplication extends Application {
         switchScene("ErrorAI.fxml", event);
     }
 
-    public void handleNextTurn(ActionEvent event) {
-        System.out.println("Switching scene");
+    public void handleNextTurn() {
         gameModel.setNextTurn(true);
     }
     public void handleMultiplayerAction(ActionEvent event) {
