@@ -21,7 +21,12 @@ public class GameEngine {
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
         while (!endGame){
         gameTurn();//maybe we should create 2 functions, one which sets everything up and sends board, and one whcih can recieve a new board from gui and check for specific conditions
-        isGameEnding();}
+            try {
+                Thread.sleep(5000);  // waits for 100 milliseconds
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            isGameEnding();}
     }
 
 //    public GameEngine(int numberOfRealPlayers, int numberOfBots){
@@ -116,9 +121,7 @@ public class GameEngine {
         for (int i = 0; i <numberOfRealPlayers ; i++)
         {
             listOfPlayers.add(new HumanPlayer("test"));            
-            System.out.println("Added one");
             for(int k=0;k<15;k++){
-                System.out.println("adding a tile for player" + i);
                 listOfPlayers.get(listOfPlayers.size()-1).drawTile(drawTile());
             }
             

@@ -1,6 +1,7 @@
 package com.example.GUI;
 import com.gameEngine.GameEngine;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,6 +31,7 @@ public class StartScreensApplication extends Application {
     @FXML
     private ComboBox<String> playerChoiceComboBox;
 
+    private Parent root;
 
 
     private final GameModel gameModel = GameModel.getInstance();
@@ -37,7 +39,7 @@ public class StartScreensApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         instance = this;
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Start.fxml")));
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Start.fxml")));
         Scene scene = new Scene(root);
         stage.setTitle("Hello!");
         stage.setScene(scene);
@@ -106,24 +108,33 @@ public class StartScreensApplication extends Application {
         }
     }
 
-    public void playerTurn(){
+    public void playerTurn() {
+        try {
+            // 1. Load the FXML layout
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("GamePane.fxml"));
+            Parent root = loader.load();
 
-        ImageView[] playerboard={p00,p10,p20,p30,p40,p50,p60,p70,p80,p90,p01,p11,p21,p31,p41,p51,p61,p71,p81,p91};
+            // 2. Get the controller and set the images
+            StartScreensApplication controller = loader.getController();
+            int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
+            ImageView[] playerboard = {controller.p00, controller.p10};  // and so on for all your ImageViews
 
-
-        Image ima = new Image("painted_tile_black_3.png");
-        int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
-
-        for (int i = 0; i < numOfTiles; i++) {
-            if (playerboard[i] == null) {
-                playerboard[i] = new ImageView();
-                // If you have a specific location or size for the ImageView, you can set it here.
+            for (int i = 0; i < 2; i++) {
+                String tileImage = gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getPicture();
+                playerboard[i].setImage(new Image("painted_tile_black_3.png"));
             }
-            String test = gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getPicture();
-            System.out.println(test);
-            playerboard[i].setImage(new Image(test));
+
+            // 3. Set the updated layout to the current scene
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) p00.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
 
     public void handleSingleAction(ActionEvent event) {
         switchScene("ErrorAI.fxml", event);
@@ -179,7 +190,7 @@ public class StartScreensApplication extends Application {
 
     public void switchScene(String sceneName, ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(sceneName)));
+            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(sceneName)));
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
