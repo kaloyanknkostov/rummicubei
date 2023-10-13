@@ -30,10 +30,8 @@ public class StartScreensApplication extends Application {
     public TextField fourthPlayerName;
     @FXML
     private ComboBox<String> playerChoiceComboBox;
-
+    public static StartScreensApplication activeController;
     private Parent root;
-
-
     private final GameModel gameModel = GameModel.getInstance();
 
     @Override
@@ -110,30 +108,32 @@ public class StartScreensApplication extends Application {
 
     public void playerTurn() {
         try {
-            // 1. Load the FXML layout
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("GamePane.fxml"));
-            Parent root = loader.load();
-
-            // 2. Get the controller and set the images
-            StartScreensApplication controller = loader.getController();
             int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
-            ImageView[] playerboard = {controller.p00, controller.p10};  // and so on for all your ImageViews
 
-            for (int i = 0; i < 2; i++) {
+            ImageView[] playerboard = {
+                    activeController.p00, activeController.p01,
+                    activeController.p10, activeController.p11,
+                    activeController.p20, activeController.p21,
+                    activeController.p30, activeController.p31,
+                    activeController.p40, activeController.p41,
+                    activeController.p50, activeController.p51,
+                    activeController.p60, activeController.p61,
+                    activeController.p70, activeController.p71,
+                    activeController.p80, activeController.p81,
+                    activeController.p90, activeController.p91
+            };
+
+            for (int i = 0; i < Math.min(numOfTiles, playerboard.length); i++) {
                 String tileImage = gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getPicture();
-                playerboard[i].setImage(new Image("painted_tile_black_3.png"));
+                playerboard[i].setImage(new Image(tileImage)); // I've also changed the image to be set from the tileImage variable.
             }
 
-            // 3. Set the updated layout to the current scene
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) p00.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
 
 
     public void handleSingleAction(ActionEvent event) {
@@ -190,7 +190,10 @@ public class StartScreensApplication extends Application {
 
     public void switchScene(String sceneName, ActionEvent event) {
         try {
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(sceneName)));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(sceneName));
+            root = loader.load();
+            activeController = loader.getController(); // set the active controller
+
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
@@ -198,6 +201,7 @@ public class StartScreensApplication extends Application {
             e.printStackTrace();
         }
     }
+
 
     public boolean checkNames() {
         switch (gameModel.getNumberOfPlayers()) {

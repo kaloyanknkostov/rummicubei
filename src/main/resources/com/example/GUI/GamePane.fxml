@@ -55,117 +55,28 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
             </rowConstraints>
-            <ImageView fx:id="p00" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true">
-                <image>
-                    <Image url="@/painted_tile_1.png"/>
-                </image>
-            </ImageView>
-            <ImageView fx:id="p10" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="1">
-                <Image url="@/painted_tile_1.png"/>
-            </ImageView>
-            <ImageView fx:id="p20" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="2">
-                <image>
-                    <Image url="@/painted_tile_1.png"/>
-                </image>
-            </ImageView>
-            <ImageView fx:id="p30" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="3">
-                <Image url="@/painted_tile_1.png"/>
-            </ImageView>
-            <ImageView fx:id="p40" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="4">
-                <Image url="@/painted_tile_1.png"/>
-            </ImageView>
-            <ImageView fx:id="p50" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="5">
-                <Image url="@/painted_tile_1.png"/>
-            </ImageView>
-            <ImageView fx:id="p60" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="6">
-                <image>
-                    <Image url="@/painted_tile_1.png"/>
-                </image>
-            </ImageView>
-            <ImageView fx:id="p70" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="7">
-                <image>
-                    <Image url="@/painted_tile_1.png"/>
-                </image>
-            </ImageView>
-            <ImageView fx:id="p80" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="8">
-                <image>
-                    <Image url="@/painted_tile_1.png"/>
-                </image>
-            </ImageView>
-            <ImageView fx:id="p90" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="9">
-                <image>
-                    <Image url="@/painted_tile_1.png"/>
-                </image>
-            </ImageView>
+            <ImageView fx:id="p00" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="p10" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" />
+            <ImageView fx:id="p20" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" />
+            <ImageView fx:id="p30" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" />
+            <ImageView fx:id="p40" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" />
+            <ImageView fx:id="p50" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" />
+            <ImageView fx:id="p60" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" />
+            <ImageView fx:id="p70" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="7" />
+            <ImageView fx:id="p80" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="8" />
+            <ImageView fx:id="p90" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="9" />
 
-            <ImageView fx:id="p01" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" >
-                <image>
-                    <Image url="@/painted_tile_1.png" />
-                </image></ImageView>
+            <ImageView fx:id="p01" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" />
+            <ImageView fx:id="p11" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ImageView fx:id="p21" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <ImageView fx:id="p31" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <ImageView fx:id="p41" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+            <ImageView fx:id="p51" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+            <ImageView fx:id="p61" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+            <ImageView fx:id="p71" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+            <ImageView fx:id="p81" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="8" GridPane.rowIndex="1" />
+            <ImageView fx:id="p91" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="9" GridPane.rowIndex="1" />
 
-            <ImageView fx:id="p11" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="1" GridPane.rowIndex="1">
-                <image>
-                    <Image url="@/painted_tile_1.png"/>
-                </image>
-            </ImageView>
-            <ImageView fx:id="p21" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="2" GridPane.rowIndex="1">
-                <image>
-                    <Image url="@/painted_tile_1.png"/>
-                </image>
-            </ImageView>
-            <ImageView fx:id="p31" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="3" GridPane.rowIndex="1">
-                <image>
-                    <Image url="@/painted_tile_1.png"/>
-                </image>
-            </ImageView>
-            <ImageView fx:id="p41" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="4" GridPane.rowIndex="1">
-                <image>
-                    <Image url="@/painted_tile_1.png"/>
-                </image>
-            </ImageView>
-            <ImageView fx:id="p51" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="5" GridPane.rowIndex="1">
-                <image>
-                    <Image url="@/painted_tile_1.png"/>
-                </image>
-            </ImageView>
-            <ImageView fx:id="p61" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="6" GridPane.rowIndex="1">
-                <image>
-                    <Image url="@/painted_tile_1.png"/>
-                </image>
-            </ImageView>
-            <ImageView fx:id="p71" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="7" GridPane.rowIndex="1">
-                <image>
-                    <Image url="@/painted_tile_1.png"/>
-                </image>
-            </ImageView>
-            <ImageView fx:id="p81" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="8" GridPane.rowIndex="1">
-                <image>
-                    <Image url="@/painted_tile_1.png"/>
-                </image>
-            </ImageView>
-            <ImageView fx:id="p91" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
-                       GridPane.columnIndex="9" GridPane.rowIndex="1">
-                <image>
-                    <Image url="@/painted_tile_1.png"/>
-                </image>
-            </ImageView>
 
 
         </GridPane>
