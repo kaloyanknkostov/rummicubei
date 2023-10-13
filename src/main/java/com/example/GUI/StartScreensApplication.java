@@ -115,6 +115,8 @@ public class StartScreensApplication extends Application {
         int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
 
         for (int i = 0; i < numOfTiles; i++) {
+            System.out.println(i);
+            System.out.printf(playerboard[i].toString());
             String test = gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getPicture();
             playerboard[i].setImage(new Image(test));
         }
