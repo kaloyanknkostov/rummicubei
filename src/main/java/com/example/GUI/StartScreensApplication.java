@@ -1,7 +1,6 @@
 package com.example.GUI;
-import com.gameEngine.GameEngine;
+
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -43,6 +42,7 @@ public class StartScreensApplication extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
     @FXML
     ImageView p00;
     @FXML
@@ -83,11 +83,11 @@ public class StartScreensApplication extends Application {
     ImageView p90;
     @FXML
     ImageView p91;
-    //ImageView[] playerboard={p00,p10,p20,p30,p40,p50,p60,p70,p80,p90,p01,p11,p21,p31,p41,p51,p61,p71,p81,p91};
     private static StartScreensApplication instance;
 
     // Step 1: Private constructor
-    public StartScreensApplication() {}
+    public StartScreensApplication() {
+    }
 
     // Step 3: Public static method to get the instance
     public static StartScreensApplication getInstance() {
@@ -97,7 +97,7 @@ public class StartScreensApplication extends Application {
         return instance;
     }
 
-    public void handleStartGame(ActionEvent event) throws IOException {
+    public void handleStartGame(ActionEvent event) {
         System.out.println("checkNames:" + checkNames());
         if (checkNames()) {
             System.out.print("checkNames passed");
@@ -110,7 +110,7 @@ public class StartScreensApplication extends Application {
         try {
             int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
 
-            ImageView[] playerboard = {
+            ImageView[] playerBoard = {
                     activeController.p00, activeController.p01,
                     activeController.p10, activeController.p11,
                     activeController.p20, activeController.p21,
@@ -123,17 +123,15 @@ public class StartScreensApplication extends Application {
                     activeController.p90, activeController.p91
             };
 
-            for (int i = 0; i < Math.min(numOfTiles, playerboard.length); i++) {
+            for (int i = 0; i < Math.min(numOfTiles, playerBoard.length); i++) {
                 String tileImage = gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getPicture();
-                playerboard[i].setImage(new Image(tileImage)); // I've also changed the image to be set from the tileImage variable.
+                playerBoard[i].setImage(new Image(tileImage)); // I've also changed the image to be set from the tileImage variable.
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
 
 
     public void handleSingleAction(ActionEvent event) {
@@ -151,14 +149,16 @@ public class StartScreensApplication extends Application {
     public void handleBackToChoice(ActionEvent event) {
         switchScene("SelectPlayerScene.fxml", event);
     }
-   
+
     public void handleBackToName(ActionEvent event) {
         int x = gameModel.getNumberOfPlayers();
-        if(x==2){
+        if (x == 2) {
             switchScene("TwoPeopleNameInputScene.fxml", event);
-        }  if(x==3){
+        }
+        if (x == 3) {
             switchScene("ThreePeopleNameInputScene.fxml", event);
-        }  if(x==4) {
+        }
+        if (x == 4) {
             switchScene("FourPlayerNameInput.fxml", event);
         }
     }
@@ -206,8 +206,6 @@ public class StartScreensApplication extends Application {
     public boolean checkNames() {
         switch (gameModel.getNumberOfPlayers()) {
             case 2 -> {
-
-
                 return (!(firstPlayerName.getCharacters().isEmpty() || secondPlayerName.getCharacters().isEmpty()));
             }
             case 3 -> {
@@ -221,5 +219,5 @@ public class StartScreensApplication extends Application {
             }
         }
     }
-   
+
 }

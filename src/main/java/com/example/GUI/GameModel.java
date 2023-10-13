@@ -6,8 +6,16 @@ public class GameModel {
     private static GameModel instance;
     private boolean startGame = false;
     private int numberOfPlayers = 0;
-    private String[] players;
     private Player currentPlayer;
+    private boolean nextTurn = false;
+
+    public boolean isNextTurn() {
+        return nextTurn;
+    }
+
+    public void setNextTurn(boolean nextTurn) {
+        this.nextTurn = nextTurn;
+    }
 
     public Player getCurrentPlayer() {
         return currentPlayer;
@@ -35,13 +43,6 @@ public class GameModel {
         return instance;
     }
 
-    public String[] getPlayers() {
-        return players;
-    }
-
-    public void setPlayers(String[] players) {
-        this.players = players;
-    }
 
     public int getNumberOfPlayers() {
         return numberOfPlayers;
