@@ -115,9 +115,12 @@ public class StartScreensApplication extends Application {
         int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
 
         for (int i = 0; i < numOfTiles; i++) {
-            System.out.println(i);
-            System.out.printf(playerboard[i].toString());
+            if (playerboard[i] == null) {
+                playerboard[i] = new ImageView();
+                // If you have a specific location or size for the ImageView, you can set it here.
+            }
             String test = gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getPicture();
+            System.out.println(test);
             playerboard[i].setImage(new Image(test));
         }
     }

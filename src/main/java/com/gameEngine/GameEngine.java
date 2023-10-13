@@ -55,6 +55,7 @@ public class GameEngine {
 
     private static void gameTurn(){
         gameModel.setCurrentPlayer(getCurrentPlayer());
+        System.out.println(gameModel.getCurrentPlayer().getDeckOfTiles().toString());
         startScreensApplication.playerTurn(); // Assuming playerTurn is a method in StartScreensApplication
         System.out.print("The game turn is running");
         if(currentPlayerIndex==listOfPlayers.size()-1){
@@ -117,6 +118,7 @@ public class GameEngine {
             listOfPlayers.add(new HumanPlayer("test"));            
             System.out.println("Added one");
             for(int k=0;k<15;k++){
+                System.out.println("adding a tile for player" + i);
                 listOfPlayers.get(listOfPlayers.size()-1).drawTile(drawTile());
             }
             
