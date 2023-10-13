@@ -82,6 +82,7 @@ public class StartScreensApplication extends Application {
     public void handleNextTurn() {
         gameModel.setNextTurn(true);
     }
+
     public void handleMultiplayerAction(ActionEvent event) {
         switchScene("SelectPlayerScene.fxml", event);
     }
