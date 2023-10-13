@@ -17,10 +17,12 @@ public class GameModel {
         this.nextTurn = nextTurn;
     }
 
+    @SuppressWarnings("ClassEscapesDefinedScope")
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
+    @SuppressWarnings("ClassEscapesDefinedScope")
     public void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
