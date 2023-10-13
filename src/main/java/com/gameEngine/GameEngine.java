@@ -60,7 +60,6 @@ public class GameEngine {
 
     private static void gameTurn(){
         gameModel.setCurrentPlayer(getCurrentPlayer());
-        System.out.println(gameModel.getCurrentPlayer().getDeckOfTiles().toString());
         StartScreensApplication.activeController.playerTurn();
         System.out.print("The game turn is running");
         if(currentPlayerIndex==listOfPlayers.size()-1){
