@@ -40,15 +40,20 @@ public class GameEngine {
         addPlayers();
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
         while (!endGame){
-            gameTurn();//maybe we should create 2 functions, one which sets everything up and sends board, and one whcih can recieve a new board from gui and check for specific conditions
-            while (!gameModel.isNextTurn()){
-                try {
-                    Thread.sleep(5000);  // waits for 100 milliseconds
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            gameTurn();
+            while (true){
+                if (gameModel.isNextTurn()){
+                    gameModel.setNextTurn(false);
+                    gameTurn();
+                }else{
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-            isGameEnding();}
+        }
     }
 
     private static void gameTurn(){
