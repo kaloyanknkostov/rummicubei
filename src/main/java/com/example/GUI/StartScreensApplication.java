@@ -188,7 +188,6 @@ public class StartScreensApplication extends Application {
                     // Identify the tile using image URL and remove it from player's deck
                     if (imageView.getImage() != null) {
                         String imageUrl = imageView.getImage().getUrl();
-                        Tile draggedTile = gameModel.getTileByImageUrl(imageUrl);
                         gameModel.getCurrentPlayer().getDeckOfTiles().remove(draggedTile);
                     }
 
