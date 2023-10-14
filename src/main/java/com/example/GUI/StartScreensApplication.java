@@ -169,6 +169,7 @@ public class StartScreensApplication extends Application {
     }
 
     private void initializeDragAndDrop() {
+        ImageView[] playerBoard = getPlayerBoard();
         ImageView[] entireBoard = getEntireBoard();
 
         for (ImageView imageView : entireBoard) {
@@ -179,6 +180,14 @@ public class StartScreensApplication extends Application {
                     content.putImage(imageView.getImage());
                     db.setContent(content);
                     dragSource.set(imageView);
+
+                    // Identify the tile using image URL and remove it from player's deck
+                    if (imageView.getImage() != null) {
+                        String imageUrl = imageView.getImage().getUrl();
+                        Tile draggedTile = gameModel.getTileByImageUrl(imageUrl);
+                        gameModel.getCurrentPlayer().getDeckOfTiles().remove(draggedTile);
+                    }
+
                     event.consume();
                 });
 
@@ -196,9 +205,6 @@ public class StartScreensApplication extends Application {
                         imageView.setImage(source.getImage());
                         source.setImage(tempImage);
 
-                        // Modify the underlying data structures based on the move
-                        //updateBoard(source, imageView);
-
                         event.setDropCompleted(true);
                         dragSource.set(null);
                     } else {
@@ -211,6 +217,8 @@ public class StartScreensApplication extends Application {
             }
         }
     }
+
+
 
     private void updateBoard(){
         ImageView[] entireBoard = getEntireBoard();

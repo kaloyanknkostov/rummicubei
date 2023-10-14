@@ -2,6 +2,7 @@ package com.example.GUI;
 
 import com.gameEngine.Board;
 import com.gameEngine.Player;
+import com.gameEngine.Tile;
 
 public class GameModel {
     private static GameModel instance;
@@ -62,6 +63,20 @@ public class GameModel {
             instance = new GameModel();
         }
         return instance;
+    }
+
+    public Tile getTileByImageUrl(String imageUrl) {
+        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+
+        for (Tile tile : getCurrentPlayer().getDeckOfTiles()) {
+            System.out.println("Checking tile: " + tile.getPicture());
+            if (tile.getPicture().equals(fileName)) { // Using the filename for comparison
+                System.out.println("Found matching tile for URL: " + imageUrl);
+                return tile;
+            }
+        }
+        System.out.println("No tile found for URL: " + imageUrl);
+        return null;
     }
 
 
