@@ -1,5 +1,6 @@
 package com.example.GUI;
 
+import com.gameEngine.Tile;
 import javafx.scene.input.DragEvent;
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
@@ -179,7 +180,6 @@ public class StartScreensApplication extends Application {
                     db.setContent(content);
                     dragSource.set(imageView);
                     event.consume();
-
                 });
 
                 imageView.setOnDragOver(event -> {
@@ -195,6 +195,10 @@ public class StartScreensApplication extends Application {
                         Image tempImage = imageView.getImage();
                         imageView.setImage(source.getImage());
                         source.setImage(tempImage);
+
+                        // Modify the underlying data structures based on the move
+                        //updateBoard(source, imageView);
+
                         event.setDropCompleted(true);
                         dragSource.set(null);
                     } else {
@@ -207,6 +211,31 @@ public class StartScreensApplication extends Application {
             }
         }
     }
+
+    private void updateBoard(){
+        ImageView[] entireBoard = getEntireBoard();
+        for (ImageView imageView : entireBoard) {
+            if (imageView != null) {
+                int position = findPositionInEntireBoard(imageView);
+                if (position != -1) {
+                    Tile tile = gameModel.getCurrentPlayer().getDeckOfTiles().get(position);
+                    if (tile != null) {
+                        imageView.setImage(new Image(tile.getPicture()));
+                    }
+                }
+            }
+        }
+    }
+    private int findPositionInEntireBoard(ImageView imageView) {
+        ImageView[] entireBoard = getEntireBoard();
+        for (int i = 0; i < entireBoard.length; i++) {
+            if (entireBoard[i] == imageView) {
+                return i;
+            }
+        }
+        return -1; // return -1 if the imageView is not found
+    }
+
 
     private ImageView[] getPlayerBoard() {
         return new ImageView[]{activeController.p00, activeController.p01, activeController.p10, activeController.p11,
