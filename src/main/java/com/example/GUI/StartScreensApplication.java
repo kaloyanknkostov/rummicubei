@@ -19,10 +19,9 @@ import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
 import java.io.IOException;
 import java.util.Objects;
-
+import java.util.logging.*;
 public class StartScreensApplication extends Application {
     @FXML
     public TextField firstPlayerName, secondPlayerName, thirdPlayerName, fourthPlayerName;
@@ -46,6 +45,7 @@ public class StartScreensApplication extends Application {
     private final GameModel gameModel = GameModel.getInstance();
     private final ObjectProperty<ImageView> dragSource = new SimpleObjectProperty<>();
     private final StartScreenHelper helper = StartScreenHelper.getInstance();
+    java.util.logging.Logger logger =  java.util.logging.Logger.getLogger(this.getClass().getName());
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -81,7 +81,12 @@ public class StartScreensApplication extends Application {
     }
 
     public void handleNextTurn() {
+        ImageView[] board = getBoard();
+
+        Image one = gameModel.getCurrentPlayer().getDeckOfTiles().get(2).getImage();
+        logger.info("this is what we get"+String.valueOf(board[0].getImage() == one));
         gameModel.setNextTurn(true);
+        gameModel.sendImage(board[0].getImage());
     }
 
     public void handleMultiplayerAction(ActionEvent event) {
@@ -153,10 +158,9 @@ public class StartScreensApplication extends Application {
 
             for (int i = 0; i < playerBoard.length; i++) {
                 if (i < numOfTiles) {
-                    String tileImage = gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getPicture();
-                    playerBoard[i].setImage(new Image(tileImage));
+                    Image image= gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getImage();
+                    playerBoard[i].setImage(image);
                     playerBoard[i].setVisible(true);
-                    System.out.println(playerBoard[i]);
                 } else {
                     playerBoard[i].setVisible(false);
                 }

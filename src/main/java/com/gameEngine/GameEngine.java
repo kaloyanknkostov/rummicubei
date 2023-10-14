@@ -1,6 +1,7 @@
 package com.gameEngine;
 import com.example.GUI.GameModel;
 import com.example.GUI.StartScreensApplication;
+import javafx.scene.image.Image;
 
 import java.util.ArrayList;
 
@@ -12,6 +13,7 @@ public class GameEngine {
     private static final GameModel gameModel = GameModel.getInstance();
     static int currentPlayerIndex=0;
     private static ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
+    private static ArrayList<Tile> potOfTilesCopy=new ArrayList<>();
     public static ArrayList<Player> listOfPlayers = new ArrayList<Player>();
 
 
@@ -34,6 +36,7 @@ public class GameEngine {
         endGame = false;
         generateTiles();
         gameLoop();
+
     }
 
     public static void gameLoop(){
@@ -43,6 +46,20 @@ public class GameEngine {
         while (!endGame){
             if (gameModel.isNextTurn()){
                 gameModel.setNextTurn(false);
+                Image image=gameModel.getImageDEtail();
+
+                for (int i = 0; i < potOfTilesCopy.size(); i++) {
+                    //System.out.println("Main image is: "+image);
+                    //System.out.println("Checked image is: "+potOfTilesCopy.get(i).getImage());
+                    if(potOfTilesCopy.get(i).getImage().equals(image))
+                    {
+                        System.out.print("\033[H\033[2J");
+                        System.out.flush();
+                        System.out.println("Printing now");
+                        System.out.println("yeysysysysy");
+                        System.out.println(potOfTilesCopy.get(i).toString());
+                    }
+                }
                 // if (check the model.getBoardToCheck() is valid) then next turn, else
                 // set model.getBoardToCheck() to model.getCurrentBoard() and restart player tiles
                 gameTurn();
@@ -95,6 +112,7 @@ public class GameEngine {
         isJoker = false;
         for(int i=1;i<14;i++){
          potOfTiles.add(new Tile(i,"red",isJoker,"painted_tile_red_"+i+".png"));
+
         }
         for(int i=1;i<14;i++){
          potOfTiles.add(new Tile(i,"blue",isJoker,"painted_tile_blue_"+i+".png"));
@@ -104,6 +122,10 @@ public class GameEngine {
         for(int i=1;i<14;i++){
          potOfTiles.add(new Tile(i,"yellow",isJoker,"painted_tile_yellow_"+i+".png"));
         }
+        for (int i = 0; i <potOfTiles.size() ; i++) {
+            potOfTilesCopy.add(potOfTiles.get(i));
+        }
+
     }
     public static Player getCurrentPlayer(){
         return listOfPlayers.get(currentPlayerIndex);

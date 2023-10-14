@@ -2,7 +2,7 @@ package com.example.GUI;
 
 import com.gameEngine.Board;
 import com.gameEngine.Player;
-import com.gameEngine.Tile;
+import javafx.scene.image.Image;
 
 public class GameModel {
     private static GameModel instance;
@@ -10,6 +10,7 @@ public class GameModel {
     private int numberOfPlayers = 0;
     private Player currentPlayer;
     private boolean nextTurn = false;
+    private Image imageDEtail;
 
     public Board getCurrentBoard() {
         return currentBoard;
@@ -65,20 +66,6 @@ public class GameModel {
         return instance;
     }
 
-    public Tile getTileByImageUrl(String imageUrl) {
-        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-
-        for (Tile tile : getCurrentPlayer().getDeckOfTiles()) {
-            System.out.println("Checking tile: " + tile.getPicture());
-            if (tile.getPicture().equals(fileName)) { // Using the filename for comparison
-                System.out.println("Found matching tile for URL: " + imageUrl);
-                return tile;
-            }
-        }
-        System.out.println("No tile found for URL: " + imageUrl);
-        return null;
-    }
-
 
     public int getNumberOfPlayers() {
         return numberOfPlayers;
@@ -87,6 +74,13 @@ public class GameModel {
     public void setNumberOfPlayers(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
     }
+   public void sendImage(Image image)
+    {
+        imageDEtail=image;
+    }
 
+    public Image getImageDEtail() {
+        return imageDEtail;
+    }
 }
 
