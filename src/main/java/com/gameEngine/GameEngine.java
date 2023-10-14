@@ -14,7 +14,8 @@ public class GameEngine {
     static int currentPlayerIndex=0;
     private static ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
     private static ArrayList<Tile> potOfTilesCopy=new ArrayList<>();
-    public static ArrayList<Player> listOfPlayers = new ArrayList<Player>();
+    private static ArrayList<Player> listOfPlayers = new ArrayList<Player>();
+    private final static java.util.logging.Logger logger =  java.util.logging.Logger.getLogger(GameEngine.class.getName());
 
 
     public static void main(String[] args) {
@@ -46,23 +47,16 @@ public class GameEngine {
         while (!endGame){
             if (gameModel.isNextTurn()){
                 gameModel.setNextTurn(false);
-                Image image=gameModel.getImageDEtail();
+                gameTurn();
+                boolean isNewBoardValid=isNewBoardValid();
+                if(isNewBoardValid)
+                    System.out.println("VALID BOARD");
+                else
+                    System.out.println("NOT VALID");
 
-                for (int i = 0; i < potOfTilesCopy.size(); i++) {
-                    //System.out.println("Main image is: "+image);
-                    //System.out.println("Checked image is: "+potOfTilesCopy.get(i).getImage());
-                    if(potOfTilesCopy.get(i).getImage().equals(image))
-                    {
-                        System.out.print("\033[H\033[2J");
-                        System.out.flush();
-                        System.out.println("Printing now");
-                        System.out.println("yeysysysysy");
-                        System.out.println(potOfTilesCopy.get(i).toString());
-                    }
-                }
                 // if (check the model.getBoardToCheck() is valid) then next turn, else
                 // set model.getBoardToCheck() to model.getCurrentBoard() and restart player tiles
-                gameTurn();
+
             }else{
                 try {
                     Thread.sleep(2000);
@@ -72,7 +66,65 @@ public class GameEngine {
             }
         }
     }
+    private static boolean isNewBoardValid(){
+        ArrayList<ArrayList<Image>> potentialNewBoard = gameModel.getTransferBoardViaImages();
+        ArrayList<Tile> listOfBoardTiles=board.getTilesInBoard();
+        Board newBoard=new Board();
+        boolean isBoardValid=true;
+        for(ArrayList<Image> row:potentialNewBoard)
+        {
+           // System.out.println("");
+            Set set=new Set();
+            for(Image image:row)
+            {
 
+                if(image!=null)
+                {
+                    boolean checker=false;
+                    for(Tile placedTile:listOfBoardTiles) {
+                        if (placedTile.getImage().equals(image)){
+                           // System.out.print(placedTile.getNumber());
+                            set.addTile(placedTile);
+                            checker=true;
+                            break;
+                        }
+                    }
+                    if(!checker) {
+                        for (Tile playerTile : listOfPlayers.get(currentPlayerIndex).getDeckOfTiles()) {
+                            if (playerTile.getImage().equals(image)) {
+                                listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().remove(playerTile);
+                               // logger.info(playerTile.toString());
+                              //  System.out.print(playerTile.getColor());
+                                set.addTile(playerTile);
+                                checker=true;
+                                break;
+                            }
+                        }
+                    }
+                    if(!checker)
+                        logger.severe("PROBLEM WITH TILES");
+                }
+                else {
+                   // System.out.print("0");
+                    if(set.isValid()) {
+                        newBoard.addSet(set);
+                        set=new Set();
+                    } else if (set.isEmpty()) {
+
+                    } else{
+                        isBoardValid=false;
+                        set=new Set();
+                    }
+
+                }
+            }
+        }
+        if(isBoardValid)
+        {
+            board=newBoard;
+        }
+        return isBoardValid;
+    }
     private static void gameTurn(){
         gameModel.setCurrentPlayer(getCurrentPlayer());
         StartScreensApplication.activeController.playerTurn();
@@ -94,11 +146,10 @@ public class GameEngine {
         return false;
     }
 
-    private boolean isTurnValid(){
-        return false;
-    }
+
     private static Tile drawTile(){
-        int index= (int)Math.random()*potOfTiles.size();
+        int index= (int)Math.floor(Math.random()*potOfTiles.size());
+        index=0;
         Tile a=potOfTiles.get(index);
         potOfTiles.remove(index);
         return a;

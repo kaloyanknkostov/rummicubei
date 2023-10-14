@@ -112,4 +112,18 @@ public class Set {
     public ArrayList<Tile> getTilesList() {
         return this.tilesList;
     }
+
+    @Override
+    public String toString() {
+        return "Set{" +
+                "tilesList=" + tilesList +
+                ", group=" + group +
+                ", run=" + run +
+                '}';
+    }
+    public boolean isEmpty()
+    {
+        return tilesList.isEmpty();
+    }
+
 }

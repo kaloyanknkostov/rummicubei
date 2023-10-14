@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.*;
 public class StartScreensApplication extends Application {
@@ -81,12 +82,24 @@ public class StartScreensApplication extends Application {
     }
 
     public void handleNextTurn() {
-        ImageView[] board = getBoard();
-
-        Image one = gameModel.getCurrentPlayer().getDeckOfTiles().get(2).getImage();
-        logger.info("this is what we get"+String.valueOf(board[0].getImage() == one));
         gameModel.setNextTurn(true);
-        gameModel.sendImage(board[0].getImage());
+        gameModel.setTransferBoardViaImages(transformIntoBoard());
+    }
+    public ArrayList<ArrayList<Image>>  transformIntoBoard()
+    {
+        int counter=0;
+        ImageView[] imageViews=getBoard();
+        ArrayList<ArrayList<Image>> images=new ArrayList<>();
+        ArrayList<Image> temp =new ArrayList<>();
+        for (int i = 0; i <imageViews.length ; i++) {
+            temp.add(imageViews[i].getImage());
+            if(i%16==0 && i>0)
+           {
+              images.add(temp);
+              temp=new ArrayList<>();
+           }
+        }
+        return images;
     }
 
     public void handleMultiplayerAction(ActionEvent event) {
@@ -185,11 +198,6 @@ public class StartScreensApplication extends Application {
                     db.setContent(content);
                     dragSource.set(imageView);
 
-                    // Identify the tile using image URL and remove it from player's deck
-                    if (imageView.getImage() != null) {
-                        String imageUrl = imageView.getImage().getUrl();
-                        gameModel.getCurrentPlayer().getDeckOfTiles().remove(draggedTile);
-                    }
 
                     event.consume();
                 });

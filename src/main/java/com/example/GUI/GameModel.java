@@ -4,13 +4,15 @@ import com.gameEngine.Board;
 import com.gameEngine.Player;
 import javafx.scene.image.Image;
 
+import java.util.ArrayList;
+
 public class GameModel {
     private static GameModel instance;
     private boolean startGame = false;
     private int numberOfPlayers = 0;
     private Player currentPlayer;
     private boolean nextTurn = false;
-    private Image imageDEtail;
+    private ArrayList<ArrayList<Image>> transferBoardViaImages;
 
     public Board getCurrentBoard() {
         return currentBoard;
@@ -74,13 +76,13 @@ public class GameModel {
     public void setNumberOfPlayers(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
     }
-   public void sendImage(Image image)
-    {
-        imageDEtail=image;
+
+    public ArrayList<ArrayList<Image>> getTransferBoardViaImages() {
+        return transferBoardViaImages;
     }
 
-    public Image getImageDEtail() {
-        return imageDEtail;
+    public void setTransferBoardViaImages(ArrayList<ArrayList<Image>> transferBoardViaImages) {
+        this.transferBoardViaImages = transferBoardViaImages;
     }
 }
 

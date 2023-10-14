@@ -20,4 +20,14 @@ public class Board {
     public ArrayList<Set> getSetList() {
         return setList;
     }
+    public ArrayList<Tile> getTilesInBoard() {
+        ArrayList<Tile> returnable=new ArrayList<>();
+        for(Set set:setList) {
+          returnable.addAll(set.getTilesList());
+        }
+        return returnable;
+    }
+    public void addSet(Set set) {
+    setList.add(set);
+    }
 }
