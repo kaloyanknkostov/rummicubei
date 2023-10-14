@@ -5,7 +5,7 @@ import com.example.GUI.StartScreensApplication;
 import java.util.ArrayList;
 
 public class GameEngine {
-    Board board = new Board();
+    private static Board board;
     private static int numberOfRealPlayers;
     private static int numberOfBots;
     static boolean endGame;
@@ -30,6 +30,7 @@ public class GameEngine {
         }
         numberOfRealPlayers= gameModel.getNumberOfPlayers();
         numberOfBots =0;
+        board = new Board();
         endGame = false;
         generateTiles();
         gameLoop();
@@ -42,6 +43,8 @@ public class GameEngine {
         while (!endGame){
             if (gameModel.isNextTurn()){
                 gameModel.setNextTurn(false);
+                // if (check the model.getBoardToCheck() is valid) then next turn, else
+                // set model.getBoardToCheck() to model.getCurrentBoard() and restart player tiles
                 gameTurn();
             }else{
                 try {
@@ -56,7 +59,7 @@ public class GameEngine {
     private static void gameTurn(){
         gameModel.setCurrentPlayer(getCurrentPlayer());
         StartScreensApplication.activeController.playerTurn();
-        System.out.print("The game turn is running");
+        gameModel.setCurrentBoard(board);
         if(currentPlayerIndex==listOfPlayers.size()-1){
             currentPlayerIndex=0;
         } else{

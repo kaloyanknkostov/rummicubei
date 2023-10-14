@@ -1,5 +1,6 @@
 package com.example.GUI;
 
+import com.gameEngine.Board;
 import com.gameEngine.Player;
 
 public class GameModel {
@@ -9,6 +10,24 @@ public class GameModel {
     private Player currentPlayer;
     private boolean nextTurn = false;
 
+    public Board getCurrentBoard() {
+        return currentBoard;
+    }
+
+    public void setCurrentBoard(Board currentBoard) {
+        this.currentBoard = currentBoard;
+    }
+
+    public Board getBoardToCheck() {
+        return boardToCheck;
+    }
+
+    public void setBoardToCheck(Board boardToCheck) {
+        this.boardToCheck = boardToCheck;
+    }
+
+    private Board currentBoard;
+    private Board boardToCheck;
     public boolean isNextTurn() {
         return nextTurn;
     }
