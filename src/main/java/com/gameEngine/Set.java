@@ -7,6 +7,8 @@ public class Set {
     private ArrayList<Tile> tilesList;
     private boolean group;
     private boolean run;
+    private int value;
+    private int number;
 
     public Set() {
         tilesList = new ArrayList<Tile>();
@@ -25,7 +27,7 @@ public class Set {
             tilesList.get(0).setNumber(tilesList.get(1).getNumber()-1);
             tilesList.get(0).setColor(tilesList.get(1).getColor());
         }
-
+        number= tilesList.get(0).getNumber();
         for(int i=1; i<tilesList.size(); i++) {
 
             if(tilesList.get(i).isJoker()){
@@ -60,6 +62,7 @@ public class Set {
 
             }
         }
+        number=numberUsed;
             run = false;
             group = true;
             return true;
@@ -73,7 +76,17 @@ public class Set {
     public boolean isValid() {
         if(tilesList.size()<3 || tilesList.size()>13) {
             return false;
-        } else return isGroup() || isRun();
+        }
+        else if( isGroup() )
+        {
+            value=number*tilesList.size();
+           return true;
+        }
+        else if(isRun()){
+          value=number*tilesList.size()+tilesList.size();
+          return true;
+        }
+        else return false;
     }
 
     public ArrayList<Tile> getTilesList() {
@@ -93,4 +106,7 @@ public class Set {
         return tilesList.isEmpty();
     }
 
+    public int getValue() {
+        return value;
+    }
 }
