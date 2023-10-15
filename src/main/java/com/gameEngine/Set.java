@@ -33,7 +33,7 @@ public class Set {
                 tilesList.get(i).setNumber(tilesList.get(i-1).getNumber()+1);
                 tilesList.get(i).setColor(tilesList.get(i-1).getColor());
             }
-            if(tilesList.get(i).getNumber() - 1 != tilesList.get(i-1).getNumber() && !tilesList.get(i).getColor().equals(tilesList.get(i-1).getColor())) {
+            if(tilesList.get(i).getNumber() - 1 != tilesList.get(i-1).getNumber() ||  !tilesList.get(i).getColor().equals(tilesList.get(i-1).getColor())) {
                 return false;
             }
         }
