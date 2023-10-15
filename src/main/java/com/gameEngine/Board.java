@@ -17,6 +17,10 @@ public class Board {
         return true;
     }
 
+    public void setSetList(ArrayList<Set> setList) {
+        this.setList = setList;
+    }
+
     public ArrayList<Set> getSetList() {
         return setList;
     }

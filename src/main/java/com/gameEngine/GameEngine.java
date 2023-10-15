@@ -39,23 +39,58 @@ public class GameEngine {
         gameLoop();
 
     }
+    private static void gameTurn(){
+        if(currentPlayerIndex==listOfPlayers.size()-1){
+            currentPlayerIndex=0;
+        } else{
+            currentPlayerIndex++;
+        }
+        gameModel.setCurrentPlayer(getCurrentPlayer());
+        StartScreensApplication.activeController.playerTurn();
+        gameModel.setCurrentBoard(board);
+
+    }
+    private static void noTurn (){
+        gameModel.setCurrentPlayer(getCurrentPlayer());
+        StartScreensApplication.activeController.playerTurn();
+        gameModel.setCurrentBoard(board);
+
+    }
 
     public static void gameLoop(){
         addPlayers();
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
-        gameTurn();
+        noTurn();
         while (!isGameEnding()){
             if (gameModel.isNextTurn()){
                 gameModel.setNextTurn(false);
-               gameTurn();
-                boolean isNewBoardValid=isNewBoardValid();
-                if(isNewBoardValid)
+                Board incomingBoard=createBoardFromTiles(createNewBoard());
+                boolean isNewBoardValid=incomingBoard.checkBoardValidity();
+                ArrayList<Tile> copyPlayerHand=new ArrayList<>(listOfPlayers.get(currentPlayerIndex).getDeckOfTiles());
+                Board oldBoardCopy=new Board();
+                oldBoardCopy.setSetList(board.getSetList());
+
+
+
+
+                if(isNewBoardValid) {
+                    //drawing
+                    if(board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size())listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().add(drawTile());
+                    board=incomingBoard;
                     System.out.println("VALID BOARD");
-                else
+                    gameTurn();
+                }
+                else {
+                    board=oldBoardCopy;
+                    getCurrentPlayer().setDeckOfTiles(copyPlayerHand);
+
+                    noTurn();
                     System.out.println("NOT VALID");
+                }
 
                 // if (check the model.getBoardToCheck() is valid) then next turn, else
                 // set model.getBoardToCheck() to model.getCurrentBoard() and restart player tiles
+
 
             }else{
                 try {
@@ -67,6 +102,92 @@ public class GameEngine {
         }
         System.out.println("GAME FINISHED");
     }
+
+
+    private static Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
+        Board newBoard=new Board();
+        for (ArrayList<Tile> row:map){
+            Set set=new Set();
+            for (Tile tile:row){
+                if(tile!=null)
+                {
+                    set.addTile(tile);
+                }
+                else{
+                    if(!set.isEmpty())
+                    {
+                       newBoard.addSet(set);
+                       set=new Set();
+                    }
+                }
+
+            }
+            if(!set.isEmpty())newBoard.addSet(set);
+        }
+        return newBoard;
+    }
+
+
+
+
+
+
+
+
+
+
+
+    private static ArrayList<ArrayList<Tile>> createNewBoard(){
+        ArrayList<ArrayList<Image>> potentialNewBoard = gameModel.getTransferBoardViaImages();
+        ArrayList<ArrayList<Tile>> board2D=new ArrayList<>();
+        ArrayList<Tile> listOfBoardTiles=board.getTilesInBoard();
+        ArrayList<Tile> listOfPlayerTiles= listOfPlayers.get(currentPlayerIndex).getDeckOfTiles();
+        for(ArrayList<Image> row:potentialNewBoard)
+        {
+            ArrayList<Tile> imageToTile=new ArrayList<>();
+            for(Image image:row)
+            {
+                if(image!=null)
+                {
+                    boolean checker=false;
+                    for(Tile placedTile:listOfBoardTiles) {
+                        if (placedTile.getImage().equals(image)){
+                            imageToTile.add(placedTile);
+                            checker=true;
+                            break;
+                        }
+                    }
+                    if(!checker) {
+                        for (Tile playerTile : listOfPlayerTiles) {
+                            if (playerTile.getImage().equals(image)) {
+                                listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().remove(playerTile);
+                                imageToTile.add(playerTile);
+                                checker=true;
+                                break;
+                            }
+                        }
+                    }
+                    if(!checker){
+                        logger.severe("Problem with TILE MAP CREATION");
+                    }
+
+                }
+                else {
+                    imageToTile.add(null);
+                }
+            }
+            board2D.add(imageToTile);
+        }
+        return board2D;
+    }
+
+
+
+
+
+
+
+
     private static boolean isNewBoardValid(){
         ArrayList<ArrayList<Image>> potentialNewBoard = gameModel.getTransferBoardViaImages();
         ArrayList<Tile> listOfBoardTiles=board.getTilesInBoard();
@@ -133,16 +254,7 @@ public class GameEngine {
         }
         return isBoardValid;
     }
-    private static void gameTurn(){
-        gameModel.setCurrentPlayer(getCurrentPlayer());
-        StartScreensApplication.activeController.playerTurn();
-        gameModel.setCurrentBoard(board);
-        if(currentPlayerIndex==listOfPlayers.size()-1){
-            currentPlayerIndex=0;
-        } else{
-            currentPlayerIndex++;
-        }
-    }
+
     private static boolean isGameEnding(){ // check game ending conditions
         if(listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().isEmpty()){
             return true;
