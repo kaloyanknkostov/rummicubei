@@ -44,7 +44,7 @@ public class GameEngine {
         addPlayers();
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
         gameTurn();
-        while (!endGame){
+        while (!isGameEnding()){
             if (gameModel.isNextTurn()){
                 gameModel.setNextTurn(false);
                gameTurn();
@@ -65,6 +65,7 @@ public class GameEngine {
                 }
             }
         }
+        System.out.println("GAME FINISHED");
     }
     private static boolean isNewBoardValid(){
         ArrayList<ArrayList<Image>> potentialNewBoard = gameModel.getTransferBoardViaImages();
@@ -127,6 +128,7 @@ public class GameEngine {
         }
         if(isBoardValid&&newBoard.checkBoardValidity())
         {
+            if(board.getTilesInBoard().size() == newBoard.getTilesInBoard().size())listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().add(drawTile());
             board=newBoard;
         }
         return isBoardValid;
@@ -155,7 +157,7 @@ public class GameEngine {
 
     private static Tile drawTile(){
         int index= (int)Math.floor(Math.random()*potOfTiles.size());
-        index=0;
+        //index=0;
         Tile a=potOfTiles.get(index);
         potOfTiles.remove(index);
         return a;

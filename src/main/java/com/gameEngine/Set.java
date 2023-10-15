@@ -38,6 +38,7 @@ public class Set {
             }
         }
         run=true;
+        group=false;
         return true;
     }
 
@@ -46,18 +47,23 @@ public class Set {
         if(tilesList.size()>4) return false;
 
         ArrayList<String> colorsUsed = new ArrayList<>();
-        if(!colorsUsed.isEmpty()) {  
-            colorsUsed.add(tilesList.get(0).getColor());
-        }
-        for(int i=1; i<tilesList.size(); i++){
-            if(tilesList.get(i).getNumber()!=tilesList.get(i-1).getNumber() || colorsUsed.contains(tilesList.get(i).getColor())) {
-                return false;
-            }
-            colorsUsed.add(tilesList.get(i).getColor());
-        }
+        int numberUsed=0;
+        for(Tile tile:tilesList) {
+            if (!tile.isJoker()) {
+                if (numberUsed == 0) numberUsed = tile.getNumber();
+                if (tile.getNumber() != numberUsed) return false;
+                String color = tile.getColor();
+                for (String colorUsed : colorsUsed) {
+                    if (colorUsed.equals(color)) return false;
+                }
+                colorsUsed.add(color);
 
-        group=true;
-        return true;
+            }
+        }
+            run = false;
+            group = true;
+            return true;
+
     }
 
     public Tile getTileAtIndex(int index) {
