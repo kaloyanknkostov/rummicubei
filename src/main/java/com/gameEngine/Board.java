@@ -10,7 +10,7 @@ public class Board {
         setList = new ArrayList<>();
     }
 
-    private boolean checkBoardValidity() {
+    public boolean checkBoardValidity() {
         for(int i=0; i<setList.size(); i++) {
             if(!setList.get(i).isValid()) return false;
         }

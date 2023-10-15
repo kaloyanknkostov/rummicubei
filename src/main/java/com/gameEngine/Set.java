@@ -13,63 +13,26 @@ public class Set {
     }
 
     public void addTile(Tile tile) {
-
-        if(tile.isJoker()) {
             tilesList.add(tile);
-        } else if(tilesList.isEmpty()) {
-            tilesList.add(tile);
-        } else if(tilesList.size()==1) {
-            if(tile.getNumber()==tilesList.get(0).getNumber() && !tile.getColor().equals(tilesList.get(0).getColor())) {
-                group = true;
-                tilesList.add(tile);
-            } else if(Math.abs(tile.getNumber()-tilesList.get(0).getNumber())==1) {
-                run = true;
-                 if(tile.getNumber()>tilesList.get(0).getNumber()) {
-                    tilesList.add(tile);
-                } else {
-                    tilesList.add(0, tile);
-                }
-            }
-        } else if(canAdd(tile)) {
-            if(group) {
-                tilesList.add(tile);
-            } else {
-                if(tile.getNumber()==tilesList.get(0).getNumber()-1) {
-                    tilesList.add(0, tile);
-                } else {
-                    tilesList.add(tile);
-                }
-            }
-        }
-
     }
 
-    public boolean canAdd(Tile tile) {
-        int num = tile.getNumber();
-        String col = tile.getColor();
 
-        if(group) {
-            for(int i=0; i<tilesList.size(); i++) {
-                if(num!=tilesList.get(i).getNumber()||col.equals(tilesList.get(i).getColor())) {
-                    return false;
-                }
-            }
-            return true;
 
-        } else if(run) {
-            if(num!=tilesList.get(0).getNumber()-1 && num!=tilesList.get(tilesList.size()-1).getNumber()+1) {
+    public boolean isRun() {
+        if(tilesList.get(0).isJoker()){
+            if(tilesList.get(1).getNumber()==1)
                 return false;
-            } else if(!col.equals(tilesList.get(0).getColor())) {
-                return false;
-            } else {
-                return true;
-            }
+            tilesList.get(0).setNumber(tilesList.get(1).getNumber()-1);
+            tilesList.get(0).setColor(tilesList.get(1).getColor());
         }
-        return true;
-    }
 
-    public boolean isRun() { 
         for(int i=1; i<tilesList.size(); i++) {
+
+            if(tilesList.get(i).isJoker()){
+                if(tilesList.get(i-1).getNumber()==13)return false;
+                tilesList.get(i).setNumber(tilesList.get(i-1).getNumber()+1);
+                tilesList.get(i).setColor(tilesList.get(i-1).getColor());
+            }
             if(tilesList.get(i).getNumber() - 1 != tilesList.get(i-1).getNumber() && !tilesList.get(i).getColor().equals(tilesList.get(i-1).getColor())) {
                 return false;
             }
@@ -104,9 +67,7 @@ public class Set {
     public boolean isValid() {
         if(tilesList.size()<3 || tilesList.size()>13) {
             return false;
-        } else if(!isGroup() && !isRun()) return false;
-        
-        return true;
+        } else return isGroup() || isRun();
     }
 
     public ArrayList<Tile> getTilesList() {

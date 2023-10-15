@@ -47,7 +47,7 @@ public class GameEngine {
         while (!endGame){
             if (gameModel.isNextTurn()){
                 gameModel.setNextTurn(false);
-                gameTurn();
+               gameTurn();
                 boolean isNewBoardValid=isNewBoardValid();
                 if(isNewBoardValid)
                     System.out.println("VALID BOARD");
@@ -101,8 +101,14 @@ public class GameEngine {
                             }
                         }
                     }
-                    if(!checker)
+                    if(!checker){
+                        for(Tile tile:potOfTilesCopy){
+                            if(tile.getImage().equals(image))
+                                System.out.println(tile.toString());
+                        }
                         logger.severe("PROBLEM WITH TILES");
+                    }
+
                 }
                 else {
                    // System.out.print("0");
@@ -119,7 +125,7 @@ public class GameEngine {
                 }
             }
         }
-        if(isBoardValid)
+        if(isBoardValid&&newBoard.checkBoardValidity())
         {
             board=newBoard;
         }
@@ -136,7 +142,7 @@ public class GameEngine {
         }
     }
     private static boolean isGameEnding(){ // check game ending conditions
-        if(listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().size()==0){
+        if(listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().isEmpty()){
             return true;
         }
 
