@@ -81,10 +81,10 @@ public class GameEngine {
                     gameTurn();
                 }
                 else {
-                    board=oldBoardCopy;
-                    getCurrentPlayer().setDeckOfTiles(copyPlayerHand);
+//                    board=oldBoardCopy;
+//                    getCurrentPlayer().setDeckOfTiles(copyPlayerHand);
 
-                    noTurn();
+             //       noTurn();
                     System.out.println("NOT VALID");
                 }
 
@@ -149,6 +149,7 @@ public class GameEngine {
             {
                 if(image!=null)
                 {
+
                     boolean checker=false;
                     for(Tile placedTile:listOfBoardTiles) {
                         if (placedTile.getImage().equals(image)){
@@ -167,8 +168,14 @@ public class GameEngine {
                             }
                         }
                     }
+
                     if(!checker){
-                        logger.severe("Problem with TILE MAP CREATION");
+                        for(Tile placedTile:potOfTilesCopy) {
+                            if (placedTile.getImage().equals(image)){
+                                imageToTile.add(placedTile);
+                                break;
+                            }
+                        }
                     }
 
                 }
