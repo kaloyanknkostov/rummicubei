@@ -64,7 +64,7 @@ public class GameEngine {
         while (!isGameEnding()){
             if (gameModel.isNextTurn()){
                 gameModel.setNextTurn(false);
-                Board incomingBoard=createBoardFromTiles(createNewBoard());
+                Board incomingBoard=createBoardFromTiles(transformImagesToTiles());
                 boolean isNewBoardValid=incomingBoard.checkBoardValidity();
                 ArrayList<Tile> copyPlayerHand=new ArrayList<>(listOfPlayers.get(currentPlayerIndex).getDeckOfTiles());
                 Board oldBoardCopy=new Board();
@@ -137,7 +137,7 @@ public class GameEngine {
 
 
 
-    private static ArrayList<ArrayList<Tile>> createNewBoard(){
+    private static ArrayList<ArrayList<Tile>> transformImagesToTiles(){
         ArrayList<ArrayList<Image>> potentialNewBoard = gameModel.getTransferBoardViaImages();
         ArrayList<ArrayList<Tile>> board2D=new ArrayList<>();
         ArrayList<Tile> listOfBoardTiles=board.getTilesInBoard();
@@ -188,72 +188,7 @@ public class GameEngine {
 
 
 
-    private static boolean isNewBoardValid(){
-        ArrayList<ArrayList<Image>> potentialNewBoard = gameModel.getTransferBoardViaImages();
-        ArrayList<Tile> listOfBoardTiles=board.getTilesInBoard();
-        Board newBoard=new Board();
-        boolean isBoardValid=true;
-        for(ArrayList<Image> row:potentialNewBoard)
-        {
-           // System.out.println("");
-            Set set=new Set();
-            for(Image image:row)
-            {
 
-                if(image!=null)
-                {
-                    boolean checker=false;
-                    for(Tile placedTile:listOfBoardTiles) {
-                        if (placedTile.getImage().equals(image)){
-                           // System.out.print(placedTile.getNumber());
-                            set.addTile(placedTile);
-                            checker=true;
-                            break;
-                        }
-                    }
-                    if(!checker) {
-                        for (Tile playerTile : listOfPlayers.get(currentPlayerIndex).getDeckOfTiles()) {
-                            if (playerTile.getImage().equals(image)) {
-                                listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().remove(playerTile);
-                               // logger.info(playerTile.toString());
-                              //  System.out.print(playerTile.getColor());
-                                set.addTile(playerTile);
-                                checker=true;
-                                break;
-                            }
-                        }
-                    }
-                    if(!checker){
-                        for(Tile tile:potOfTilesCopy){
-                            if(tile.getImage().equals(image))
-                                System.out.println(tile.toString());
-                        }
-                        logger.severe("PROBLEM WITH TILES");
-                    }
-
-                }
-                else {
-                   // System.out.print("0");
-                    if(set.isValid()) {
-                        newBoard.addSet(set);
-                        set=new Set();
-                    } else if (set.isEmpty()) {
-
-                    } else{
-                        isBoardValid=false;
-                        set=new Set();
-                    }
-
-                }
-            }
-        }
-        if(isBoardValid&&newBoard.checkBoardValidity())
-        {
-            if(board.getTilesInBoard().size() == newBoard.getTilesInBoard().size())listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().add(drawTile());
-            board=newBoard;
-        }
-        return isBoardValid;
-    }
 
     private static boolean isGameEnding(){ // check game ending conditions
         if(listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().isEmpty()){
@@ -327,7 +262,72 @@ public class GameEngine {
         }
     }
 
-
+//    private static boolean isNewBoardValid(){
+//        ArrayList<ArrayList<Image>> potentialNewBoard = gameModel.getTransferBoardViaImages();
+//        ArrayList<Tile> listOfBoardTiles=board.getTilesInBoard();
+//        Board newBoard=new Board();
+//        boolean isBoardValid=true;
+//        for(ArrayList<Image> row:potentialNewBoard)
+//        {
+//            // System.out.println("");
+//            Set set=new Set();
+//            for(Image image:row)
+//            {
+//
+//                if(image!=null)
+//                {
+//                    boolean checker=false;
+//                    for(Tile placedTile:listOfBoardTiles) {
+//                        if (placedTile.getImage().equals(image)){
+//                            // System.out.print(placedTile.getNumber());
+//                            set.addTile(placedTile);
+//                            checker=true;
+//                            break;
+//                        }
+//                    }
+//                    if(!checker) {
+//                        for (Tile playerTile : listOfPlayers.get(currentPlayerIndex).getDeckOfTiles()) {
+//                            if (playerTile.getImage().equals(image)) {
+//                                listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().remove(playerTile);
+//                                // logger.info(playerTile.toString());
+//                                //  System.out.print(playerTile.getColor());
+//                                set.addTile(playerTile);
+//                                checker=true;
+//                                break;
+//                            }
+//                        }
+//                    }
+//                    if(!checker){
+//                        for(Tile tile:potOfTilesCopy){
+//                            if(tile.getImage().equals(image))
+//                                System.out.println(tile.toString());
+//                        }
+//                        logger.severe("PROBLEM WITH TILES");
+//                    }
+//
+//                }
+//                else {
+//                    // System.out.print("0");
+//                    if(set.isValid()) {
+//                        newBoard.addSet(set);
+//                        set=new Set();
+//                    } else if (set.isEmpty()) {
+//
+//                    } else{
+//                        isBoardValid=false;
+//                        set=new Set();
+//                    }
+//
+//                }
+//            }
+//        }
+//        if(isBoardValid&&newBoard.checkBoardValidity())
+//        {
+//            if(board.getTilesInBoard().size() == newBoard.getTilesInBoard().size())listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().add(drawTile());
+//            board=newBoard;
+//        }
+//        return isBoardValid;
+//    }
 
 
 
