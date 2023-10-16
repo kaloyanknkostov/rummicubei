@@ -52,6 +52,7 @@ public class GameEngine {
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
         while (!isGameEnding()) {
             if (gameModel.isNextTurn()) {
+                System.out.println("the last board was:");
                 gameModel.setNextTurn(false);
                 System.out.println("Image board:");
                 printBoard(gameModel.getTransferBoardViaImages());
@@ -66,7 +67,6 @@ public class GameEngine {
                             getCurrentPlayer().setDeckOfTiles(copy);
                             getCurrentPlayer().getDeckOfTiles().add(drawTile());
                         }
-
                         board = incomingBoard;
                         System.out.println("VALID BOARD");
                         gameTurn();
@@ -74,7 +74,15 @@ public class GameEngine {
                         int valueOfTurn = 0;
                         for (Set set : incomingBoard.getSetList())
                             valueOfTurn += set.getValue();
-                        if (valueOfTurn >= 30) {
+                        boolean gotOut = true;
+                        for(Set set:board.getSetList()){
+                            if(!incomingBoard.getSetList().contains(set)){
+                                gotOut = false;
+                                System.out.println("You can't the tiles in the board!");
+                                break;
+                            }
+                        }
+                        if (valueOfTurn >= 30 && gotOut){
                             getCurrentPlayer().setIsOut(true);
                             board = incomingBoard;
                             System.out.println("VALID BOARD");
@@ -83,13 +91,11 @@ public class GameEngine {
                             if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                                 getCurrentPlayer().setDeckOfTiles(copy);
                                 getCurrentPlayer().getDeckOfTiles().add(drawTile());
-
                                 System.out.println("VALID BOARD");
                                 gameTurn();
                             } else System.out.println("Get more then 30");
                         }
                     }
-
                 } else {
                     getCurrentPlayer().setDeckOfTiles(copy);
                     System.out.println("NOT VALID");

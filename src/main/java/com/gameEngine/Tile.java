@@ -61,4 +61,7 @@ public class Tile
                 ", image=" + image +
                 '}';
     }
+    public Tile copy() {
+        return new Tile(this.number, this.color, this.isJoker, this.pictureName);
+    }
 }

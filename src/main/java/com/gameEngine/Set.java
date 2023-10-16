@@ -109,4 +109,12 @@ public class Set {
     public int getValue() {
         return value;
     }
+
+    public Set copy() {
+        Set newSet = new Set();
+        for (Tile tile : this.tilesList) {
+            newSet.addTile(tile.copy());
+        }
+        return newSet;
+    }
 }

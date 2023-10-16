@@ -45,4 +45,11 @@ public class Board {
             System.out.println("-----------------");
         }
     }
+    public Board copy() {
+        Board newBoard = new Board();
+        for (Set set : this.setList) {
+            newBoard.addSet(set.copy());
+        }
+        return newBoard;
+    }
 }
