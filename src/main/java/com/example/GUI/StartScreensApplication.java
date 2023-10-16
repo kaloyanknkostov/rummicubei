@@ -63,7 +63,6 @@ public class StartScreensApplication extends Application {
     public StartScreensApplication() {
     }
 
-    @SuppressWarnings("unused")
     public static StartScreensApplication getInstance() {
         if (instance == null) {
             instance = new StartScreensApplication();
