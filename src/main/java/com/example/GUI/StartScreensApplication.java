@@ -236,21 +236,6 @@ public class StartScreensApplication extends Application {
     }
 
 
-    private void updateBoard() {
-        ImageView[] entireBoard = getEntireBoard();
-        for (ImageView imageView : entireBoard) {
-            if (imageView != null) {
-                int position = findPositionInEntireBoard(imageView);
-                if (position != -1) {
-                    Tile tile = gameModel.getCurrentPlayer().getDeckOfTiles().get(position);
-                    if (tile != null) {
-                        imageView.setImage(new Image(tile.getPicture()));
-                    }
-                }
-            }
-        }
-    }
-
     private int findPositionInEntireBoard(ImageView imageView) {
         ImageView[] entireBoard = getEntireBoard();
         for (int i = 0; i < entireBoard.length; i++) {
