@@ -78,7 +78,8 @@ public class GameEngine {
                     } else {
                         int valueOfTurn = 0;
                         for (Set set : incomingBoard.getSetList())
-                            valueOfTurn += set.getValue();
+                            if(!board.getSetList().contains(set))
+                                valueOfTurn += set.getValue();
                         boolean gotOut = true;
                         for(Set set:board.getSetList()){
                             if(!incomingBoard.getSetList().contains(set)){
