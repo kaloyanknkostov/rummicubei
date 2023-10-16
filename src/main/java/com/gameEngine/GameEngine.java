@@ -21,7 +21,6 @@ public class GameEngine {
 
     public static void main(String[] args) {
         GameEngine engine = new GameEngine();
-
         Thread guiThread = new Thread(() -> StartScreensApplication.launch(StartScreensApplication.class));
         guiThread.start();
         while (!engine.gameModel.isStartGame()) {
@@ -224,7 +223,6 @@ public class GameEngine {
 
     private Tile drawTile() {
         int index = (int) Math.floor(Math.random() * potOfTiles.size());
-        //index=0;
         Tile a = potOfTiles.get(index);
         potOfTiles.remove(index);
         return a;
@@ -234,18 +232,15 @@ public class GameEngine {
     private void generateTiles() {
 
         boolean isJoker = false;
-        for (int i = 1; i < 14; i++) {
-            potOfTiles.add(new Tile(i, "red", false, "painted_tile_red_" + i + ".png"));
+
+        String[] colors = {"red", "blue", "black", "yellow"};
+
+        for (String color : colors) {
+            for (int i = 1; i < 14; i++) {
+                potOfTiles.add(new Tile(i, color, false, "painted_tile_" + color + "_" + i + ".png"));
+            }
         }
-        for (int i = 1; i < 14; i++) {
-            potOfTiles.add(new Tile(i, "blue", false, "painted_tile_blue_" + i + ".png"));
-        }
-        for (int i = 1; i < 14; i++) {
-            potOfTiles.add(new Tile(i, "black", false, "painted_tile_black_" + i + ".png"));
-        }
-        for (int i = 1; i < 14; i++) {
-            potOfTiles.add(new Tile(i, "yellow", false, "painted_tile_yellow_" + i + ".png"));
-        }
+
         potOfTilesCopy.addAll(potOfTiles);
         int a = potOfTiles.size();
         for (int i = 0; i < a; i++) {
