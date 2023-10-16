@@ -29,6 +29,8 @@ public class StartScreensApplication extends Application {
     @FXML
     private ComboBox<String> playerChoiceComboBox;
     @FXML
+    private ImageView DrawTile;
+    @FXML
     private ImageView p00, p01, p10, p11, p20, p21, p30, p31, p40, p41, p50, p51, p60, p61, p70, p71, p80, p81, p90, p91;
     @FXML
     private ImageView B000, B001, B002, B003, B004, B005, B006, B007, B008, B009, B010, B011, B012, B013, B014, B015, B016,
@@ -82,7 +84,9 @@ public class StartScreensApplication extends Application {
     }
 
     public void handleNextTurn() {
+
         gameModel.setNextTurn(true);
+
         gameModel.setTransferBoardViaImages(transformIntoBoard());
     }
     public ArrayList<ArrayList<Image>>  transformIntoBoard()
@@ -163,6 +167,17 @@ public class StartScreensApplication extends Application {
     }
 
     public void playerTurn() {
+        if(drewATile){
+
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            ImageView draw = getDrawImageView();
+            draw.setVisible(false);
+            drewATile = false;
+        }
         try {
             int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
 
@@ -183,6 +198,15 @@ public class StartScreensApplication extends Application {
             e.printStackTrace();
         }
         initializeDragAndDrop();
+    }
+    private boolean drewATile = false;
+    public void handleDrawTile(){
+        ImageView draw = getDrawImageView();
+        Tile drawnTile =  gameModel.getDrawTile();
+        draw.setImage(new Image(drawnTile.getPicture()));
+        draw.setVisible(true);
+        drewATile = true;
+        handleNextTurn();
     }
 
     private void initializeDragAndDrop() {
@@ -302,6 +326,9 @@ public class StartScreensApplication extends Application {
                 activeController.B709, activeController.B710, activeController.B711, activeController.B712,
                 activeController.B713, activeController.B714, activeController.B715, activeController.B716
         };
+    }
+    private ImageView getDrawImageView(){
+        return activeController.DrawTile;
     }
 
     private ImageView[] getEntireBoard() {

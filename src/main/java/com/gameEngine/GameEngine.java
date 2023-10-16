@@ -19,6 +19,7 @@ public class GameEngine {
     private boolean endGame;
     private int currentPlayerIndex = 0;
 
+
     public static void main(String[] args) {
         GameEngine engine = new GameEngine();
 
@@ -42,7 +43,7 @@ public class GameEngine {
         engine.gameLoop();
     }
 
-
+    private Tile currentDraw;
     public void gameLoop() {
         //Sets up the gameloop
         addPlayers();
@@ -50,6 +51,7 @@ public class GameEngine {
         StartScreensApplication.activeController.playerTurn();
         gameModel.setCurrentBoard(board);
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
+        currentDraw = getThisDrawnTile();
         while (!isGameEnding()) {
             if (gameModel.isNextTurn()) {
                 gameModel.setNextTurn(false);
@@ -61,7 +63,10 @@ public class GameEngine {
                         //drawing a card
                         if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()){
                             getCurrentPlayer().setDeckOfTiles(copy);
-                            getCurrentPlayer().getDeckOfTiles().add(drawTile());
+                            getCurrentPlayer().getDeckOfTiles().add(currentDraw);
+                            System.out.println("testinf" );
+                            System.out.println(currentDraw.getPicture());
+                            getThisDrawnTile();
                         }
 
                         board = incomingBoard;
@@ -83,9 +88,10 @@ public class GameEngine {
                         else{
                             if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()){
                                 getCurrentPlayer().setDeckOfTiles(copy);
-                                getCurrentPlayer().getDeckOfTiles().add(drawTile());
-
-                                System.out.println("VALID BOARD");
+                                getCurrentPlayer().getDeckOfTiles().add(currentDraw);
+                                System.out.println("testinf" );
+                                System.out.println(currentDraw.getPicture());
+                                getThisDrawnTile();
                                 gameTurn();
                             }
                             else System.out.println("Get more then 30");
@@ -105,6 +111,13 @@ public class GameEngine {
             }
         }
         System.out.println("GAME FINISHED");
+    }
+    private Tile getThisDrawnTile(){
+        Tile draw = drawTile();
+        gameModel.setDrawtile(draw);
+        currentDraw = draw;
+        System.out.println(draw.getPicture());
+        return draw;
     }
 
     private void gameTurn() {

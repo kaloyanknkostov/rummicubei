@@ -2,6 +2,7 @@ package com.example.GUI;
 
 import com.gameEngine.Board;
 import com.gameEngine.Player;
+import com.gameEngine.Tile;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ public class GameModel {
         return boardToCheck;
     }
 
+    public Tile drawTile;
+
     public void setBoardToCheck(Board boardToCheck) {
         this.boardToCheck = boardToCheck;
     }
@@ -35,6 +38,14 @@ public class GameModel {
     public boolean isNextTurn() {
         return nextTurn;
     }
+
+    public Tile getDrawTile(){
+        return this.drawTile;
+    }
+    public void setDrawtile(Tile t){
+        this.drawTile = t;
+    }
+
 
     public void setNextTurn(boolean nextTurn) {
         this.nextTurn = nextTurn;
