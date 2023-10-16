@@ -99,7 +99,6 @@ public class GameEngine {
                                 System.out.println("testinf" );
                                 System.out.println(currentDraw.getPicture());
                                 getThisDrawnTile();
-                                getCurrentPlayer().getDeckOfTiles().add(drawTile());
                                 System.out.println("VALID BOARD");
                                 gameTurn();
                             } else System.out.println("Get more then 30");
