@@ -53,17 +53,23 @@ public class GameEngine {
         while (!isGameEnding()) {
             if (gameModel.isNextTurn()) {
                 gameModel.setNextTurn(false);
+                ArrayList<Tile> copy=new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
                 Board incomingBoard = createBoardFromTiles(transformImagesToTiles());
+
                 if (incomingBoard.checkBoardValidity()) {
                     if(getCurrentPlayer().getIsOut()) {
                         //drawing a card
-                        if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size())
+                        if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()){
+                            getCurrentPlayer().setDeckOfTiles(copy);
                             getCurrentPlayer().getDeckOfTiles().add(drawTile());
+                        }
+
                         board = incomingBoard;
                         System.out.println("VALID BOARD");
                         gameTurn();
                     }
                     else {
+                        //fix
                        int valueOfTurn=0;
                        for(Set set:incomingBoard.getSetList())
                            valueOfTurn+=set.getValue();
@@ -76,8 +82,9 @@ public class GameEngine {
                         }
                         else{
                             if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()){
+                                getCurrentPlayer().setDeckOfTiles(copy);
                                 getCurrentPlayer().getDeckOfTiles().add(drawTile());
-                                board = incomingBoard;
+
                                 System.out.println("VALID BOARD");
                                 gameTurn();
                             }
@@ -86,6 +93,7 @@ public class GameEngine {
                     }
 
                 } else {
+                   getCurrentPlayer().setDeckOfTiles(copy);
                     System.out.println("NOT VALID");
                 }
             } else {
@@ -191,7 +199,7 @@ public class GameEngine {
 
     private Tile drawTile() {
         int index = (int) Math.floor(Math.random() * potOfTiles.size());
-        index=0;
+        //index=0;
         Tile a = potOfTiles.get(index);
         potOfTiles.remove(index);
         return a;
