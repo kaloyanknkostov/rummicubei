@@ -84,9 +84,13 @@ public class GameEngine {
                         for(Set set:board.getSetList()){
                             if(!incomingBoard.getSetList().contains(set)){
                                 gotOut = false;
+                                StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
                                 System.out.println("You can't the tiles in the board!");
                                 break;
                             }
+                        }
+                        if (valueOfTurn < 30){
+                            StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You need to get more then 30 points!");
                         }
                         if (valueOfTurn >= 30 && gotOut){
                             getCurrentPlayer().setIsOut(true);
@@ -107,6 +111,7 @@ public class GameEngine {
                     }
                 } else {
                     getCurrentPlayer().setDeckOfTiles(copy);
+                    StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "Not a valid board");
                     System.out.println("NOT VALID");
                 }
             } else {
@@ -135,6 +140,11 @@ public class GameEngine {
         }
         gameModel.setCurrentPlayer(getCurrentPlayer());
         StartScreensApplication.activeController.playerTurn();
+        for (String s : gameModel.playerNames){
+            System.out.println(s);
+        }
+        System.out.println("changing that to the player index: " + currentPlayerIndex);
+        StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
         gameModel.setCurrentBoard(board);
 
     }

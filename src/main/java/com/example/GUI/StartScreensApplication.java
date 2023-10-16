@@ -1,6 +1,8 @@
 package com.example.GUI;
 
 import com.gameEngine.Tile;
+import javafx.application.Platform;
+import javafx.scene.control.Label;
 import javafx.scene.input.DragEvent;
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
@@ -23,11 +25,11 @@ import javafx.scene.image.ImageView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.logging.*;
 
 public class StartScreensApplication extends Application {
     @FXML
     public TextField firstPlayerName, secondPlayerName, thirdPlayerName, fourthPlayerName;
+    public Label messageLabel;
     @FXML
     private ComboBox<String> playerChoiceComboBox;
     @FXML
@@ -50,7 +52,6 @@ public class StartScreensApplication extends Application {
     private final GameModel gameModel = GameModel.getInstance();
     private final ObjectProperty<ImageView> dragSource = new SimpleObjectProperty<>();
     private final StartScreenHelper helper = StartScreenHelper.getInstance();
-    java.util.logging.Logger logger = java.util.logging.Logger.getLogger(this.getClass().getName());
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -187,7 +188,6 @@ public class StartScreensApplication extends Application {
             int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
 
             ImageView[] playerBoard = getPlayerBoard();
-            ImageView[] board = getBoard();
 
             for (int i = 0; i < playerBoard.length; i++) {
                 if (i < numOfTiles) {
@@ -215,7 +215,6 @@ public class StartScreensApplication extends Application {
     }
 
     private void initializeDragAndDrop() {
-        ImageView[] playerBoard = getPlayerBoard();
         ImageView[] entireBoard = getEntireBoard();
 
         for (ImageView imageView : entireBoard) {
@@ -258,17 +257,12 @@ public class StartScreensApplication extends Application {
         }
     }
 
-
-    private int findPositionInEntireBoard(ImageView imageView) {
-        ImageView[] entireBoard = getEntireBoard();
-        for (int i = 0; i < entireBoard.length; i++) {
-            if (entireBoard[i] == imageView) {
-                return i;
-            }
-        }
-        return -1; // return -1 if the imageView is not found
+    public void setMessageLabel(String player, String extraMessage){
+        String text = "Current Player:" + player + "\n" + extraMessage;
+        Platform.runLater(() -> {
+            activeController.messageLabel.setText(text);
+        });
     }
-
 
     private ImageView[] getPlayerBoard() {
         return new ImageView[]{activeController.p00, activeController.p01, activeController.p10, activeController.p11,

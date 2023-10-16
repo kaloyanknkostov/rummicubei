@@ -16,7 +16,7 @@ public class GameModel {
     private ArrayList<ArrayList<Image>> transferBoardViaImages;
     private Board currentBoard;
     private Board boardToCheck;
-
+    public ArrayList<String> playerNames = new ArrayList();
     public void setCurrentBoard(Board currentBoard) {
         this.currentBoard = currentBoard;
     }
