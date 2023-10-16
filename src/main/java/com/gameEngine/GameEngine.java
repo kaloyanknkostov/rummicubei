@@ -53,47 +53,40 @@ public class GameEngine {
         while (!isGameEnding()) {
             if (gameModel.isNextTurn()) {
                 gameModel.setNextTurn(false);
-                ArrayList<Tile> copy=new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
+                ArrayList<Tile> copy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
                 Board incomingBoard = createBoardFromTiles(transformImagesToTiles());
-
+                System.out.println("Incoming board");
+                incomingBoard.printBoard();
                 if (incomingBoard.checkBoardValidity()) {
-                    if(getCurrentPlayer().getIsOut()) {
-                        //drawing a card
-                        if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()){
+                    if (getCurrentPlayer().getIsOut()) {
+                        if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                             getCurrentPlayer().setDeckOfTiles(copy);
                             getCurrentPlayer().getDeckOfTiles().add(drawTile());
                         }
-
                         board = incomingBoard;
                         System.out.println("VALID BOARD");
                         gameTurn();
-                    }
-                    else {
-                        //fix
-                       int valueOfTurn=0;
-                       for(Set set:incomingBoard.getSetList())
-                           valueOfTurn+=set.getValue();
-                        if(valueOfTurn>=30)
-                        {
+                    } else {
+                        int valueOfTurn = 0;
+                        for (Set set : incomingBoard.getSetList())
+                            valueOfTurn += set.getValue();
+                        if (valueOfTurn >= 30) {
                             getCurrentPlayer().setIsOut(true);
                             board = incomingBoard;
                             System.out.println("VALID BOARD");
                             gameTurn();
-                        }
-                        else{
-                            if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()){
+                        } else {
+                            if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                                 getCurrentPlayer().setDeckOfTiles(copy);
                                 getCurrentPlayer().getDeckOfTiles().add(drawTile());
-
                                 System.out.println("VALID BOARD");
                                 gameTurn();
-                            }
-                            else System.out.println("Get more then 30");
+                            } else System.out.println("Get more then 30");
                         }
                     }
 
                 } else {
-                   getCurrentPlayer().setDeckOfTiles(copy);
+                    getCurrentPlayer().setDeckOfTiles(copy);
                     System.out.println("NOT VALID");
                 }
             } else {
@@ -207,22 +200,19 @@ public class GameEngine {
 
 
     private void generateTiles() {
-        boolean isJoker = true;
-        potOfTiles.add(new Tile(0, "", isJoker, "painted_tile_1.png"));
-        potOfTiles.add(new Tile(0, "", isJoker, "painted_tile_3.png"));
-        isJoker = false;
+        potOfTiles.add(new Tile(0, "", true, "painted_tile_1.png"));
+        potOfTiles.add(new Tile(0, "", true, "painted_tile_3.png"));
         for (int i = 1; i < 14; i++) {
-            potOfTiles.add(new Tile(i, "red", isJoker, "painted_tile_red_" + i + ".png"));
-
+            potOfTiles.add(new Tile(i, "red", false, "painted_tile_red_" + i + ".png"));
         }
         for (int i = 1; i < 14; i++) {
-            potOfTiles.add(new Tile(i, "blue", isJoker, "painted_tile_blue_" + i + ".png"));
+            potOfTiles.add(new Tile(i, "blue", false, "painted_tile_blue_" + i + ".png"));
         }
         for (int i = 1; i < 14; i++) {
-            potOfTiles.add(new Tile(i, "black", isJoker, "painted_tile_black_" + i + ".png"));
+            potOfTiles.add(new Tile(i, "black", false, "painted_tile_black_" + i + ".png"));
         }
         for (int i = 1; i < 14; i++) {
-            potOfTiles.add(new Tile(i, "yellow", isJoker, "painted_tile_yellow_" + i + ".png"));
+            potOfTiles.add(new Tile(i, "yellow", false, "painted_tile_yellow_" + i + ".png"));
         }
         for (int i = 0; i < potOfTiles.size(); i++) {
             potOfTilesCopy.add(potOfTiles.get(i));
@@ -234,11 +224,6 @@ public class GameEngine {
         return listOfPlayers.get(currentPlayerIndex);
     }
 
-    /**
-     * Add players to a list for looping in the game loop
-     *
-     * @TODO add usernames that come from the gui if needed
-     */
     public void addPlayers() {
         for (int i = 0; i < numberOfRealPlayers; i++) {
             listOfPlayers.add(new HumanPlayer("test"));
