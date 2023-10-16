@@ -174,7 +174,6 @@ public class StartScreensApplication extends Application {
 
     public void playerTurn() {
         if(drewATile){
-
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -186,9 +185,7 @@ public class StartScreensApplication extends Application {
         }
         try {
             int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
-
             ImageView[] playerBoard = getPlayerBoard();
-
             for (int i = 0; i < playerBoard.length; i++) {
                 if (i < numOfTiles) {
                     Image image = gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getImage();
@@ -198,7 +195,6 @@ public class StartScreensApplication extends Application {
                     playerBoard[i].setVisible(false);
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -225,8 +221,6 @@ public class StartScreensApplication extends Application {
                     content.putImage(imageView.getImage());
                     db.setContent(content);
                     dragSource.set(imageView);
-
-
                     event.consume();
                 });
 
