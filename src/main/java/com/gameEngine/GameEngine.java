@@ -207,10 +207,8 @@ public class GameEngine {
 
 
     private void generateTiles() {
-        boolean isJoker = true;
-        potOfTiles.add(new Tile(0, "", isJoker, "painted_tile_1.png"));
-        potOfTiles.add(new Tile(0, "", isJoker, "painted_tile_3.png"));
-        isJoker = false;
+    
+        boolean isJoker = false;
         for (int i = 1; i < 14; i++) {
             potOfTiles.add(new Tile(i, "red", isJoker, "painted_tile_red_" + i + ".png"));
 
@@ -227,6 +225,16 @@ public class GameEngine {
         for (int i = 0; i < potOfTiles.size(); i++) {
             potOfTilesCopy.add(potOfTiles.get(i));
         }
+        int a =potOfTiles.size();
+        for (int i = 0; i < a; i++) {
+            potOfTiles.add(potOfTiles.get(i));
+        }
+         isJoker = true;
+         System.out.println(potOfTiles.size());
+
+        potOfTiles.add(new Tile(0, "", isJoker, "painted_tile_1.png"));
+        potOfTiles.add(new Tile(0, "", isJoker, "painted_tile_3.png"));
+        System.out.println(potOfTiles.size());
 
     }
 
