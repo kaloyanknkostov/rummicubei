@@ -53,9 +53,12 @@ public class GameEngine {
         while (!isGameEnding()) {
             if (gameModel.isNextTurn()) {
                 gameModel.setNextTurn(false);
+                System.out.println("Image board:");
+                printBoard(gameModel.getTransferBoardViaImages());
+                System.out.println("---------------------------------------------------------------------------------");
                 ArrayList<Tile> copy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
                 Board incomingBoard = createBoardFromTiles(transformImagesToTiles());
-                System.out.println("Incoming board");
+                System.out.println("Incoming board (tiles)");
                 incomingBoard.printBoard();
                 if (incomingBoard.checkBoardValidity()) {
                     if (getCurrentPlayer().getIsOut()) {
@@ -219,11 +222,11 @@ public class GameEngine {
         for (int i = 0; i < potOfTiles.size(); i++) {
             potOfTilesCopy.add(potOfTiles.get(i));
         }
-        int a =potOfTiles.size();
+        int a = potOfTiles.size();
         for (int i = 0; i < a; i++) {
             potOfTiles.add(potOfTiles.get(i));
         }
-         isJoker = true;
+        isJoker = true;
 
         potOfTiles.add(new Tile(0, "", isJoker, "painted_tile_1.png"));
         potOfTiles.add(new Tile(0, "", isJoker, "painted_tile_3.png"));
@@ -249,6 +252,19 @@ public class GameEngine {
             for (int k = 0; k < 15; k++) {
                 listOfPlayers.get(listOfPlayers.size() - 1).drawTile(drawTile());
             }
+        }
+    }
+
+    public void printBoard(ArrayList<ArrayList<Image>> board) {
+        for (ArrayList<Image> row : board) {
+            for (Image img : row) {
+                if (img == null) {
+                    System.out.print("-");
+                } else {
+                    System.out.print("+");
+                }
+            }
+            System.out.println();
         }
     }
 

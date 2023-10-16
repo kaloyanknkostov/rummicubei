@@ -84,5 +84,6 @@ public class GameModel {
     public void setTransferBoardViaImages(ArrayList<ArrayList<Image>> transferBoardViaImages) {
         this.transferBoardViaImages = transferBoardViaImages;
     }
+
 }
 
