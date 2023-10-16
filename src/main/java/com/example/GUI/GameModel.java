@@ -14,10 +14,8 @@ public class GameModel {
     private Player currentPlayer;
     private boolean nextTurn = false;
     private ArrayList<ArrayList<Image>> transferBoardViaImages;
-
-    public Board getCurrentBoard() {
-        return currentBoard;
-    }
+    private Board currentBoard;
+    private Board boardToCheck;
 
     public void setCurrentBoard(Board currentBoard) {
         this.currentBoard = currentBoard;
@@ -33,8 +31,6 @@ public class GameModel {
         this.boardToCheck = boardToCheck;
     }
 
-    private Board currentBoard;
-    private Board boardToCheck;
     public boolean isNextTurn() {
         return nextTurn;
     }
@@ -95,5 +91,6 @@ public class GameModel {
     public void setTransferBoardViaImages(ArrayList<ArrayList<Image>> transferBoardViaImages) {
         this.transferBoardViaImages = transferBoardViaImages;
     }
+
 }
 

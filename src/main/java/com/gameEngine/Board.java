@@ -34,4 +34,22 @@ public class Board {
     public void addSet(Set set) {
     setList.add(set);
     }
+
+    public void printBoard() {
+        System.out.println("----- BOARD -----");
+        for (int i = 0; i < setList.size(); i++) {
+            System.out.println("Set " + (i + 1) + ": ");
+            for (Tile tile : setList.get(i).getTilesList()) {
+                System.out.println(tile);
+            }
+            System.out.println("-----------------");
+        }
+    }
+    public Board copy() {
+        Board newBoard = new Board();
+        for (Set set : this.setList) {
+            newBoard.addSet(set.copy());
+        }
+        return newBoard;
+    }
 }

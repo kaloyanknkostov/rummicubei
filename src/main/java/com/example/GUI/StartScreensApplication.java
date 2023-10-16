@@ -19,10 +19,12 @@ import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.*;
+
 public class StartScreensApplication extends Application {
     @FXML
     public TextField firstPlayerName, secondPlayerName, thirdPlayerName, fourthPlayerName;
@@ -48,7 +50,7 @@ public class StartScreensApplication extends Application {
     private final GameModel gameModel = GameModel.getInstance();
     private final ObjectProperty<ImageView> dragSource = new SimpleObjectProperty<>();
     private final StartScreenHelper helper = StartScreenHelper.getInstance();
-    java.util.logging.Logger logger =  java.util.logging.Logger.getLogger(this.getClass().getName());
+    java.util.logging.Logger logger = java.util.logging.Logger.getLogger(this.getClass().getName());
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -63,7 +65,6 @@ public class StartScreensApplication extends Application {
     public StartScreensApplication() {
     }
 
-    @SuppressWarnings("unused")
     public static StartScreensApplication getInstance() {
         if (instance == null) {
             instance = new StartScreensApplication();
@@ -89,22 +90,26 @@ public class StartScreensApplication extends Application {
 
         gameModel.setTransferBoardViaImages(transformIntoBoard());
     }
-    public ArrayList<ArrayList<Image>>  transformIntoBoard()
-    {
-        int counter=0;
-        ImageView[] imageViews=getBoard();
-        ArrayList<ArrayList<Image>> images=new ArrayList<>();
-        ArrayList<Image> temp =new ArrayList<>();
-        for (int i = 0; i <imageViews.length ; i++) {
+
+    public ArrayList<ArrayList<Image>> transformIntoBoard() {
+        ImageView[] imageViews = getBoard();
+        ArrayList<ArrayList<Image>> images = new ArrayList<>();
+        ArrayList<Image> temp = new ArrayList<>();
+
+        for (int i = 0; i < imageViews.length; i++) {
             temp.add(imageViews[i].getImage());
-            if(i%16==0 && i>0)
-           {
-              images.add(temp);
-              temp=new ArrayList<>();
-           }
+            if ((i + 1) % 17 == 0) {  // Split every 17 items
+                images.add(temp);
+                temp = new ArrayList<>();
+            }
         }
+        if (!temp.isEmpty()) {
+            images.add(temp);
+        }
+
         return images;
     }
+
 
     public void handleMultiplayerAction(ActionEvent event) {
         switchScene("SelectPlayerScene.fxml", event);
@@ -186,7 +191,7 @@ public class StartScreensApplication extends Application {
 
             for (int i = 0; i < playerBoard.length; i++) {
                 if (i < numOfTiles) {
-                    Image image= gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getImage();
+                    Image image = gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getImage();
                     playerBoard[i].setImage(image);
                     playerBoard[i].setVisible(true);
                 } else {
@@ -254,21 +259,6 @@ public class StartScreensApplication extends Application {
     }
 
 
-
-    private void updateBoard(){
-        ImageView[] entireBoard = getEntireBoard();
-        for (ImageView imageView : entireBoard) {
-            if (imageView != null) {
-                int position = findPositionInEntireBoard(imageView);
-                if (position != -1) {
-                    Tile tile = gameModel.getCurrentPlayer().getDeckOfTiles().get(position);
-                    if (tile != null) {
-                        imageView.setImage(new Image(tile.getPicture()));
-                    }
-                }
-            }
-        }
-    }
     private int findPositionInEntireBoard(ImageView imageView) {
         ImageView[] entireBoard = getEntireBoard();
         for (int i = 0; i < entireBoard.length; i++) {
