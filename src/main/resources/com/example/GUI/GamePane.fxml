@@ -342,7 +342,7 @@
             <ImageView fx:id="p00" fitHeight="76.0" fitWidth="51.0" pickOnBounds="true" preserveRatio="true"/>
             <ImageView fx:id="p10" fitHeight="76.0" fitWidth="51.0" pickOnBounds="true" preserveRatio="true"
                        GridPane.columnIndex="1"/>
-            <ImageView fx:id="p20" fitHeight="87.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true"
+            <ImageView fx:id="p20" fitHeight="76.0" fitWidth="51.0" pickOnBounds="true" preserveRatio="true"
                        GridPane.columnIndex="2"/>
             <ImageView fx:id="p30" fitHeight="76.0" fitWidth="51.0" pickOnBounds="true" preserveRatio="true"
                        GridPane.columnIndex="3"/>

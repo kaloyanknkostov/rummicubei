@@ -68,7 +68,6 @@ public class GameEngine {
                         if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                             getCurrentPlayer().setDeckOfTiles(copy);
                             getCurrentPlayer().getDeckOfTiles().add(currentDraw);
-                            System.out.println("testinf" );
                             System.out.println(currentDraw.getPicture());
                             getThisDrawnTile();
                         }
@@ -101,7 +100,6 @@ public class GameEngine {
                             if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                                 getCurrentPlayer().setDeckOfTiles(copy);
                                 getCurrentPlayer().getDeckOfTiles().add(currentDraw);
-                                System.out.println("testinf" );
                                 System.out.println(currentDraw.getPicture());
                                 getThisDrawnTile();
                                 System.out.println("VALID BOARD");
