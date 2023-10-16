@@ -21,7 +21,6 @@ import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -35,7 +34,7 @@ public class StartScreensApplication extends Application {
     @FXML
     private ImageView DrawTile;
     @FXML
-    private ImageView p00, p01, p10, p11, p20, p21, p30, p31, p40, p41, p50, p51, p60, p61, p70, p71, p80, p81, p90, p91,p100,p101,p110,p111,p120,p121;
+    private ImageView p00, p01, p10, p11, p20, p21, p30, p31, p40, p41, p50, p51, p60, p61, p70, p71, p80, p81, p90, p91, p100, p101, p110, p111, p120, p121;
     @FXML
     private ImageView B000, B001, B002, B003, B004, B005, B006, B007, B008, B009, B010, B011, B012, B013, B014, B015, B016,
             B100, B101, B102, B103, B104, B105, B106, B107, B108, B109, B110, B111, B112, B113, B114, B115, B116,
@@ -86,9 +85,7 @@ public class StartScreensApplication extends Application {
     }
 
     public void handleNextTurn() {
-
         gameModel.setNextTurn(true);
-
         gameModel.setTransferBoardViaImages(transformIntoBoard());
     }
 
@@ -96,7 +93,6 @@ public class StartScreensApplication extends Application {
         ImageView[] imageViews = getBoard();
         ArrayList<ArrayList<Image>> images = new ArrayList<>();
         ArrayList<Image> temp = new ArrayList<>();
-
         for (int i = 0; i < imageViews.length; i++) {
             temp.add(imageViews[i].getImage());
             if ((i + 1) % 17 == 0) {  // Split every 17 items
@@ -163,7 +159,6 @@ public class StartScreensApplication extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(sceneName));
             root = loader.load();
             activeController = loader.getController(); // set the active controller
-
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
@@ -173,7 +168,7 @@ public class StartScreensApplication extends Application {
     }
 
     public void playerTurn() {
-        if(drewATile){
+        if (drewATile) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -200,10 +195,12 @@ public class StartScreensApplication extends Application {
         }
         initializeDragAndDrop();
     }
+
     private boolean drewATile = false;
-    public void handleDrawTile(){
+
+    public void handleDrawTile() {
         ImageView draw = getDrawImageView();
-        Tile drawnTile =  gameModel.getDrawTile();
+        Tile drawnTile = gameModel.getDrawTile();
         draw.setImage(new Image(drawnTile.getPicture()));
         draw.setVisible(true);
         drewATile = true;
@@ -212,7 +209,6 @@ public class StartScreensApplication extends Application {
 
     private void initializeDragAndDrop() {
         ImageView[] entireBoard = getEntireBoard();
-
         for (ImageView imageView : entireBoard) {
             if (imageView != null) {
                 imageView.setOnDragDetected(event -> {
@@ -223,14 +219,12 @@ public class StartScreensApplication extends Application {
                     dragSource.set(imageView);
                     event.consume();
                 });
-
                 imageView.setOnDragOver(event -> {
                     if (event.getGestureSource() != imageView && event.getDragboard().hasImage()) {
                         event.acceptTransferModes(TransferMode.MOVE);
                     }
                     event.consume();
                 });
-
                 imageView.setOnDragDropped(event -> {
                     ImageView source = dragSource.get();
                     if (source != null && source != imageView) {
@@ -245,14 +239,13 @@ public class StartScreensApplication extends Application {
                     }
                     event.consume();
                 });
-
                 imageView.setOnDragDone(DragEvent::consume);
             }
         }
     }
 
-    public void setMessageLabel(String player, String extraMessage){
-        String text = "Current Player:" + player + "\n" + extraMessage;
+    public void setMessageLabel(String player, String extraMessage) {
+        String text = "Current Player: " + player + "\n" + extraMessage;
         Platform.runLater(() -> {
             activeController.messageLabel.setText(text);
         });
@@ -307,7 +300,8 @@ public class StartScreensApplication extends Application {
                 activeController.B713, activeController.B714, activeController.B715, activeController.B716
         };
     }
-    private ImageView getDrawImageView(){
+
+    private ImageView getDrawImageView() {
         return activeController.DrawTile;
     }
 

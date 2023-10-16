@@ -26,12 +26,11 @@ public class GameEngine {
         guiThread.start();
         while (!engine.gameModel.isStartGame()) {
             try {
-                Thread.sleep(100);  // waits for 100 milliseconds
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        //set up for game
         engine.numberOfRealPlayers = engine.gameModel.getNumberOfPlayers();
         engine.numberOfBots = 0;
         engine.board = new Board();
@@ -43,6 +42,7 @@ public class GameEngine {
 
     public void gameLoop() {
         addPlayers();
+        StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
         gameModel.setCurrentPlayer(getCurrentPlayer());
         StartScreensApplication.activeController.playerTurn();
         gameModel.setCurrentBoard(board);
@@ -121,7 +121,7 @@ public class GameEngine {
 
     private Tile getThisDrawnTile() {
         Tile draw = drawTile();
-        gameModel.setDrawtile(draw);
+        gameModel.setDrawable(draw);
         currentDraw = draw;
         System.out.println(draw.getPicture());
         return draw;

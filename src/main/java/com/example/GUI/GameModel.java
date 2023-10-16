@@ -14,22 +14,11 @@ public class GameModel {
     private Player currentPlayer;
     private boolean nextTurn = false;
     private ArrayList<ArrayList<Image>> transferBoardViaImages;
-    private Board currentBoard;
-    private Board boardToCheck;
     public ArrayList<String> playerNames = new ArrayList();
     public void setCurrentBoard(Board currentBoard) {
-        this.currentBoard = currentBoard;
-    }
-
-    public Board getBoardToCheck() {
-        return boardToCheck;
     }
 
     public Tile drawTile;
-
-    public void setBoardToCheck(Board boardToCheck) {
-        this.boardToCheck = boardToCheck;
-    }
 
     public boolean isNextTurn() {
         return nextTurn;
@@ -38,7 +27,7 @@ public class GameModel {
     public Tile getDrawTile(){
         return this.drawTile;
     }
-    public void setDrawtile(Tile t){
+    public void setDrawable(Tile t){
         this.drawTile = t;
     }
 
