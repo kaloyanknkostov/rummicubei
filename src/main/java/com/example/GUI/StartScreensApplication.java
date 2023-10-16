@@ -186,8 +186,13 @@ public class StartScreensApplication extends Application {
     }
 
     private void initializeDragAndDrop() {
+        ArrayList<ImageView> tilesMovedFromDeck = new ArrayList<ImageView>();
+
         ImageView[] playerBoard = getPlayerBoard();
         ImageView[] entireBoard = getEntireBoard();
+        for (ImageView x : playerBoard) {
+                        tilesMovedFromDeck.add(x);}
+                    System.out.println("checkindeqfg");
 
         for (ImageView imageView : entireBoard) {
             if (imageView != null) {
@@ -210,19 +215,70 @@ public class StartScreensApplication extends Application {
                 });
 
                 imageView.setOnDragDropped(event -> {
+                    /*boolean destplayerstile=false;
+                    boolean legalmove=true;
+                    boolean playerstile=false;
                     ImageView source = dragSource.get();
-                    if (source != null && source != imageView) {
+                    boolean destinationIsPlayerboard =false;
+                    System.out.println("checking");
+                    boolean fromPlayerDeck=false;
+                    for (ImageView x : playerBoard) {
+                        tilesMovedFromDeck.add(x);
+                        if(x.getId()==imageView.getId()){
+                            destinationIsPlayerboard=true;
+                        }
+                        if(source.getId()==x.getId()){
+                            fromPlayerDeck =true;
+                            playerstile=true;
+                        }
+                    }
+                    for (ImageView x : tilesMovedFromDeck) {
+                        if(x.getId()==source.getId()){
+                            playerstile=true;
+                        }
+                        if(x.getId()==imageView.getId()){
+                            destplayerstile=true;
+                        }
+                    }
+                    if((fromPlayerDeck&&(imageView.getImage()!=null)&&(!destplayerstile))||(destinationIsPlayerboard &&!playerstile)){
+                        legalmove=false;
+                    }
+                
+                        */
+                    ImageView source = dragSource.get();
+                    boolean legalmove=true;
+                    boolean noneedforswap=false;;
+                        for (ImageView a : playerBoard) {
+                            if((source.getId()==a.getId())&&(!tilesMovedFromDeck.contains(imageView)&&imageView.getImage()!=null)){
+                                legalmove=false;
+                            }
+                            if((imageView.getId()==a.getId())&&!tilesMovedFromDeck.contains(source)){
+                                legalmove=false;
+                            }
+                        }
+                        if(tilesMovedFromDeck.contains(imageView)&&tilesMovedFromDeck.contains(source)){
+                            noneedforswap=true;
+                        }
+
+                    if (source != null && source != imageView &&legalmove) {
+                        if(!noneedforswap){
+                        if(tilesMovedFromDeck.contains(source)){
+                                tilesMovedFromDeck.remove(source);
+                                tilesMovedFromDeck.add(imageView);
+                            }else if(tilesMovedFromDeck.contains(imageView)){
+                                tilesMovedFromDeck.remove(imageView);
+                                tilesMovedFromDeck.add(source);
+                            }}
                         Image tempImage = imageView.getImage();
                         imageView.setImage(source.getImage());
                         source.setImage(tempImage);
-
                         event.setDropCompleted(true);
                         dragSource.set(null);
                     } else {
                         event.setDropCompleted(false);
                     }
                     event.consume();
-                });
+            });
 
                 imageView.setOnDragDone(DragEvent::consume);
             }
