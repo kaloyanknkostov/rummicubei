@@ -9,69 +9,82 @@ import java.util.ArrayList;
 
 public class GameEngine {
     private final GameModel gameModel = GameModel.getInstance();
-    private final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GameEngine.class.getName());
-    private final ArrayList<Tile> potOfTiles = new ArrayList<Tile>();
+    private final ArrayList<Tile> potOfTiles = new ArrayList<>();
     private final ArrayList<Tile> potOfTilesCopy = new ArrayList<>();
-    private final ArrayList<Player> listOfPlayers = new ArrayList<Player>();
+    private final ArrayList<Player> listOfPlayers = new ArrayList<>();
     private Board board;
     private int numberOfRealPlayers;
     private int numberOfBots;
     private boolean endGame;
     private int currentPlayerIndex = 0;
 
+
     public static void main(String[] args) {
         GameEngine engine = new GameEngine();
 
-        Thread guiThread = new Thread(() -> {
-            StartScreensApplication.launch(StartScreensApplication.class);
-        });
+        Thread guiThread = new Thread(() -> StartScreensApplication.launch(StartScreensApplication.class));
         guiThread.start();
         while (!engine.gameModel.isStartGame()) {
             try {
-                Thread.sleep(1000);  // waits for 100 milliseconds
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        //set up for game
         engine.numberOfRealPlayers = engine.gameModel.getNumberOfPlayers();
         engine.numberOfBots = 0;
         engine.board = new Board();
-        engine.endGame = false;
         engine.generateTiles();
         engine.gameLoop();
     }
 
+    private Tile currentDraw;
 
     public void gameLoop() {
-        //Sets up the gameloop
         addPlayers();
+        StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
         gameModel.setCurrentPlayer(getCurrentPlayer());
         StartScreensApplication.activeController.playerTurn();
         gameModel.setCurrentBoard(board);
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
+        currentDraw = getThisDrawnTile();
         while (!isGameEnding()) {
             if (gameModel.isNextTurn()) {
+                System.out.println("the last board was:");
                 gameModel.setNextTurn(false);
+                System.out.println("Image board:");
+                printBoard(gameModel.getTransferBoardViaImages());
+                System.out.println("---------------------------------------------------------------------------------");
                 ArrayList<Tile> copy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
                 Board incomingBoard = createBoardFromTiles(transformImagesToTiles());
-                System.out.println("Incoming board");
+                System.out.println("Incoming board (tiles)");
                 incomingBoard.printBoard();
                 if (incomingBoard.checkBoardValidity()) {
                     if (getCurrentPlayer().getIsOut()) {
                         if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                             getCurrentPlayer().setDeckOfTiles(copy);
-                            getCurrentPlayer().getDeckOfTiles().add(drawTile());
+                            getCurrentPlayer().getDeckOfTiles().add(currentDraw);
+                            System.out.println(currentDraw.getPicture());
+                            getThisDrawnTile();
                         }
-
                         board = incomingBoard;
                         System.out.println("VALID BOARD");
                         gameTurn();
                     } else {
                         int valueOfTurn = 0;
                         for (Set set : incomingBoard.getSetList())
-                            valueOfTurn += set.getValue();
-                        if (valueOfTurn >= 30) {
+                            if (!board.getSetList().contains(set))
+                                valueOfTurn += set.getValue();
+                        boolean gotOut = true;
+                        for (Set set : board.getSetList()) {
+                            if (!incomingBoard.getSetList().contains(set)) {
+                                gotOut = false;
+                                StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
+                                System.out.println("You can't the tiles in the board!");
+                                break;
+                            }
+                        }
+                        if (valueOfTurn >= 30 && gotOut) {
                             getCurrentPlayer().setIsOut(true);
                             board = incomingBoard;
                             System.out.println("VALID BOARD");
@@ -79,27 +92,39 @@ public class GameEngine {
                         } else {
                             if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                                 getCurrentPlayer().setDeckOfTiles(copy);
-                                getCurrentPlayer().getDeckOfTiles().add(drawTile());
-
+                                getCurrentPlayer().getDeckOfTiles().add(currentDraw);
+                                System.out.println(currentDraw.getPicture());
+                                getThisDrawnTile();
                                 System.out.println("VALID BOARD");
                                 gameTurn();
-                            } else System.out.println("Get more then 30");
+                            } else {
+                                System.out.println("Get more then 30");
+                                StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You need to get more then 30 points!");
+                            }
                         }
                     }
-
                 } else {
                     getCurrentPlayer().setDeckOfTiles(copy);
+                    StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "Not a valid board");
                     System.out.println("NOT VALID");
                 }
             } else {
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(200);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         }
         System.out.println("GAME FINISHED");
+    }
+
+    private Tile getThisDrawnTile() {
+        Tile draw = drawTile();
+        gameModel.setDrawable(draw);
+        currentDraw = draw;
+        System.out.println(draw.getPicture());
+        return draw;
     }
 
     private void gameTurn() {
@@ -110,6 +135,11 @@ public class GameEngine {
         }
         gameModel.setCurrentPlayer(getCurrentPlayer());
         StartScreensApplication.activeController.playerTurn();
+        for (String s : gameModel.playerNames) {
+            System.out.println(s);
+        }
+        System.out.println("changing that to the player index: " + currentPlayerIndex);
+        StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
         gameModel.setCurrentBoard(board);
 
     }
@@ -216,17 +246,14 @@ public class GameEngine {
         for (int i = 1; i < 14; i++) {
             potOfTiles.add(new Tile(i, "yellow", false, "painted_tile_yellow_" + i + ".png"));
         }
-        for (int i = 0; i < potOfTiles.size(); i++) {
-            potOfTilesCopy.add(potOfTiles.get(i));
-        }
-        int a =potOfTiles.size();
+        potOfTilesCopy.addAll(potOfTiles);
+        int a = potOfTiles.size();
         for (int i = 0; i < a; i++) {
             potOfTiles.add(potOfTiles.get(i));
         }
-         isJoker = true;
 
-        potOfTiles.add(new Tile(0, "", isJoker, "painted_tile_1.png"));
-        potOfTiles.add(new Tile(0, "", isJoker, "painted_tile_3.png"));
+        potOfTiles.add(new Tile(0, "", true, "painted_tile_1.png"));
+        potOfTiles.add(new Tile(0, "", true, "painted_tile_3.png"));
 
     }
 
@@ -249,6 +276,19 @@ public class GameEngine {
             for (int k = 0; k < 15; k++) {
                 listOfPlayers.get(listOfPlayers.size() - 1).drawTile(drawTile());
             }
+        }
+    }
+
+    public void printBoard(ArrayList<ArrayList<Image>> board) {
+        for (ArrayList<Image> row : board) {
+            for (Image img : row) {
+                if (img == null) {
+                    System.out.print("-");
+                } else {
+                    System.out.print("+");
+                }
+            }
+            System.out.println();
         }
     }
 

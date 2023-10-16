@@ -2,6 +2,7 @@ package com.example.GUI;
 
 import com.gameEngine.Board;
 import com.gameEngine.Player;
+import com.gameEngine.Tile;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
@@ -13,28 +14,23 @@ public class GameModel {
     private Player currentPlayer;
     private boolean nextTurn = false;
     private ArrayList<ArrayList<Image>> transferBoardViaImages;
-
-    public Board getCurrentBoard() {
-        return currentBoard;
-    }
-
+    public ArrayList<String> playerNames = new ArrayList();
     public void setCurrentBoard(Board currentBoard) {
-        this.currentBoard = currentBoard;
     }
 
-    public Board getBoardToCheck() {
-        return boardToCheck;
-    }
+    public Tile drawTile;
 
-    public void setBoardToCheck(Board boardToCheck) {
-        this.boardToCheck = boardToCheck;
-    }
-
-    private Board currentBoard;
-    private Board boardToCheck;
     public boolean isNextTurn() {
         return nextTurn;
     }
+
+    public Tile getDrawTile(){
+        return this.drawTile;
+    }
+    public void setDrawable(Tile t){
+        this.drawTile = t;
+    }
+
 
     public void setNextTurn(boolean nextTurn) {
         this.nextTurn = nextTurn;
@@ -84,5 +80,6 @@ public class GameModel {
     public void setTransferBoardViaImages(ArrayList<ArrayList<Image>> transferBoardViaImages) {
         this.transferBoardViaImages = transferBoardViaImages;
     }
+
 }
 

@@ -1,6 +1,8 @@
 package com.example.GUI;
 
 import com.gameEngine.Tile;
+import javafx.application.Platform;
+import javafx.scene.control.Label;
 import javafx.scene.input.DragEvent;
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
@@ -22,14 +24,17 @@ import javafx.scene.image.ImageView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.logging.*;
+
 public class StartScreensApplication extends Application {
     @FXML
     public TextField firstPlayerName, secondPlayerName, thirdPlayerName, fourthPlayerName;
+    public Label messageLabel;
     @FXML
     private ComboBox<String> playerChoiceComboBox;
     @FXML
-    private ImageView p00, p01, p10, p11, p20, p21, p30, p31, p40, p41, p50, p51, p60, p61, p70, p71, p80, p81, p90, p91;
+    private ImageView DrawTile;
+    @FXML
+    private ImageView p00, p01, p10, p11, p20, p21, p30, p31, p40, p41, p50, p51, p60, p61, p70, p71, p80, p81, p90, p91, p100, p101, p110, p111, p120, p121;
     @FXML
     private ImageView B000, B001, B002, B003, B004, B005, B006, B007, B008, B009, B010, B011, B012, B013, B014, B015, B016,
             B100, B101, B102, B103, B104, B105, B106, B107, B108, B109, B110, B111, B112, B113, B114, B115, B116,
@@ -46,7 +51,6 @@ public class StartScreensApplication extends Application {
     private final GameModel gameModel = GameModel.getInstance();
     private final ObjectProperty<ImageView> dragSource = new SimpleObjectProperty<>();
     private final StartScreenHelper helper = StartScreenHelper.getInstance();
-    java.util.logging.Logger logger =  java.util.logging.Logger.getLogger(this.getClass().getName());
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -61,7 +65,6 @@ public class StartScreensApplication extends Application {
     public StartScreensApplication() {
     }
 
-    @SuppressWarnings("unused")
     public static StartScreensApplication getInstance() {
         if (instance == null) {
             instance = new StartScreensApplication();
@@ -85,22 +88,25 @@ public class StartScreensApplication extends Application {
         gameModel.setNextTurn(true);
         gameModel.setTransferBoardViaImages(transformIntoBoard());
     }
-    public ArrayList<ArrayList<Image>>  transformIntoBoard()
-    {
-        int counter=0;
-        ImageView[] imageViews=getBoard();
-        ArrayList<ArrayList<Image>> images=new ArrayList<>();
-        ArrayList<Image> temp =new ArrayList<>();
-        for (int i = 0; i <imageViews.length ; i++) {
+
+    public ArrayList<ArrayList<Image>> transformIntoBoard() {
+        ImageView[] imageViews = getBoard();
+        ArrayList<ArrayList<Image>> images = new ArrayList<>();
+        ArrayList<Image> temp = new ArrayList<>();
+        for (int i = 0; i < imageViews.length; i++) {
             temp.add(imageViews[i].getImage());
-            if(i%16==0 && i>0)
-           {
-              images.add(temp);
-              temp=new ArrayList<>();
-           }
+            if ((i + 1) % 17 == 0) {  // Split every 17 items
+                images.add(temp);
+                temp = new ArrayList<>();
+            }
         }
+        if (!temp.isEmpty()) {
+            images.add(temp);
+        }
+
         return images;
     }
+
 
     public void handleMultiplayerAction(ActionEvent event) {
         switchScene("SelectPlayerScene.fxml", event);
@@ -153,7 +159,6 @@ public class StartScreensApplication extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(sceneName));
             root = loader.load();
             activeController = loader.getController(); // set the active controller
-
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
@@ -163,26 +168,43 @@ public class StartScreensApplication extends Application {
     }
 
     public void playerTurn() {
+        if (drewATile) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            ImageView draw = getDrawImageView();
+            draw.setVisible(false);
+            drewATile = false;
+        }
         try {
             int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
-
             ImageView[] playerBoard = getPlayerBoard();
-            ImageView[] board = getBoard();
-
             for (int i = 0; i < playerBoard.length; i++) {
                 if (i < numOfTiles) {
-                    Image image= gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getImage();
+                    Image image = gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getImage();
                     playerBoard[i].setImage(image);
                     playerBoard[i].setVisible(true);
                 } else {
                     playerBoard[i].setVisible(false);
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
         initializeDragAndDrop();
+    }
+
+    private boolean drewATile = false;
+
+    public void handleDrawTile() {
+        ImageView draw = getDrawImageView();
+        Tile drawnTile = gameModel.getDrawTile();
+        draw.setImage(new Image(drawnTile.getPicture()));
+        draw.setVisible(true);
+        drewATile = true;
+        handleNextTurn();
     }
 
     private void initializeDragAndDrop() {
@@ -202,18 +224,14 @@ public class StartScreensApplication extends Application {
                     content.putImage(imageView.getImage());
                     db.setContent(content);
                     dragSource.set(imageView);
-
-
                     event.consume();
                 });
-
                 imageView.setOnDragOver(event -> {
                     if (event.getGestureSource() != imageView && event.getDragboard().hasImage()) {
                         event.acceptTransferModes(TransferMode.MOVE);
                     }
                     event.consume();
                 });
-
                 imageView.setOnDragDropped(event -> {
                     /*boolean destplayerstile=false;
                     boolean legalmove=true;
@@ -285,39 +303,21 @@ public class StartScreensApplication extends Application {
         }
     }
 
-
-
-    private void updateBoard(){
-        ImageView[] entireBoard = getEntireBoard();
-        for (ImageView imageView : entireBoard) {
-            if (imageView != null) {
-                int position = findPositionInEntireBoard(imageView);
-                if (position != -1) {
-                    Tile tile = gameModel.getCurrentPlayer().getDeckOfTiles().get(position);
-                    if (tile != null) {
-                        imageView.setImage(new Image(tile.getPicture()));
-                    }
-                }
-            }
-        }
+    public void setMessageLabel(String player, String extraMessage) {
+        String text = "Current Player: " + player + "\n" + extraMessage;
+        Platform.runLater(() -> {
+            activeController.messageLabel.setText(text);
+        });
     }
-    private int findPositionInEntireBoard(ImageView imageView) {
-        ImageView[] entireBoard = getEntireBoard();
-        for (int i = 0; i < entireBoard.length; i++) {
-            if (entireBoard[i] == imageView) {
-                return i;
-            }
-        }
-        return -1; // return -1 if the imageView is not found
-    }
-
 
     private ImageView[] getPlayerBoard() {
         return new ImageView[]{activeController.p00, activeController.p01, activeController.p10, activeController.p11,
                 activeController.p20, activeController.p21, activeController.p30, activeController.p31,
                 activeController.p40, activeController.p41, activeController.p50, activeController.p51,
                 activeController.p60, activeController.p61, activeController.p70, activeController.p71,
-                activeController.p80, activeController.p81, activeController.p90, activeController.p91
+                activeController.p80, activeController.p81, activeController.p90, activeController.p91,
+                activeController.p100, activeController.p101, activeController.p110, activeController.p111,
+                activeController.p120, activeController.p121
         };
     }
 
@@ -360,6 +360,10 @@ public class StartScreensApplication extends Application {
         };
     }
 
+    private ImageView getDrawImageView() {
+        return activeController.DrawTile;
+    }
+
     private ImageView[] getEntireBoard() {
         return new ImageView[]{
                 activeController.p00, activeController.p01, activeController.p10, activeController.p11,
@@ -400,7 +404,9 @@ public class StartScreensApplication extends Application {
                 activeController.B701, activeController.B702, activeController.B703, activeController.B704,
                 activeController.B705, activeController.B706, activeController.B707, activeController.B708,
                 activeController.B709, activeController.B710, activeController.B711, activeController.B712,
-                activeController.B713, activeController.B714, activeController.B715, activeController.B716
+                activeController.B713, activeController.B714, activeController.B715, activeController.B716,
+                activeController.p100, activeController.p101, activeController.p110, activeController.p111,
+                activeController.p120, activeController.p121
         };
     }
 }
