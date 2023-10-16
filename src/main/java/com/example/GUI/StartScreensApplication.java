@@ -33,7 +33,7 @@ public class StartScreensApplication extends Application {
     @FXML
     private ImageView DrawTile;
     @FXML
-    private ImageView p00, p01, p10, p11, p20, p21, p30, p31, p40, p41, p50, p51, p60, p61, p70, p71, p80, p81, p90, p91;
+    private ImageView p00, p01, p10, p11, p20, p21, p30, p31, p40, p41, p50, p51, p60, p61, p70, p71, p80, p81, p90, p91,p100,p101,p110,p111,p120,p121;
     @FXML
     private ImageView B000, B001, B002, B003, B004, B005, B006, B007, B008, B009, B010, B011, B012, B013, B014, B015, B016,
             B100, B101, B102, B103, B104, B105, B106, B107, B108, B109, B110, B111, B112, B113, B114, B115, B116,
@@ -275,7 +275,9 @@ public class StartScreensApplication extends Application {
                 activeController.p20, activeController.p21, activeController.p30, activeController.p31,
                 activeController.p40, activeController.p41, activeController.p50, activeController.p51,
                 activeController.p60, activeController.p61, activeController.p70, activeController.p71,
-                activeController.p80, activeController.p81, activeController.p90, activeController.p91
+                activeController.p80, activeController.p81, activeController.p90, activeController.p91,
+                activeController.p100, activeController.p101, activeController.p110, activeController.p111,
+                activeController.p120, activeController.p121
         };
     }
 
@@ -361,7 +363,9 @@ public class StartScreensApplication extends Application {
                 activeController.B701, activeController.B702, activeController.B703, activeController.B704,
                 activeController.B705, activeController.B706, activeController.B707, activeController.B708,
                 activeController.B709, activeController.B710, activeController.B711, activeController.B712,
-                activeController.B713, activeController.B714, activeController.B715, activeController.B716
+                activeController.B713, activeController.B714, activeController.B715, activeController.B716,
+                activeController.p100, activeController.p101, activeController.p110, activeController.p111,
+                activeController.p120, activeController.p121
         };
     }
 }
