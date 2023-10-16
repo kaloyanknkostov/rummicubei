@@ -224,11 +224,9 @@ public class GameEngine {
             potOfTiles.add(potOfTiles.get(i));
         }
          isJoker = true;
-         System.out.println(potOfTiles.size());
 
         potOfTiles.add(new Tile(0, "", isJoker, "painted_tile_1.png"));
         potOfTiles.add(new Tile(0, "", isJoker, "painted_tile_3.png"));
-        System.out.println(potOfTiles.size());
 
     }
 
