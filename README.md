@@ -1,6 +1,6 @@
 # rummicubei
 The board game Rummikub made in java for the purpose of AI training Maastricht University DACS 2 year Project.
-Done by group 8:
+Done by group 8: <br />
 -Frederik Grüneberg <br />
 -Jakub Suszwedyk <br />
 -Kees van den Eijnden <br />
