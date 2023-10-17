@@ -9,6 +9,10 @@ Done by group 8: <br />
 -Konrad Paszyński <br />
 -Julius Verschoof <br />
 
+## How ot run
+
+To run our code please run the main method from the GameEngine class.
+
 ## Structure
 
 - `OurCode`: The folder containing all our code.
