@@ -15,7 +15,7 @@ Done by group 8: <br />
 - git
 ## How to run
 
-To run our code please run the main method from the GameEngine class or.
+To run our code please run the main method from the GameEngine class.
 
 ## Structure
 
