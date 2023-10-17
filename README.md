@@ -9,10 +9,20 @@ Done by group 8: <br />
 -Konrad Paszyński <br />
 -Julius Verschoof <br />
 
+## Prerequisites
+- java
+- maven
+- git
 ## How to run
 
-To run our code please run the main method from the GameEngine class.
+To run our code please run the main method from the GameEngine class or.
 
+1. Clone this repository and move into a new directory.
+  $ git clone https://github.com/kaloyanknkostov/rummicubei.git
+  $ cd rummicubei
+2. build the application
+   $ mvn package
+  
 ## Structure
 
 - `OurCode`: The folder containing all our code.
