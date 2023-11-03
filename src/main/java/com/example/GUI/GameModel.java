@@ -1,11 +1,61 @@
 package com.example.GUI;
 
+import com.gameEngine.Board;
+import com.gameEngine.Player;
+import com.gameEngine.Tile;
+import javafx.scene.image.Image;
+
+import java.util.ArrayList;
+
 public class GameModel {
     private static GameModel instance;
-
+    private boolean startGame = false;
     private int numberOfPlayers = 0;
-    private String[] players;
-    private GameModel() {}
+    private Player currentPlayer;
+    private boolean nextTurn = false;
+    private ArrayList<ArrayList<Image>> transferBoardViaImages;
+    public ArrayList<String> playerNames = new ArrayList();
+    public void setCurrentBoard(Board currentBoard) {
+    }
+
+    public Tile drawTile;
+
+    public boolean isNextTurn() {
+        return nextTurn;
+    }
+
+    public Tile getDrawTile(){
+        return this.drawTile;
+    }
+    public void setDrawable(Tile t){
+        this.drawTile = t;
+    }
+
+
+    public void setNextTurn(boolean nextTurn) {
+        this.nextTurn = nextTurn;
+    }
+
+    @SuppressWarnings("ClassEscapesDefinedScope")
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    @SuppressWarnings("ClassEscapesDefinedScope")
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    private GameModel() {
+    }
+
+    public boolean isStartGame() {
+        return startGame;
+    }
+
+    public void setStartGame(boolean startGame) {
+        this.startGame = startGame;
+    }
 
     public static GameModel getInstance() {
         if (instance == null) {
@@ -14,13 +64,6 @@ public class GameModel {
         return instance;
     }
 
-    public String[] getPlayers() {
-        return players;
-    }
-
-    public void setPlayers(String[] players) {
-        this.players = players;
-    }
 
     public int getNumberOfPlayers() {
         return numberOfPlayers;
@@ -29,5 +72,14 @@ public class GameModel {
     public void setNumberOfPlayers(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
     }
+
+    public ArrayList<ArrayList<Image>> getTransferBoardViaImages() {
+        return transferBoardViaImages;
+    }
+
+    public void setTransferBoardViaImages(ArrayList<ArrayList<Image>> transferBoardViaImages) {
+        this.transferBoardViaImages = transferBoardViaImages;
+    }
+
 }
 

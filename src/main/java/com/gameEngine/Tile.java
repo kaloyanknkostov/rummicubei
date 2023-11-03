@@ -1,6 +1,8 @@
 package com.gameEngine;
 
 
+import javafx.scene.image.Image;
+
 public class Tile
 {
 
@@ -8,12 +10,18 @@ public class Tile
     private String color;
     private boolean isJoker;
     private String pictureName;
+    private Image image;
     public Tile(int number, String color, boolean isJoker, String pictureName)
     {
         this.number = number;
         this.color = color;
         this.isJoker = isJoker;
         this.pictureName=pictureName;
+        this.image=new Image(pictureName);
+    }
+
+    public Image getImage() {
+        return image;
     }
 
     public int getNumber() {
@@ -41,5 +49,19 @@ public class Tile
     }
     public String getPicture(){
         return pictureName;
+    }
+
+    @Override
+    public String toString() {
+        return "Tile{" +
+                "number=" + number +
+                ", color='" + color + '\'' +
+                ", isJoker=" + isJoker +
+                ", pictureName='" + pictureName + '\'' +
+                ", image=" + image +
+                '}';
+    }
+    public Tile copy() {
+        return new Tile(this.number, this.color, this.isJoker, this.pictureName);
     }
 }
