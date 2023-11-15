@@ -1,186 +1,298 @@
-import torch
-import datetime
 import pandas as pd
+import torch
 from torch import nn
 from torch.utils.data import DataLoader
+from torchmetrics import classification as clf
 
-# Import Alexnet with its weights
-from torchvision.models import alexnet
-from torchvision.models import AlexNet_Weights
-
-# import code from relative files
-from model import NeuralNetwork  # self made architecture
-from dataset import FlowerDataset
+from model import TilePredNet
+from utils.model_utils import save_training_results
+from early_stopper import EarlyStopper
 
 
-# Get cpu or gpu device where the training should take place
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-print(f"Using {device} device")
-
-
-def train_loop(dataloader, model, loss_fn, optimizer, epoch):
+def train_loop(dataloader, model, loss_fn, optimizer, epoch, csv=None):
     size = len(dataloader.dataset)
-    stats = []
-
-    # Start Training loop
     for batch, (X, y) in enumerate(dataloader):
-        # Move data to device, e.g. to gpu if training on it otherwise cpu
-        inputs = X.to(device)
-        target = y.to(device)
-
         # Compute prediction and loss
-        pred = model(inputs)
-        loss = loss_fn(pred, target)
+        # print("y shape:", y.shape)
+        pred = model(X)  # ["out"]
+        # print(pred)
+        # quit()
+        # print("Pred shape:", pred.shape)
+        loss = loss_fn(pred, y)
+        # Backpropagation
+        optimizer.zero_grad()  # set gradients to zero
+        loss.backward()  # Backpropagation
+        optimizer.step()  # update gradients
 
-        # Sets the gradients of all optimized torch.Tensor s to zero/ None
-        # Otherwise the older gradients would accumulate (helpful for RNNs)
-        optimizer.zero_grad()
+        # Get metrics
+        metrics = get_metrics(pred, y)
+        acc = metrics["acc"]
+        mcc = metrics["mcc"]
+        jaccard = metrics["jaccard"]
+        precision = metrics["precision"]
+        recall = metrics["recall"]
+        specificity = metrics["specificity"]
+        f1 = metrics["f1"]
+        dice = metrics["dice"]
 
-        # Backpropagation to calculate losses
-        loss.backward()
-
-        # Adjust the weights of the model
-        optimizer.step()
-
-        # Get value of the loss
-        loss = loss.item()
-
-        # calculate number of processed images
-        current = (batch + 1) * len(inputs)  # batch starts with 0
-
-        # every 50 batches print out the current loss
-        if batch % 50 == 0:
+        # Output and save metrics
+        loss, current = loss.item(), batch * len(X)
+        if csv:
+            csv.append(
+                [
+                    epoch,
+                    "train",
+                    acc,
+                    loss,
+                    current,
+                    size,
+                    mcc,
+                    jaccard,
+                    precision,
+                    recall,
+                    specificity,
+                    f1,
+                    dice,
+                ]
+            )
+        #  TODO Get the metrics with sklearn!
+        if batch % 3 == 0:
             print(
-                f"EPOCH {epoch} | loss: {loss:>7f}  [{current:5d}/{size:5d}]"
-                + f" | batch [{batch:>3d}/{len(dataloader):>3d}]"
+                f"loss: {loss:>7f}, Recall: {(recall):>0.4f}, "
+                + f"Precision: {precision:>0.4f}, MCC: {mcc:>.4f}, "
+                + f"Jaccard: {jaccard:>.4f}, "
+                + f"DICE: {dice:>.4f} [{current:>5d}/{size:>5d}]"
             )
 
-        # Save current loss to list
-        stats.append([batch, "train", loss, None])
-    return stats
 
-
-def test_loop(dataloader, model, loss_fn):
-    size = len(dataloader.dataset)
+def test_loop(dataloader, model, loss_fn, epoch, csv=None):
     num_batches = len(dataloader)
-    test_loss, correct = 0, 0
+    test_loss = 0
+    acc, mcc, jaccard, precision, recall, specificity, f1, dice = 0, 0, 0, 0, 0, 0, 0, 0
+    with torch.no_grad():
+        for i, (X, y) in enumerate(dataloader):
+            pred = model(X)  # ["out"]
+            test_loss += loss_fn(pred, y).item()
+            # Get metrics
+            metrics = get_metrics(pred, y)
+            acc += metrics["acc"]
+            mcc += metrics["mcc"]
+            jaccard += metrics["jaccard"]
+            precision += metrics["precision"]
+            recall += metrics["recall"]
+            specificity += metrics["specificity"]
+            f1 += metrics["f1"]
+            dice += metrics["dice"]
 
-    with torch.no_grad():  # disable gradient calculation --> not needed for testing
-        # Start training loop
-        for X, y in dataloader:
-            # Move data to device, e.g. to gpu if training on it otherwise cpu
-            inputs = X.to(device)
-            target = y.to(device)
-
-            pred = model(inputs)  # get prediction for the batch X
-
-            # Calculate loss and number of correct preds for the batch
-            test_loss += loss_fn(pred, target).item()
-            correct += (pred.argmax(1) == target).type(torch.float).sum().item()
-
-    # Calculate average loss and avg accuracy for the test dataset
     test_loss /= num_batches
-    correct /= size
+    acc /= num_batches
+    mcc /= num_batches
+    jaccard /= num_batches
+    precision /= num_batches
+    recall /= num_batches
+    specificity /= num_batches
+    f1 /= num_batches
+    dice /= num_batches
 
-    print(
-        f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n"
-    )
-    return test_loss, correct
-
-
-# --------------------------------------------------------------------------------------
-
-# Set Hyperparameter
-batch_size = 64
-learning_rate = 5e-4
-epochs = 50
-weight_decay = 5e-3
-dropout = 0.5  # AlexNet 0.7
-
-# Create iterators for each data split
-train_dataloader = DataLoader(
-    FlowerDataset(
-        annotations_file=r"datasets\augmented_flowers\train.csv",
-        img_dir=r"datasets\augmented_flowers",
-        split="train",
-    ),
-    batch_size=batch_size,
-    shuffle=True,
-)
-test_dataloader = DataLoader(
-    FlowerDataset(
-        annotations_file=r"datasets\augmented_flowers\test.csv",
-        img_dir=r"datasets\augmented_flowers",
-        split="test",
-    ),
-    batch_size=batch_size,
-    shuffle=True,
-)
-
-# Set Model, deciding between self made and AlexNet
-# model = alexnet(weights=AlexNet_Weights.IMAGENET1K_V1, dropout=dropout) # best for 0.7
-# # If the model is AlexNet: Change to only 102 output classes (from default 1000)
-# model.classifier[6] = nn.Linear(4096, 102)
-model = NeuralNetwork(dropout=dropout)  # set self made architecture as model
-
-# Move model to device (gpu/ cpu)
-model = model.to(device)
-
-
-# Set Loss Function and Optimizer for the model
-loss_fn = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(
-    model.parameters(), lr=learning_rate, weight_decay=weight_decay
-)
-
-# Set pathname for saving the model file
-path_name = (
-    "datalab-flowers/model_files/"
-    + f"{datetime.datetime.now():%Y%m%d}_batch_size_{batch_size}"
-    + f"_lr{learning_rate}"
-    + f"_epochs{epochs}"
-    # + "_AlexNet_pretrained"
-    + "self_made"
-    + f"dropout{dropout}"
-    + f"_weight_decay{weight_decay}"
-)
-
-
-# --------------------------------------------------------------------------------------
-
-# Training loop
-csv_array = []
-for t in range(epochs):
-    print(f"Epoch {t+1}\n-------------------------------")
-
-    # Get training metrics by executing training loop
-    train_stats = train_loop(train_dataloader, model, loss_fn, optimizer, t)
-
-    # Get test metrics by executing test loop
-    avg_loss, avg_accuracy = test_loop(test_dataloader, model, loss_fn)
-
-    # Append metrics for this epoch to list
-    csv_array = csv_array + [[t] + stats for stats in train_stats]
-    csv_array.append([t, None, "valid", avg_loss, avg_accuracy])
-
-    # Save model_halfway_checkpoint
-    if t == int(epochs / 2):
-        torch.save(model.state_dict(), path_name + f"_current_{t}.pt")
-        df = pd.DataFrame(
-            data=csv_array,
-            columns=["epoch", "batch", "type", "loss", "accuracy"],
+    # matthews-correlation, f1, recall, etc.
+    if csv:
+        csv.append(
+            [
+                epoch,
+                "test",
+                acc,
+                test_loss,
+                None,
+                num_batches,
+                mcc,
+                jaccard,
+                precision,
+                recall,
+                specificity,
+                f1,
+                dice,
+            ]
         )
-        df.to_csv(path_name + ".csv", index=False)
+    print(
+        f"Testing:\nloss: {test_loss:>7f}, Recall: {(recall):>0.4f},",
+        f"Precision: {precision:>0.4f}, MCC: {mcc:>.4f}, Jaccard: {jaccard:>.4f}",
+        f", DICE: {dice:>.4f}\n",
+    )
+    return test_loss
 
 
-# --------------------------------------------------------------------------------------
+def get_metrics(pred, target, thresh=0.5):
+    """
+    Input:
+        pred and target as pytorch.tensor
+    Output:
+        Accuracy, MatthewsCorrCoef, JaccardIndex in dict
+    """
+    # Remove the background layer so metrics are only for the leaves
+    pred_tensor = pred[0, 1]
+    target_tensor = target[0, 1]
+    metrics = dict()
+    metrics["acc"] = clf.BinaryAccuracy(threshold=thresh)(
+        pred_tensor, target_tensor
+    ).item()
+    metrics["mcc"] = clf.BinaryMatthewsCorrCoef(threshold=thresh)(
+        pred_tensor, target_tensor
+    ).item()
+    metrics["jaccard"] = clf.BinaryJaccardIndex(threshold=thresh)(
+        pred_tensor, target_tensor
+    ).item()
+    # How many retrieved items are relevant?
+    metrics["precision"] = clf.BinaryPrecision(threshold=thresh)(
+        pred_tensor, target_tensor
+    ).item()
+    # How many relevant items are retrieved? - True positive rate
+    metrics["recall"] = clf.BinaryRecall(threshold=thresh)(
+        pred_tensor, target_tensor
+    ).item()
+    # True negative rate
+    metrics["specificity"] = clf.BinarySpecificity(threshold=thresh)(
+        pred_tensor, target_tensor
+    ).item()
+    metrics["f1"] = clf.BinaryF1Score(threshold=thresh)(
+        pred_tensor, target_tensor
+    ).item()
+    metrics["dice"] = clf.Dice(threshold=thresh)(
+        pred_tensor, target_tensor.type(torch.int)
+    ).item()
+    # print(clf.Dice(threshold=thresh)(pred, target.type(torch.int)).item())
 
-print("Training finished... saving results!")
+    return metrics
 
-# Saving model and learning stats
-torch.save(model.state_dict(), path_name + ".pt")
-df = pd.DataFrame(
-    data=csv_array,
-    columns=["epoch", "batch", "type", "loss", "accuracy"],
-)
-df.to_csv(path_name + ".csv", index=False)
+
+def run_training(
+    dataset_path,
+    epochs,
+    learning_rate,
+    model,
+    batch_size=1,
+    loss_fn=nn.MSELoss,
+    optimizer=torch.optim.Adam,
+    saving=True,
+    saving_annotation="",
+    annotations_df=None,
+):
+    # datasets
+    if annotations_df is None:
+        df = pd.read_csv(dataset_path + "/image_label_mapping.csv")
+        train_root_dir = dataset_path + "/training"
+        valid_root_dir = dataset_path + "/validation"
+    else:
+        df = annotations_df
+        train_root_dir = ""
+        valid_root_dir = ""
+
+    train_data = None
+    test_data = None
+
+    print("Train:", len(train_data))
+    print("test", len(test_data))
+
+    train_dataloader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
+    test_dataloader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
+
+    model_loss_fn = loss_fn()
+    model_optimizer = optimizer(model.parameters(), lr=learning_rate)
+
+    print("learning rate:", learning_rate)
+    print("Loss Function:", model_loss_fn._get_name())
+    print("optimizer:", model_optimizer.__class__.__name__)
+    print("Epochs:", epochs)
+
+    csv = [
+        [
+            "epoch",
+            "state",
+            "accuracy",
+            "loss",
+            "current",
+            "batch_size",
+            "BinaryMatthewsCorrCoef",
+            "JaccardIndex",
+            "precision",
+            "recall",
+            "specificity",
+            "F1Scores",
+            "DiceCoefficient",
+        ]
+    ]
+    thresh = 0.2
+    early_stopper = EarlyStopper(delta_thresh=thresh, epoch_thresh=-1)
+    saving_model = model
+    saving_epoch = 0
+    for t in range(epochs):
+        print(f"Epoch {t+1}\n-------------------------------")
+        train_loop(train_dataloader, model, model_loss_fn, model_optimizer, t, csv)
+        test_loss = test_loop(test_dataloader, model, model_loss_fn, t, csv)
+        if early_stopper.early_stop(model, validation_loss=test_loss, epoch=t):
+            if saving:
+                print("EARLY STOP SAVING ACTIVATED")
+                save_training_results(
+                    task_path="segmentation",
+                    path_prefix="",
+                    model=early_stopper.best_model,
+                    csv=csv,
+                    csv_epoch=-1,
+                    model_epoch=early_stopper.best_epoch,
+                    batch_size=1,
+                    learning_rate=learning_rate,
+                    loss_fn_name=loss_fn.__name__,
+                    opti_name=optimizer.__class__.__name__,
+                    annotation=saving_annotation,
+                    early_stop=True,
+                    early_stop_thresh=thresh,
+                )
+            break
+        saving_epoch = t
+    else:
+        # if the training runs through we still want to save the best model
+        print("Best Epoch:", early_stopper.best_epoch)
+        saving_model = early_stopper.best_model
+        saving_epoch = early_stopper.best_epoch
+
+    if saving:
+        print("NORMAL SAVING")
+        save_training_results(
+            task_path="segmentation",
+            path_prefix="",
+            model=saving_model,
+            csv=csv,
+            csv_epoch=t,
+            model_epoch=saving_epoch,
+            batch_size=1,
+            learning_rate=learning_rate,
+            loss_fn_name=loss_fn.__name__,
+            opti_name=optimizer.__class__.__name__,
+            annotation=saving_annotation,
+        )
+
+    print("Done!")
+
+
+if __name__ == "__main__":
+    print("Starting training...")
+    dataset_path = ""
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"Using {device} device")
+
+    model = TilePredNet(n_rounds=1, n_opponents=3, dropout=0.2).to(device)
+    # print(model)
+
+    print("Model in use:", model._get_name())
+
+    run_training(
+        dataset_path=dataset_path,
+        epochs=30,
+        learning_rate=5e-4,
+        model=model,
+        batch_size=1,
+        loss_fn=nn.CrossEntropyLoss,
+        optimizer=torch.optim.AdamW,
+        saving=False,
+        saving_annotation="",
+    )

@@ -34,6 +34,29 @@ class TilePredNet(nn.Module):
         # No softmax, because the loss function already applies it
         return logits
 
+    def load(self, path: str):
+        """Loads the state_dict that is at the given path.
+
+        Args:
+            path (str): Path to the state_dict
+
+        Returns:
+            Model: model with the new state_dict
+        """
+        self.load_state_dict(torch.load(path))
+        return self
+
+    def save(self, path: str):
+        """Saves the model state_dict to the given path.
+
+        Args:
+            path (str): Path to the save location
+        """
+        torch.save(self.state_dict(), path)
+
+
+# ==============================================================================
+
 
 if __name__ == "__main__":
     # Test model with input size --> no errors in fully connected layers
