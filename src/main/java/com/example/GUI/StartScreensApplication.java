@@ -1,5 +1,6 @@
 package com.example.GUI;
 
+import com.gameEngine.Player;
 import com.gameEngine.Tile;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
