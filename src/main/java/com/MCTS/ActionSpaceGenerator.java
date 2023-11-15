@@ -43,8 +43,8 @@ public class ActionSpaceGenerator {
                     //add it to the action space but keeping going in the tree
                     resultingBoards.add(currentBoard);
                     resultingRacks.add(currentRack);
-                    createAllMoves(currentBoard, availableTiles, currentRack, lastCheckedSet);
                 }
+                createAllMoves(currentBoard, availableTiles, currentRack, lastCheckedSet);
             }
         }
     }
