@@ -11,7 +11,7 @@ class rummikub_dataset:
     def encode_board(self, board):
         max_sets = 20  # Maximum number of sets on the board
         max_tiles_per_set = 13
-        encoded_board = torch.zeros(max_sets, max_tiles_per_set, NUM_TILES)
+        encoded_board = torch.zeros(max_sets, max_tiles_per_set, NUM_TILES) #not one hot but easy to understand
         for i, set in enumerate(board):
             for j, tile in enumerate(set):
                 encoded_board[i, j] = self.tile_encoder(tile)
