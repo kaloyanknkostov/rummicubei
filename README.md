@@ -13,6 +13,16 @@ Done by group 8: <br />
 - java
 - maven
 - git
+
+### Python prerequisites
+
+Python version: 3.10.4
+
+Install the required packages with `pip install -r requirements.txt`.
+Pytorch has to be installed separately as it is dependent in the system. For more info
+refer to the [documentation](https://pytorch.org/get-started/locally/).
+
+
 ## How to run
 
 To run our code please run the main method from the GameEngine class.
