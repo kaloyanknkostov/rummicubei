@@ -325,7 +325,7 @@ public class GameEngine {
     }
 
     private void startLog(){
-        gameStateLog.append("GameId, Board, PlayersHands, MoveNumber, CurrentPlayer");
+        gameStateLog.append("GameId, Board, PlayersHands, MoveNumber, CurrentPlayer \n");
     }
 
     private void writeGameStateLogToFile(String fileName) {
