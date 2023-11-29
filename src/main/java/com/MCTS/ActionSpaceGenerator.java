@@ -14,14 +14,18 @@ public class ActionSpaceGenerator {
     private ArrayList<Integer> startingBoard;
     private ArrayList<Integer> startingRack;
     private ArrayList<ArrayList<Integer>> allPossibleSets;
+    private ArrayList<ArrayList<Integer>> possibleSets;
+
+    
 
     public ActionSpaceGenerator(ArrayList<Integer> board, ArrayList<Integer> rack){
         System.out.println("IN Action");
-        allPossibleSets=AllSetGenerator.generateAllSets();
+        allPossibleSets= AllSetGenerator.generateAllSets();
         this.resultingBoards = new ArrayList<>();
         this.resultingRacks = new ArrayList<>();
         this.startingBoard = board;
         this.startingRack = rack;
+        this.possibleSets = possibleSets(this.startingBoard.addAll(this.startingRack));
     }
     
     
@@ -29,21 +33,16 @@ public class ActionSpaceGenerator {
         //add a base case for when it should return. either when currentrack is empty or when all sets have been checked
         //TODO make this better
         // it should only loop through the sets that can be formed so we have to make a method for this
-        if(currentRack.size() <3 || lastCheckedSet == allPossibleSets.size()-1){
+        if(lastCheckedSet == this.possibleSets.size()-1){
             return;
         }
-        for(int i = lastCheckedSet; i < allPossibleSets.size();i++){
+        for(int i = lastCheckedSet; i < this.possibleSets.size();i++){
             if(canCreateSet(allPossibleSets.get(i), availableTiles)){
                 // if yes then add this set to the current board that is getting built and remove it from the possibletiles
-                currentBoard.add(allPossibleSets.get(i));
-                //make sure it doesnt remove duplicates, cause if blue 2 is in the rack and board we need to remove it from tilesleft only once not twice
-                //this will work but not efficient cause it will continue an impoosible road too far. work this out
-                //probably have to make a custom function for this.
-                //TODO do this
-                //availableTiles.removeAll(allPossibleSets.get(i));
-                //currentRack.removeAll(allPossibleSets.get(i));
-                customRemove(availableTiles, allPossibleSets.get(i));
-                customRemove(currentRack,allPossibleSets.get(i));
+                currentBoard.add(this.possibleSets.get(i));
+
+                customRemove(availableTiles, this.possibleSets.get(i));
+                customRemove(currentRack, this.possibleSets.get(i));
                 //now check if the board is valid
                 if(validBoard(currentBoard)){
                     //add it to the action space but keeping going in the tree
