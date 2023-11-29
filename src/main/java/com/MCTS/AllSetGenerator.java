@@ -9,9 +9,21 @@ import java.util.Set;
 
 
 public class AllSetGenerator {
-            
 
 
+
+    public static ArrayList<ArrayList<Integer>> generateAllSets() {
+        ArrayList<ArrayList<Integer>> allSets = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> runs=generateRunsWithoutJokers();
+        ArrayList<ArrayList<Integer>> group=generateRunsWithoutJokers();
+        allSets.addAll(runs);
+        allSets.addAll(group);
+        allSets.addAll(generateRunsWithOneJoker(runs));
+        allSets.addAll(generateGroupsWithOneJoker(group));
+        allSets.addAll(generateRunsWithTwoJokers(runs));
+        allSets.addAll(generateGroupsWithTwoJokers(group));
+        return allSets;
+    }
     // this is one is tested and returns the correct amount of runs
     private static ArrayList<ArrayList<Integer>> generateRunsWithoutJokers() {
         ArrayList<ArrayList<Integer>> allRunsWithoutJokers = new ArrayList<>();
