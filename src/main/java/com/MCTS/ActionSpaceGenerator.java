@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 
+
 public class ActionSpaceGenerator {
 
     private ArrayList<ArrayList<ArrayList<Integer>>> resultingBoards;
@@ -22,11 +23,22 @@ public class ActionSpaceGenerator {
     public ActionSpaceGenerator(ArrayList<Integer> board, ArrayList<Integer> rack){
         System.out.println("IN Action");
         allPossibleSets= AllSetGenerator.generateAllSets();
+
         this.resultingBoards = new ArrayList<>();
         this.resultingRacks = new ArrayList<>();
         this.startingBoard = board;
         this.startingRack = rack;
         this.possibleSets = possibleSets(this.startingRack,this.startingBoard);
+    }
+
+    public static void main(String[] args) {
+        ArrayList<Integer> rack = new ArrayList<>(Arrays.asList(1, 2, 3));
+        ArrayList<Integer> startingBoard = new ArrayList<>(Arrays.asList(5, 6,7));
+        ArrayList<Integer> allTiles = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 4, 5, 6));
+        ArrayList<ArrayList<Integer>> board = new ArrayList<>();
+        ActionSpaceGenerator myGenerator = new ActionSpaceGenerator(startingBoard,rack);
+        System.out.println(myGenerator.getPossibleSets());
+        //myGenerator.createAllMoves(board, allTiles, rack, 0);
     }
     
     
@@ -38,7 +50,7 @@ public class ActionSpaceGenerator {
             return;
         }
         for(int i = lastCheckedSet; i < this.possibleSets.size();i++){
-            if(canCreateSet(allPossibleSets.get(i), availableTiles)){
+            if(canCreateSet(possibleSets.get(i), availableTiles)){
                 // if yes then add this set to the current board that is getting built and remove it from the possibletiles
                 currentBoard.add(this.possibleSets.get(i));
 
@@ -104,6 +116,10 @@ public class ActionSpaceGenerator {
             }
         }
         return possibleSets;
+    }
+
+    public ArrayList<ArrayList<Integer>> getPossibleSets(){
+        return this.possibleSets;
     }
 
 

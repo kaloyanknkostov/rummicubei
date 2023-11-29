@@ -10,16 +10,18 @@ import java.util.Set;
 
 public class AllSetGenerator {
 
-
-
+    public static void main(String[] args) {
+        generateAllSets();
+    }
     public static ArrayList<ArrayList<Integer>> generateAllSets() {
         ArrayList<ArrayList<Integer>> allSets = new ArrayList<>();
         ArrayList<ArrayList<Integer>> runs=generateRunsWithoutJokers();
-        ArrayList<ArrayList<Integer>> group=generateRunsWithoutJokers();
+        ArrayList<ArrayList<Integer>> group=generateGroupsWithoutJokers();
         allSets.addAll(runs);
         allSets.addAll(group);
         allSets.addAll(generateRunsWithOneJoker(runs));
-        allSets.addAll(generateGroupsWithOneJoker(group));
+        allSets.addAll(generateGroupsOf4WithOneJoker(group));
+        allSets.addAll(generateGroupsOf3WithOneJoker(group));
         allSets.addAll(generateRunsWithTwoJokers(runs));
         allSets.addAll(generateGroupsWithTwoJokers(group));
         return allSets;
@@ -87,6 +89,7 @@ public class AllSetGenerator {
                 allGroupsWithoutJokers.add(newSet);
             }
         }
+
         return allGroupsWithoutJokers;
     }
 
@@ -113,7 +116,7 @@ public class AllSetGenerator {
     }
 
     //tested and works, returns the correct output
-    private static ArrayList<ArrayList<Integer>> generateGroupsWithOneJoker(ArrayList<ArrayList<Integer>> baseList){
+    private static ArrayList<ArrayList<Integer>> generateGroupsOf4WithOneJoker(ArrayList<ArrayList<Integer>> baseList){
         ArrayList<ArrayList<Integer>> allGroupsWithOneJoker = new ArrayList<>();
         //create all variants of all groups by putting the joker at positions 0 to n
         for (ArrayList<Integer> baseSet : baseList) {
@@ -128,6 +131,25 @@ public class AllSetGenerator {
                 }
             }
         }
+        return allGroupsWithOneJoker;
+
+    }
+    private static ArrayList<ArrayList<Integer>> generateGroupsOf3WithOneJoker(ArrayList<ArrayList<Integer>> baseList){
+        ArrayList<ArrayList<Integer>> allGroupsWithOneJoker = new ArrayList<>();
+        //create all variants of all groups by putting the joker at positions 0 to n
+        for (ArrayList<Integer> baseSet : baseList) {
+            if(baseSet.size() == 4){
+                continue;
+            }
+            for (int jokerPos = 0; jokerPos < baseSet.size(); jokerPos++) {
+                ArrayList<Integer> setWithOneJoker = new ArrayList<>(baseSet);
+                setWithOneJoker.set(jokerPos, 53); // Joker
+                if(!checkIfExists(allGroupsWithOneJoker, setWithOneJoker)){
+                    allGroupsWithOneJoker.add(setWithOneJoker);
+                }
+            }
+        }
+        
         return allGroupsWithOneJoker;
     }
 
