@@ -89,6 +89,7 @@ public class StartScreensApplication extends Application {
     public void handleNextTurn() {
         gameModel.setNextTurn(true);
         gameModel.setTransferBoardViaImages(transformIntoBoard());
+        curr = transformIntoBoard();
     }
 
     public void handleResetBoard(ActionEvent event) {
