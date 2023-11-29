@@ -16,6 +16,7 @@ public class ActionSpaceGenerator {
     private ArrayList<ArrayList<Integer>> allPossibleSets;
     private ArrayList<ArrayList<Integer>> possibleSets;
 
+
     
 
     public ActionSpaceGenerator(ArrayList<Integer> board, ArrayList<Integer> rack){
@@ -25,7 +26,7 @@ public class ActionSpaceGenerator {
         this.resultingRacks = new ArrayList<>();
         this.startingBoard = board;
         this.startingRack = rack;
-        this.possibleSets = possibleSets(this.startingBoard.addAll(this.startingRack));
+        this.possibleSets = possibleSets(this.startingRack,this.startingBoard);
     }
     
     
@@ -87,10 +88,18 @@ public class ActionSpaceGenerator {
         // All tiles in the new board are present in the starting board, so the board is valid
         return true;
     }
-    private ArrayList<ArrayList<Integer>> possibleSets(ArrayList<Integer> tiles){
+
+    private ArrayList<ArrayList<Integer>> possibleSets(ArrayList<Integer> startingRack, ArrayList<Integer> startingBoard){
+        ArrayList<Integer> allTiles = new ArrayList<>();
+        for(Integer tile: startingRack){
+            allTiles.add(tile);
+        }
+        for(Integer tile: startingBoard){
+            allTiles.add(tile);
+        }
         ArrayList<ArrayList<Integer>> possibleSets = new ArrayList<>();
         for(ArrayList<Integer> set: allPossibleSets){
-            if(canCreateSet(tiles, set)){
+            if(canCreateSet(allTiles, set)){
                 possibleSets.add(set);
             }
         }
