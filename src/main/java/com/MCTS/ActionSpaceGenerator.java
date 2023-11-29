@@ -3,6 +3,7 @@ package com.MCTS;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -39,19 +40,25 @@ public class ActionSpaceGenerator {
                 //this will work but not efficient cause it will continue an impoosible road too far. work this out
                 //probably have to make a custom function for this.
                 //TODO do this
-                availableTiles.removeAll(allPossibleSets.get(i));
-                currentRack.removeAll(allPossibleSets.get(i));
+                //availableTiles.removeAll(allPossibleSets.get(i));
+                //currentRack.removeAll(allPossibleSets.get(i));
+                customRemove(availableTiles, allPossibleSets.get(i));
+                customRemove(currentRack,allPossibleSets.get(i));
                 //now check if the board is valid
                 if(validBoard(currentBoard)){
                     //add it to the action space but keeping going in the tree
                     resultingBoards.add(currentBoard);
                     resultingRacks.add(currentRack);
                 }
-                createAllMoves(currentBoard, availableTiles, currentRack, lastCheckedSet);
+                createAllMoves(currentBoard, availableTiles, currentRack, i);
             }
         }
     }
-
+    private static void customRemove(List<Integer> list, ArrayList<Integer> elementsToRemove) {
+        for (Integer element : elementsToRemove) {
+            list.remove(element);
+        }
+    }
     //need a function that checks if i can make a set, eg. an arraylist of ints from an arraylists of ints
     private boolean canCreateSet(ArrayList<Integer> array, ArrayList<Integer> set) {
         Set<Integer> arraySet = new HashSet<>(array);
@@ -81,7 +88,6 @@ public class ActionSpaceGenerator {
         // All tiles in the new board are present in the starting board, so the board is valid
         return true;
     }
-
     private ArrayList<ArrayList<Integer>> possibleSets(ArrayList<Integer> tiles){
         ArrayList<ArrayList<Integer>> possibleSets = new ArrayList<>();
         for(ArrayList<Integer> set: allPossibleSets){
