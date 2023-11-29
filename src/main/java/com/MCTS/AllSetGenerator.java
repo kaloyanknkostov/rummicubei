@@ -167,7 +167,7 @@ public class AllSetGenerator {
     
                     if (!checkIfExists(allRunsWithTwoJokers, setWithTwoJokers)) {
                         allRunsWithTwoJokers.add(setWithTwoJokers);
-                        System.out.println(setWithTwoJokers);
+                       // System.out.println(setWithTwoJokers);
                     }
                 }
             }
@@ -191,7 +191,7 @@ public class AllSetGenerator {
     
                     if (!checkIfExists(allGroupsWithTwoJokers, setWithTwoJokers)) {
                         allGroupsWithTwoJokers.add(setWithTwoJokers);
-                        System.out.println(setWithTwoJokers);
+                       // System.out.println(setWithTwoJokers);
                     }
                 }
             }

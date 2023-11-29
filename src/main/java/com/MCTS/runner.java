@@ -18,6 +18,7 @@ public class runner {
         ArrayList<ArrayList<Integer>> emt=new ArrayList<>();
 
         for(ArrayList<Integer> set:board){
+            System.out.println(set);
             newBoard.addAll(set);
         }
         ActionSpaceGenerator actionSpaceGenerator=new ActionSpaceGenerator(newBoard,players);

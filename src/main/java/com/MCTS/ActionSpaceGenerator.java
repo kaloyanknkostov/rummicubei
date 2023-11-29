@@ -47,7 +47,7 @@ public class ActionSpaceGenerator {
                     resultingBoards.add(currentBoard);
                     resultingRacks.add(currentRack);
                 }
-                createAllMoves(currentBoard, availableTiles, currentRack, lastCheckedSet);
+                createAllMoves(currentBoard, availableTiles, currentRack, i);
             }
         }
     }
@@ -98,5 +98,9 @@ public class ActionSpaceGenerator {
             count += innerList.size();
         }
         return count;
+    }
+
+    public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
+        return resultingBoards;
     }
 }
