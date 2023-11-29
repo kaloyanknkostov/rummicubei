@@ -53,13 +53,17 @@ public class Tile
 
     @Override
     public String toString() {
-        return "Tile{" +
-                "number=" + number +
-                ", color='" + color + '\'' +
-                ", isJoker=" + isJoker +
-                ", pictureName='" + pictureName + '\'' +
-                ", image=" + image +
-                '}';
+//        return "Tile{" +
+//                "number=" + number +
+//                ", color='" + color + '\'' +
+//                ", isJoker=" + isJoker +
+//                ", pictureName='" + pictureName + '\'' +
+//                ", image=" + image +
+//                '}';
+        if(isJoker){
+            return "Joker";
+        }
+        return color + "|" + number;
     }
     public Tile copy() {
         return new Tile(this.number, this.color, this.isJoker, this.pictureName);
