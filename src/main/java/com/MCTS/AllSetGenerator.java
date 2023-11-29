@@ -11,14 +11,18 @@ import javafx.print.PrintColor;
 public class AllSetGenerator {
             
 
-    public static void main(String[] args) {
-        ArrayList<ArrayList<Integer>> testGroups = new ArrayList<>();
-        ArrayList<ArrayList<Integer>> testRuns = new ArrayList<>();
-        //testGroups.add(new ArrayList<>(Arrays.asList(1, 14, 27)));
-        //testGroups.add(new ArrayList<>(Arrays.asList(1, 14, 40)));
-        //testGroups.add(new ArrayList<>(Arrays.asList(14, 27, 40)));
-        //testGroups.add(new ArrayList<>(Arrays.asList(1, 40, 27)));
-        System.out.println(generateGroupsWithTwoJokers(generateGroupsWithoutJokers()).size());
+
+    public static ArrayList<ArrayList<Integer>> generateAllSets() {
+        ArrayList<ArrayList<Integer>> allSets = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> runs=generateRunsWithoutJokers();
+        ArrayList<ArrayList<Integer>> group=generateRunsWithoutJokers();
+        allSets.addAll(runs);
+        allSets.addAll(group);
+        allSets.addAll(generateRunsWithOneJoker(runs));
+        allSets.addAll(generateGroupsWithOneJoker(group));
+        allSets.addAll(generateRunsWithTwoJokers(runs));
+        allSets.addAll(generateGroupsWithTwoJokers(group));
+        return allSets;
     }
 
     // this is one is tested and returns the correct amount of runs
