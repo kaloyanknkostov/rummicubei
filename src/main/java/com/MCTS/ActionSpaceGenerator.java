@@ -16,6 +16,7 @@ public class ActionSpaceGenerator {
     private ArrayList<Integer> startingRack;
     private ArrayList<ArrayList<Integer>> allPossibleSets;
     private ArrayList<ArrayList<Integer>> possibleSets;
+    private  ArrayList<Integer> availableTilesStart;
 
 
     
@@ -29,45 +30,89 @@ public class ActionSpaceGenerator {
         this.startingBoard = board;
         this.startingRack = rack;
         this.possibleSets = possibleSets(this.startingRack,this.startingBoard);
+        //probably put this somewhere else
+        availableTilesStart = new ArrayList<>();
+        for(Integer tile: startingRack){
+            availableTilesStart.add(tile);
+        }
+        for(Integer tile: startingBoard){
+            availableTilesStart.add(tile);
+        }
     }
 
     public static void main(String[] args) {
         ArrayList<Integer> rack = new ArrayList<>(Arrays.asList(1, 2, 3, 14, 15, 16));
         ArrayList<Integer> startingBoard = new ArrayList<>(Arrays.asList(5, 6, 7));
-        ArrayList<Integer> allTiles = new ArrayList<>(Arrays.asList(1, 2, 3, 5, 6, 7, 14, 15, 16));
         ArrayList<ArrayList<Integer>> board = new ArrayList<>();
         ActionSpaceGenerator myGenerator = new ActionSpaceGenerator(startingBoard,rack);
-        System.out.println(myGenerator.getPossibleSets());
-        myGenerator.createAllMoves(board, allTiles, rack, 0);
+        //System.out.println(myGenerator.getPossibleSets());
+        myGenerator.createAllMoves(board, rack, 0);
         System.out.println(myGenerator.getResultingBoards());
 
     }
     
     
-    public void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles, ArrayList<Integer> currentRack, int lastCheckedSet){
-        //add a base case for when it should return. either when currentrack is empty or when all sets have been checked
+    public void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> currentRack, int lastCheckedSet){
+        ArrayList<Integer> availableTiles = getAvailableTiles(currentBoard);
+
+        //System.out.println(availableTiles);
+        //System.out.println(currentBoard);
         //TODO make this better
-        // it should only loop through the sets that can be formed so we have to make a method for this
         if(lastCheckedSet == this.possibleSets.size()-1){
             return;
         }
-        for(int i = lastCheckedSet; i < this.possibleSets.size();i++){
+        for(int i = lastCheckedSet ; i < this.possibleSets.size();i++){
             if(canCreateSet(availableTiles, possibleSets.get(i))){
+                System.out.println("tiles available: "+availableTiles);
                 // if yes then add this set to the current board that is getting built and remove it from the possibletiles
                 currentBoard.add(this.possibleSets.get(i));
+                //System.out.println("removes tiles: " + possibleSets.get(i));
 
                 customRemove(availableTiles, this.possibleSets.get(i));
                 customRemove(currentRack, this.possibleSets.get(i));
+                //System.out.println("tiles after removing: "+availableTiles);
                 //now check if the board is valid
                 if(validBoard(currentBoard)){
+                    ArrayList<ArrayList<Integer>> currentValidBoard = deepCopy(currentBoard); //cause otherwise its pass by reference
+                    ArrayList<Integer> currentValidRack = new ArrayList<>(currentRack);
+                    System.out.println(currentBoard);
                     //add it to the action space but keeping going in the tree
-                    resultingBoards.add(currentBoard);
-                    resultingRacks.add(currentRack);
+                    resultingBoards.add(currentValidBoard);
+                    resultingRacks.add(currentValidRack);
+                    i = i - 1; //if it could add it try the same set again
                 }
-                createAllMoves(currentBoard, availableTiles, currentRack, i);
+                createAllMoves(currentBoard, currentRack, i+1);
             }
         }
     }
+
+    // this method keeps track of the available tiles by removing all the tiles in the board from the tiles available at the start.
+    private ArrayList<Integer> getAvailableTiles(ArrayList<ArrayList<Integer>> board){
+        ArrayList<Integer> result = new ArrayList<>(this.availableTilesStart);
+        for(ArrayList<Integer> row: board){
+            customRemove(result, row);
+        }
+        return result;
+    }
+
+    /**
+    * Creates a deep copy of a 2D ArrayList of integers.
+    *
+    * @param original The 2D ArrayList to be copied.
+    * @return A deep copy of the input 2D ArrayList.
+     */
+    private ArrayList<ArrayList<Integer>> deepCopy(ArrayList<ArrayList<Integer>> original) {
+        ArrayList<ArrayList<Integer>> copy = new ArrayList<>();
+
+        for (ArrayList<Integer> innerList : original) {
+            // Create a new ArrayList for each inner list
+            ArrayList<Integer> innerCopy = new ArrayList<>(innerList);
+            copy.add(innerCopy);
+        }
+
+        return copy;
+    }
+
     private static void customRemove(List<Integer> list, ArrayList<Integer> elementsToRemove) {
         for (Integer element : elementsToRemove) {
             list.remove(element);
@@ -86,6 +131,9 @@ public class ActionSpaceGenerator {
     *              {@code false} otherwise.
     */
     private static boolean canCreateSet(ArrayList<Integer> array, ArrayList<Integer> set) {
+        if(array.isEmpty()){
+            return false;
+        }
         Set<Integer> arraySet = new HashSet<>(array);
         Set<Integer> setAsSet = new HashSet<>(set);
         return arraySet.containsAll(setAsSet);
