@@ -1,4 +1,3 @@
-from torchvision import transforms as T
 import os
 import pandas as pd
 from torch.utils.data import Dataset
@@ -6,7 +5,7 @@ from PIL import Image
 
 
 # Create Dataset class which inherits from the PyTorch dataset class
-class FlowerDataset(Dataset):
+class TileDataset(Dataset):
     def __init__(self, annotations_file, img_dir, split: str):
         self.img_labels = pd.read_csv(annotations_file)
         self.img_dir = img_dir

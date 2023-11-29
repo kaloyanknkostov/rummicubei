@@ -15,7 +15,7 @@ class TilePredNet(nn.Module):
 
         # linear layers
         self.fc_in = nn.Linear(
-            in_features=106 + 1174 * n_opponents * n_rounds, out_features=1174
+            in_features=53 + 1174 * n_opponents * n_rounds, out_features=1174
         )
         self.fc_hidden_1 = nn.Linear(in_features=1174, out_features=100)
         self.fc_out = nn.Linear(in_features=100, out_features=1 + n_opponents)
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     n = 4
     n_opp = 3
     model = TilePredNet(n_rounds=n, n_opponents=n_opp)
-    x = torch.randn((64, 106 + 1174 * n_opp * n))
+    x = torch.randn((64, 53 + 1174 * n_opp * n))
     pred = model(x)
     print("Pred shape:", pred.shape)
     print("[green]SUCCESS![/green]")
