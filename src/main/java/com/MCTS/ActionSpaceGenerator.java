@@ -82,6 +82,16 @@ public class ActionSpaceGenerator {
         return true;
     }
 
+    private ArrayList<ArrayList<Integer>> possibleSets(ArrayList<Integer> tiles){
+        ArrayList<ArrayList<Integer>> possibleSets = new ArrayList<>();
+        for(ArrayList<Integer> set: allPossibleSets){
+            if(canCreateSet(tiles, set))
+            possibleSets.add(set);
+        }
+        return possibleSets;
+    }
+
+
     // Helper function to check if a tile is present in a list
     private boolean containsTile(ArrayList<Integer> list, Integer tile) {
         for (Integer element : list) {
