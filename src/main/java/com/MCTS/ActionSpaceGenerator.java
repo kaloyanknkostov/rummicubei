@@ -85,8 +85,9 @@ public class ActionSpaceGenerator {
     private ArrayList<ArrayList<Integer>> possibleSets(ArrayList<Integer> tiles){
         ArrayList<ArrayList<Integer>> possibleSets = new ArrayList<>();
         for(ArrayList<Integer> set: allPossibleSets){
-            if(canCreateSet(tiles, set))
-            possibleSets.add(set);
+            if(canCreateSet(tiles, set)){
+                possibleSets.add(set);
+            }
         }
         return possibleSets;
     }
