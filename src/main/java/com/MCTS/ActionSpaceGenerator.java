@@ -15,6 +15,8 @@ public class ActionSpaceGenerator {
     private ArrayList<ArrayList<Integer>> allPossibleSets;
 
     public ActionSpaceGenerator(ArrayList<Integer> board, ArrayList<Integer> rack){
+        System.out.println("IN Action");
+        allPossibleSets=AllSetGenerator.generateAllSets();
         this.resultingBoards = new ArrayList<>();
         this.resultingRacks = new ArrayList<>();
         this.startingBoard = board;
@@ -25,10 +27,14 @@ public class ActionSpaceGenerator {
     public void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles, ArrayList<Integer> currentRack, int lastCheckedSet){
         //add a base case for when it should return. either when currentrack is empty or when all sets have been checked
         //TODO make this better
-        if(currentRack.size() <3 || lastCheckedSet == allPossibleSets.size()-1){
+        //check ifn current or all tiles
+
+        if( lastCheckedSet == allPossibleSets.size()-1){
+            System.out.println("DONE WITH RECURSION");
             return;
         }
         for(int i = lastCheckedSet; i < allPossibleSets.size();i++){
+            System.out.println("LOOPING");
             if(canCreateSet(allPossibleSets.get(i), availableTiles)){
                 // if yes then add this set to the current board that is getting built and remove it from the possibletiles
                 currentBoard.add(allPossibleSets.get(i));
@@ -43,8 +49,8 @@ public class ActionSpaceGenerator {
                     //add it to the action space but keeping going in the tree
                     resultingBoards.add(currentBoard);
                     resultingRacks.add(currentRack);
-                    createAllMoves(currentBoard, availableTiles, currentRack, lastCheckedSet);
                 }
+                createAllMoves(currentBoard, availableTiles, currentRack, lastCheckedSet);
             }
         }
     }
@@ -95,5 +101,9 @@ public class ActionSpaceGenerator {
             count += innerList.size();
         }
         return count;
+    }
+
+    public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
+        return resultingBoards;
     }
 }

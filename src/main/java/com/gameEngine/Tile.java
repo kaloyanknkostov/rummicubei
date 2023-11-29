@@ -64,4 +64,19 @@ public class Tile
     public Tile copy() {
         return new Tile(this.number, this.color, this.isJoker, this.pictureName);
     }
+    public int turnToInt(){
+        if(isJoker){
+            return 53;
+        }
+        return switch (color) {
+            case "red" -> number;
+            case "blue" -> number + 13;
+            case "black" -> number + 26;
+            case "yellow" -> number + 39;
+            default -> {
+                System.out.println("PROBLEM");
+                yield -1;
+            }
+        };
+    }
 }

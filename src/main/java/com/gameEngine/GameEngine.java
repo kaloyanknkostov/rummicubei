@@ -3,7 +3,7 @@ package com.gameEngine;
 import com.example.GUI.GameModel;
 import com.example.GUI.StartScreensApplication;
 import javafx.scene.image.Image;
-
+import com.MCTS.runner;
 import java.util.ArrayList;
 
 
@@ -140,6 +140,8 @@ public class GameEngine {
         System.out.println("changing that to the player index: " + currentPlayerIndex);
         StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
         gameModel.setCurrentBoard(board);
+        runner runner=new runner();
+        runner.start(board.turnToIntBoard());
 
     }
 
@@ -223,6 +225,7 @@ public class GameEngine {
 
     private Tile drawTile() {
         int index = (int) Math.floor(Math.random() * potOfTiles.size());
+        index=1;
         Tile a = potOfTiles.get(index);
         potOfTiles.remove(index);
         return a;

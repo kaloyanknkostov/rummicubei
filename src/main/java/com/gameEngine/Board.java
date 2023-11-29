@@ -52,4 +52,13 @@ public class Board {
         }
         return newBoard;
     }
+    public ArrayList<ArrayList<Integer>> turnToIntBoard()
+    {
+        ArrayList<ArrayList<Integer>> board=new ArrayList<>();
+       for (Set set:setList){
+          ArrayList<Integer> intSet=set.turnSetToInt();
+          board.add(intSet);
+       }
+       return board;
+    }
 }

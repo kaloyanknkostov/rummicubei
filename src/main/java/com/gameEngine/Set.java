@@ -117,4 +117,12 @@ public class Set {
         }
         return newSet;
     }
+
+    public ArrayList<Integer> turnSetToInt(){
+        ArrayList<Integer> list=new ArrayList<>();
+        for(Tile tile:tilesList){
+           list.add(tile.turnToInt());
+        }
+        return list;
+    }
 }
