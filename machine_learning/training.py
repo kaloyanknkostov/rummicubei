@@ -1,24 +1,23 @@
+from rich import print
 import pandas as pd
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
-from torchmetrics import classification as clf
 
 from model import TilePredNet
-from utils.model_utils import save_training_results
+from dataset import TileDataset
 from early_stopper import EarlyStopper
+from utils.metrics import get_metrics
+from utils.model_utils import save_training_results
 
 
-def train_loop(dataloader, model, loss_fn, optimizer, epoch, csv=None):
+def train_loop(dataloader, model, loss_fn, optimizer, epoch: int, csv: list = None):
     size = len(dataloader.dataset)
     for batch, (X, y) in enumerate(dataloader):
         # Compute prediction and loss
-        # print("y shape:", y.shape)
-        pred = model(X)  # ["out"]
-        # print(pred)
-        # quit()
-        # print("Pred shape:", pred.shape)
+        pred = model(X)
         loss = loss_fn(pred, y)
+
         # Backpropagation
         optimizer.zero_grad()  # set gradients to zero
         loss.backward()  # Backpropagation
@@ -28,12 +27,10 @@ def train_loop(dataloader, model, loss_fn, optimizer, epoch, csv=None):
         metrics = get_metrics(pred, y)
         acc = metrics["acc"]
         mcc = metrics["mcc"]
-        jaccard = metrics["jaccard"]
         precision = metrics["precision"]
         recall = metrics["recall"]
         specificity = metrics["specificity"]
         f1 = metrics["f1"]
-        dice = metrics["dice"]
 
         # Output and save metrics
         loss, current = loss.item(), batch * len(X)
@@ -47,52 +44,45 @@ def train_loop(dataloader, model, loss_fn, optimizer, epoch, csv=None):
                     current,
                     size,
                     mcc,
-                    jaccard,
                     precision,
                     recall,
                     specificity,
                     f1,
-                    dice,
                 ]
             )
         #  TODO Get the metrics with sklearn!
         if batch % 3 == 0:
             print(
                 f"loss: {loss:>7f}, Recall: {(recall):>0.4f}, "
-                + f"Precision: {precision:>0.4f}, MCC: {mcc:>.4f}, "
-                + f"Jaccard: {jaccard:>.4f}, "
-                + f"DICE: {dice:>.4f} [{current:>5d}/{size:>5d}]"
+                + f"Precision: {precision:>0.4f}, MCC: {mcc:>.4f}"
+                + f" [{current:>5d}/{size:>5d}]"
             )
 
 
 def test_loop(dataloader, model, loss_fn, epoch, csv=None):
-    num_batches = len(dataloader)
-    test_loss = 0
-    acc, mcc, jaccard, precision, recall, specificity, f1, dice = 0, 0, 0, 0, 0, 0, 0, 0
+    test_loss, acc, mcc, precision, recall, specificity, f1 = 0, 0, 0, 0, 0, 0, 0
     with torch.no_grad():
         for i, (X, y) in enumerate(dataloader):
-            pred = model(X)  # ["out"]
+            pred = model(X)
             test_loss += loss_fn(pred, y).item()
+
             # Get metrics
             metrics = get_metrics(pred, y)
             acc += metrics["acc"]
             mcc += metrics["mcc"]
-            jaccard += metrics["jaccard"]
             precision += metrics["precision"]
             recall += metrics["recall"]
             specificity += metrics["specificity"]
             f1 += metrics["f1"]
-            dice += metrics["dice"]
 
+    num_batches = len(dataloader)
     test_loss /= num_batches
     acc /= num_batches
     mcc /= num_batches
-    jaccard /= num_batches
     precision /= num_batches
     recall /= num_batches
     specificity /= num_batches
     f1 /= num_batches
-    dice /= num_batches
 
     # matthews-correlation, f1, recall, etc.
     if csv:
@@ -105,63 +95,17 @@ def test_loop(dataloader, model, loss_fn, epoch, csv=None):
                 None,
                 num_batches,
                 mcc,
-                jaccard,
                 precision,
                 recall,
                 specificity,
                 f1,
-                dice,
             ]
         )
     print(
-        f"Testing:\nloss: {test_loss:>7f}, Recall: {(recall):>0.4f},",
-        f"Precision: {precision:>0.4f}, MCC: {mcc:>.4f}, Jaccard: {jaccard:>.4f}",
-        f", DICE: {dice:>.4f}\n",
+        f"[magenta1]Testing:\nloss: {test_loss:>7f}, Recall: {(recall):>0.4f},",
+        f"Precision: {precision:>0.4f}, MCC: {mcc:>.4f}\n[/magenta1]",
     )
     return test_loss
-
-
-def get_metrics(pred, target, thresh=0.5):
-    """
-    Input:
-        pred and target as pytorch.tensor
-    Output:
-        Accuracy, MatthewsCorrCoef, JaccardIndex in dict
-    """
-    # Remove the background layer so metrics are only for the leaves
-    pred_tensor = pred[0, 1]
-    target_tensor = target[0, 1]
-    metrics = dict()
-    metrics["acc"] = clf.BinaryAccuracy(threshold=thresh)(
-        pred_tensor, target_tensor
-    ).item()
-    metrics["mcc"] = clf.BinaryMatthewsCorrCoef(threshold=thresh)(
-        pred_tensor, target_tensor
-    ).item()
-    metrics["jaccard"] = clf.BinaryJaccardIndex(threshold=thresh)(
-        pred_tensor, target_tensor
-    ).item()
-    # How many retrieved items are relevant?
-    metrics["precision"] = clf.BinaryPrecision(threshold=thresh)(
-        pred_tensor, target_tensor
-    ).item()
-    # How many relevant items are retrieved? - True positive rate
-    metrics["recall"] = clf.BinaryRecall(threshold=thresh)(
-        pred_tensor, target_tensor
-    ).item()
-    # True negative rate
-    metrics["specificity"] = clf.BinarySpecificity(threshold=thresh)(
-        pred_tensor, target_tensor
-    ).item()
-    metrics["f1"] = clf.BinaryF1Score(threshold=thresh)(
-        pred_tensor, target_tensor
-    ).item()
-    metrics["dice"] = clf.Dice(threshold=thresh)(
-        pred_tensor, target_tensor.type(torch.int)
-    ).item()
-    # print(clf.Dice(threshold=thresh)(pred, target.type(torch.int)).item())
-
-    return metrics
 
 
 def run_training(
@@ -180,14 +124,14 @@ def run_training(
     if annotations_df is None:
         df = pd.read_csv(dataset_path + "/image_label_mapping.csv")
         train_root_dir = dataset_path + "/training"
-        valid_root_dir = dataset_path + "/validation"
+        test_root_dir = dataset_path + "/validation"
     else:
         df = annotations_df
         train_root_dir = ""
-        valid_root_dir = ""
+        test_root_dir = ""
 
-    train_data = None
-    test_data = None
+    train_data = None  # TileDataset(train_root_dir)
+    test_data = None  # TileDataset()
 
     print("Train:", len(train_data))
     print("test", len(test_data))
@@ -198,9 +142,9 @@ def run_training(
     model_loss_fn = loss_fn()
     model_optimizer = optimizer(model.parameters(), lr=learning_rate)
 
-    print("learning rate:", learning_rate)
+    print("Learning rate:", learning_rate)
     print("Loss Function:", model_loss_fn._get_name())
-    print("optimizer:", model_optimizer.__class__.__name__)
+    print("Optimizer:", model_optimizer.__class__.__name__)
     print("Epochs:", epochs)
 
     csv = [
@@ -212,16 +156,15 @@ def run_training(
             "current",
             "batch_size",
             "BinaryMatthewsCorrCoef",
-            "JaccardIndex",
             "precision",
             "recall",
             "specificity",
             "F1Scores",
-            "DiceCoefficient",
         ]
     ]
-    thresh = 0.2
-    early_stopper = EarlyStopper(delta_thresh=thresh, epoch_thresh=-1)
+
+    early_stopping_thresh = 0.2
+    early_stopper = EarlyStopper(delta_thresh=early_stopping_thresh, epoch_thresh=-1)
     saving_model = model
     saving_epoch = 0
     for t in range(epochs):
@@ -244,7 +187,7 @@ def run_training(
                     opti_name=optimizer.__class__.__name__,
                     annotation=saving_annotation,
                     early_stop=True,
-                    early_stop_thresh=thresh,
+                    early_stop_thresh=early_stopping_thresh,
                 )
             break
         saving_epoch = t
