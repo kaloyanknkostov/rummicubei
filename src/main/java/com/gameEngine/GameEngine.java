@@ -48,6 +48,7 @@ public class GameEngine {
 
     public void gameLoop() {
         addPlayers();
+        startLog();
         StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
         gameModel.setCurrentPlayer(getCurrentPlayer());
         StartScreensApplication.activeController.playerTurn();
@@ -321,6 +322,10 @@ public class GameEngine {
         sj.add(String.valueOf(moveNumber)); // Logging moveNumber
         sj.add(Integer.toString(currentPlayerIndex)); // Logging the current player
         gameStateLog.append(sj.toString()).append("\n");
+    }
+
+    private void startLog(){
+        gameStateLog.append("GameId, Board, PlayersHands, MoveNumber, CurrentPlayer");
     }
 
     private void writeGameStateLogToFile(String fileName) {
