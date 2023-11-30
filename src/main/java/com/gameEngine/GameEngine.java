@@ -25,6 +25,7 @@ public class GameEngine {
     private final int gameId = 0;
     private int moveNumber  = 0;
     private boolean logged = false;
+    private int valueOfPrevTurn = 0;
 
     public static void main(String[] args) {
         GameEngine engine = new GameEngine();
@@ -78,6 +79,7 @@ public class GameEngine {
                 Board incomingBoard = createBoardFromTiles(transformImagesToTiles());
                 System.out.println("Incoming board (tiles)");
                 incomingBoard.printBoard();
+                ArrayList<Set> newSets = new ArrayList<>();
                 if (incomingBoard.checkBoardValidity()) {
                     if (getCurrentPlayer().getIsOut()) {
                         if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
@@ -93,21 +95,31 @@ public class GameEngine {
                         int valueOfTurn = 0;
                         for (Set set : incomingBoard.getSetList())
                             if (!board.getSetList().contains(set))
-                                valueOfTurn += set.getValue();
+                                //valueOfTurn += set.getValue();
+                                newSets.add(set);
                         boolean gotOut = true;
                         for (Set set : board.getSetList()) {
                             if (!incomingBoard.getSetList().contains(set)) {
-                                gotOut = false;
+                                //gotOut = false;
                                 StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
                                 System.out.println("You can't the tiles in the board!");
                                 break;
                             }
                         }
-                        if (valueOfTurn >= 30 && gotOut) {
+                        int totalForTheRound=0;
+                        for(Set set: newSets) {
+                            System.out.println(set.toString());
+                            totalForTheRound+=set.getValue();
+                        }
+                        if (totalForTheRound - valueOfPrevTurn >= 30 && gotOut) {
                             getCurrentPlayer().setIsOut(true);
                             board = incomingBoard;
                             System.out.println("VALID BOARD");
                             gameTurn();
+                            newSets.clear();
+                            valueOfPrevTurn = totalForTheRound;
+                            System.out.println("value of turn: "+totalForTheRound);
+                            totalForTheRound-=totalForTheRound;
                         } else {
                             if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                                 getCurrentPlayer().setDeckOfTiles(copy);
