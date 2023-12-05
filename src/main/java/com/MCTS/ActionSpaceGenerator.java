@@ -47,46 +47,32 @@ public class ActionSpaceGenerator {
         ArrayList<ArrayList<Integer>> board = new ArrayList<>();
         ActionSpaceGenerator myGenerator = new ActionSpaceGenerator(startingBoard,rack);
         //System.out.println(myGenerator.getPossibleSets());
-        myGenerator.createAllMoves(board, rack, 0);
+        myGenerator.createAllMoves2(board, rack); 
         System.out.println(myGenerator.getResultingBoards());
 
     }
     
-    
-    public void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> currentRack, int lastCheckedSet){
-        // System.out.println(currentBoard); 
-        System.out.println(lastCheckedSet); 
-        availableTiles = getAvailableTiles(currentBoard);
-        // ArrayList<Integer> availableTilesCheck = getAvailableTiles(currentBoard);
-       // System.out.println(availableTiles);
-        //System.out.println(currentBoard);
-        //TODO make this better
-        // System.out.println(lastCheckedSet);
-        if(lastCheckedSet == this.possibleSets.size()){
-            return;
-        }
-        for(int i = lastCheckedSet ; i < this.possibleSets.size();i++){
-            System.out.println(this.possibleSets.get(i)); 
-
+    public void createAllMoves2(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> currentRack){
+        
+        for(int j = 0; j <this.possibleSets.size()  ; j++ ) {
+            
+            ArrayList<ArrayList<Integer>> curBoard = deepCopy(currentBoard); 
+            ArrayList<Integer> curRack = new ArrayList<>(currentRack); 
+        for(int i = j ; i < this.possibleSets.size()  ;i++){
+           
+            availableTiles = getAvailableTiles(curBoard);
+            
             if(canCreateSet(availableTiles, possibleSets.get(i))){
-               // System.out.println("tiles available: "+availableTiles);
-                // if yes then add this set to the current board that is getting built and remove it from the possibletiles
-               
-              //  System.out.println("true"); 
-              //  System.out.println(availableTiles);  
-              //  System.out.println(possibleSets.get(i));
-               // System.out.println("currentBoard start" + currentBoard); 
-                currentBoard.add(this.possibleSets.get(i));
-                //System.out.println("removes tiles: " + possibleSets.get(i));
-
+              
+                curBoard.add(this.possibleSets.get(i));
                 customRemove(availableTiles, this.possibleSets.get(i));
-                customRemove(currentRack, this.possibleSets.get(i));
-               // System.out.println("tiles after removing: "+availableTiles);
-                //now check if the board is valid
+                customRemove(curRack, this.possibleSets.get(i));
+          
+    
                 
-                if(validBoard(currentBoard)){
-                    ArrayList<ArrayList<Integer>> currentValidBoard = deepCopy(currentBoard); //cause otherwise its pass by reference
-                    ArrayList<Integer> currentValidRack = new ArrayList<>(currentRack);
+                if(validBoard(curBoard)){
+                    ArrayList<ArrayList<Integer>> currentValidBoard = deepCopy(curBoard); //cause otherwise its pass by reference
+                    ArrayList<Integer> currentValidRack = new ArrayList<>(curRack);
                     //System.out.println(currentBoard);
                     //add it to the action space but keeping going in the tree
                     resultingBoards.add(currentValidBoard);
@@ -96,10 +82,14 @@ public class ActionSpaceGenerator {
               //  System.out.println("currentBoard" + currentBoard); 
               //  System.out.println("CurrentRack" + currentRack);
                 
-                createAllMoves(currentBoard, currentRack, i+1);
             }
         }
+
     }
+
+    }
+    
+  
 
     // this method keeps track of the available tiles by removing all the tiles in the board from the tiles available at the start.
     private ArrayList<Integer> getAvailableTiles(ArrayList<ArrayList<Integer>> board){
