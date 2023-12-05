@@ -58,7 +58,27 @@ public class ActionSpaceGenerator {
             
             ArrayList<ArrayList<Integer>> curBoard = deepCopy(currentBoard); 
             ArrayList<Integer> curRack = new ArrayList<>(currentRack); 
-        for(int i = j ; i < this.possibleSets.size()  ;i++){
+             availableTiles = getAvailableTiles(curBoard);
+
+             if(canCreateSet(availableTiles, possibleSets.get(j))){
+              
+                curBoard.add(this.possibleSets.get(j));
+                customRemove(availableTiles, this.possibleSets.get(j));
+                customRemove(curRack, this.possibleSets.get(j));
+          
+    
+                
+                if(validBoard(curBoard)){
+                    ArrayList<ArrayList<Integer>> currentValidBoard = deepCopy(curBoard); //cause otherwise its pass by reference
+                    ArrayList<Integer> currentValidRack = new ArrayList<>(curRack);
+                    //System.out.println(currentBoard);
+                    //add it to the action space but keeping going in the tree
+                    resultingBoards.add(currentValidBoard);
+                    resultingRacks.add(currentValidRack);
+
+                } 
+            }
+        for(int i = 0 ; i < this.possibleSets.size()  ;i++){
            
             availableTiles = getAvailableTiles(curBoard);
             
