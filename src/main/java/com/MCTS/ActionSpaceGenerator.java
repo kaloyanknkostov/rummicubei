@@ -17,10 +17,9 @@ public class ActionSpaceGenerator {
     private ArrayList<ArrayList<Integer>> allPossibleSets;
     private ArrayList<ArrayList<Integer>> possibleSets;
     private  ArrayList<Integer> availableTilesStart;
-    private ArrayList<Integer> availableTiles; 
 
 
-    
+
 
     public ActionSpaceGenerator(ArrayList<Integer> board, ArrayList<Integer> rack){
         System.out.println("IN Action");
@@ -48,56 +47,45 @@ public class ActionSpaceGenerator {
         ActionSpaceGenerator myGenerator = new ActionSpaceGenerator(startingBoard,rack);
         //System.out.println(myGenerator.getPossibleSets());
         myGenerator.createAllMoves(board, rack, 0);
-        System.out.println(myGenerator.getResultingBoards());
+        // System.out.println(myGenerator.getResultingBoards());
 
     }
-    
-    
+
+
     public void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> currentRack, int lastCheckedSet){
-        // System.out.println(currentBoard); 
-        System.out.println(lastCheckedSet); 
-        availableTiles = getAvailableTiles(currentBoard);
-        // ArrayList<Integer> availableTilesCheck = getAvailableTiles(currentBoard);
-       // System.out.println(availableTiles);
-        //System.out.println(currentBoard);
-        //TODO make this better
-        // System.out.println(lastCheckedSet);
-        if(lastCheckedSet == this.possibleSets.size()){
+        if(lastCheckedSet == this.possibleSets.size()-1){
             return;
         }
+
+        ArrayList<Integer> availableTiles = getAvailableTiles(currentBoard);
+
         for(int i = lastCheckedSet ; i < this.possibleSets.size();i++){
-            System.out.println(this.possibleSets.get(i)); 
-
-            if(canCreateSet(availableTiles, possibleSets.get(i))){
-               // System.out.println("tiles available: "+availableTiles);
-                // if yes then add this set to the current board that is getting built and remove it from the possibletiles
-               
-              //  System.out.println("true"); 
-              //  System.out.println(availableTiles);  
-              //  System.out.println(possibleSets.get(i));
-               // System.out.println("currentBoard start" + currentBoard); 
-                currentBoard.add(this.possibleSets.get(i));
-                //System.out.println("removes tiles: " + possibleSets.get(i));
-
-                customRemove(availableTiles, this.possibleSets.get(i));
-                customRemove(currentRack, this.possibleSets.get(i));
-               // System.out.println("tiles after removing: "+availableTiles);
-                //now check if the board is valid
-                
-                if(validBoard(currentBoard)){
-                    ArrayList<ArrayList<Integer>> currentValidBoard = deepCopy(currentBoard); //cause otherwise its pass by reference
-                    ArrayList<Integer> currentValidRack = new ArrayList<>(currentRack);
-                    //System.out.println(currentBoard);
-                    //add it to the action space but keeping going in the tree
-                    resultingBoards.add(currentValidBoard);
-                    resultingRacks.add(currentValidRack);
-                    i = i - 1; //if it could add it try the same set again
-                } 
-              //  System.out.println("currentBoard" + currentBoard); 
-              //  System.out.println("CurrentRack" + currentRack);
-                
-                createAllMoves(currentBoard, currentRack, i+1);
+            // If cannot create set with tiles go to next one
+            if(!canCreateSet(availableTiles, possibleSets.get(i))){
+                continue;
             }
+            // Create copy of board so changes in this iteration of the loop are unique to the next iteration
+            // Pass this copy as a reference in the recursion
+            ArrayList<ArrayList<Integer>> currentBoardCopy = deepCopy(currentBoard);
+            currentBoardCopy.add(this.possibleSets.get(i));
+
+            // Remove tiles in the set in our rack and available tiles list
+            customRemove(availableTiles, this.possibleSets.get(i));
+            customRemove(currentRack, this.possibleSets.get(i)); // TODO Check if copy is needed here
+
+            //now check if the board is valid
+            if(validBoard(currentBoardCopy)){
+                // TODO: Check results of resulting racks
+                ArrayList<Integer> currentValidRack = new ArrayList<>(currentRack);
+
+                // Add board and racks to the results as board is valid
+                resultingBoards.add(currentBoardCopy);
+                resultingRacks.add(currentValidRack);
+
+                //if it could add it try the same set again (2 instances of every tile)
+                i = i - 1;
+            }
+            createAllMoves(currentBoardCopy, currentRack, i+1);
         }
     }
 
@@ -107,7 +95,6 @@ public class ActionSpaceGenerator {
         for(ArrayList<Integer> row: board){
             customRemove(result, row);
         }
-        
         return result;
     }
 
@@ -147,8 +134,6 @@ public class ActionSpaceGenerator {
     *              {@code false} otherwise.
     */
     private static boolean canCreateSet(ArrayList<Integer> array, ArrayList<Integer> set) {
-       
-
         if(array.isEmpty()){
             return false;
         }
