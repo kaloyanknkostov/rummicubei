@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public class RandomPlayout {
@@ -15,15 +16,16 @@ public class RandomPlayout {
     private ArrayList<ArrayList<Integer>> allPossibleSets;
     private ArrayList<ArrayList<Integer>> possibleSets;
     private ArrayList<Integer> availableTilesStart;
-    private ArrayList<Integer> randomMove;
+    private ArrayList<ArrayList<Integer>> randomMove;
+    Random rand;
     private boolean hasFinished;
 
 
     public RandomPlayout(ArrayList<Integer> board, ArrayList<Integer> rack){
         System.out.println("IN Action");
         //get all possible sets
-        hasFinished = false; //
-
+        hasFinished = false;
+        rand = new Random();
         this.resultingBoards = new ArrayList<>();
         this.resultingRacks = new ArrayList<>();
         this.startingBoard = board;
@@ -41,12 +43,18 @@ public class RandomPlayout {
         }
     }
 
-    public static void main(String[] args) {
-
+    public ArrayList<ArrayList<Integer>> getRandomMove(){
+        return this.randomMove;
     }
 
+    private void calculateRandomMove(){
+        int x = this.resultingBoards.size()-1;
+        //include the prob of not playing anything at all
+        int y = this.rand.nextInt(x);
+        this.randomMove = deepCopy(this.resultingBoards.get(y));
+    }
 
-    public void createRandomPlayouts(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){
+    private void createRandomPlayouts(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){
         // if all sets have been checked return
         if(lastCheckedSet == this.possibleSets.size() && validBoard(currentBoard)){
             hasFinished = true;
