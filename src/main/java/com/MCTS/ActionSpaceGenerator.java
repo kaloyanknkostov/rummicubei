@@ -40,28 +40,14 @@ public class ActionSpaceGenerator {
         }
     }
 
-    public static void main(String[] args) {
-
-        ArrayList<Integer> rack = new ArrayList<>(Arrays.asList(1, 2, 3, 14, 15, 16, 17));
-        ArrayList<Integer> startingBoard = new ArrayList<>(Arrays.asList(5, 6, 7));
-        ArrayList<Integer> allTiles = new ArrayList<>(rack);
-        allTiles.addAll(startingBoard);
-        ArrayList<ArrayList<Integer>> board = new ArrayList<>();
-        ActionSpaceGenerator myGenerator = new ActionSpaceGenerator(startingBoard,rack);
-        //System.out.println(myGenerator.getPossibleSets());
-        myGenerator.createAllMoves(board, allTiles,rack, 0);
-        System.out.println(myGenerator.getResultingBoards());
-
-    }
-
 
     public void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){
+        // if all sets have been checked return
         if(lastCheckedSet == this.possibleSets.size()){
             return;
         }
 
         for(int i = lastCheckedSet ; i < this.possibleSets.size();i++){
-            System.out.println(i);
             // If cannot create set with tiles go to next one
             if(!canCreateSet(availableTiles, possibleSets.get(i))){
                 continue;
@@ -72,11 +58,9 @@ public class ActionSpaceGenerator {
             currentBoardCopy.add(this.possibleSets.get(i));
             ArrayList<Integer> currentAvailableTiles = new ArrayList<>(availableTiles);
             customRemove(currentAvailableTiles, this.possibleSets.get(i));
-            //System.out.println(currentAvailableTiles);
 
             // Remove tiles in the set in our rack and available tiles list
-            //customRemove(availableTiles, this.possibleSets.get(i));
-            customRemove(currentRack, this.possibleSets.get(i)); // TODO Check if copy is needed here
+            customRemove(currentRack, this.possibleSets.get(i));
             //now check if the board is valid
             if(validBoard(currentBoardCopy)){
                 // TODO: Check results of resulting racks
@@ -86,7 +70,6 @@ public class ActionSpaceGenerator {
                 resultingBoards.add(currentBoardCopy);
                 resultingRacks.add(currentValidRack);
 
-                //if it could add it try the same set again (2 instances of every tile)
             }
             createAllMoves(currentBoardCopy, currentAvailableTiles,currentRack, i);
         }
@@ -145,7 +128,6 @@ public class ActionSpaceGenerator {
         return arraySet.containsAll(setAsSet);
     }
 
-    //need a function that takes as an input an arraylist and removes all elements from it from the other input arraylist
 
 
     //function to check if the board is valid. thus if all tiles that are in startingBoard are also present in new board
@@ -185,6 +167,17 @@ public class ActionSpaceGenerator {
         return result;
     }
 
+    /**
+    * Generates a list of possible sets based on a combination of tiles from the starting rack and starting board.
+    *
+    * This method combines the tiles from the starting rack and starting board to form a list of all available tiles.
+    * It then iterates through a pre-existing list of all possible sets and checks if each set can be created using
+    * the combined tiles. Sets that can be created are added to the list of possible sets.
+    *
+    * @param startingRack   The initial set of tiles in the player's rack.
+    * @param startingBoard  The initial set of tiles on the game board.
+    * @return A list of possible sets that can be created using tiles from the starting rack and starting board.
+    */
     private ArrayList<ArrayList<Integer>> possibleSets(ArrayList<Integer> startingRack, ArrayList<Integer> startingBoard){
         ArrayList<Integer> allTiles = new ArrayList<>();
         for(Integer tile: startingRack){
@@ -219,6 +212,15 @@ public class ActionSpaceGenerator {
         return false;
     }
 
+    /**
+    * Counts the total number of integers in a list of lists.
+    *
+    * This method iterates through each inner list in the provided list of lists and
+    * calculates the total count of integers across all inner lists.
+    *
+    * @param listOfLists A list of lists containing integers.
+    * @return The total count of integers in all the inner lists combined.
+    */
     private int countIntegers(ArrayList<ArrayList<Integer>> listOfLists) {
         int count = 0;
         for (ArrayList<Integer> innerList : listOfLists) {
