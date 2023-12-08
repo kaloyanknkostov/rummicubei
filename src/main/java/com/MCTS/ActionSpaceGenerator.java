@@ -12,7 +12,7 @@ public class ActionSpaceGenerator {
 
     private ArrayList<ArrayList<ArrayList<Integer>>> resultingBoards;
     private ArrayList<ArrayList<Integer>> resultingRacks;
-    private ArrayList<Integer> startingBoard;
+    private ArrayList<ArrayList<Integer>> startingBoard;
     private ArrayList<Integer> startingRack;
     private ArrayList<ArrayList<Integer>> allPossibleSets;
     private ArrayList<ArrayList<Integer>> possibleSets;
@@ -21,7 +21,7 @@ public class ActionSpaceGenerator {
 
 
 
-    public ActionSpaceGenerator(ArrayList<Integer> board, ArrayList<Integer> rack){
+    public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
         System.out.println("IN Action");
         //allPossibleSets= AllSetGenerator.generateAllSets();
         // get all possible sets here
@@ -29,13 +29,13 @@ public class ActionSpaceGenerator {
         this.resultingRacks = new ArrayList<>();
         this.startingBoard = board;
         this.startingRack = rack;
-        this.possibleSets = possibleSets(this.startingRack,this.startingBoard);
+        this.possibleSets = possibleSets(this.startingRack,decompose(board));
         //probably put this somewhere else
         availableTilesStart = new ArrayList<>();
         for(Integer tile: startingRack){
             availableTilesStart.add(tile);
         }
-        for(Integer tile: startingBoard){
+        for(Integer tile: decompose(startingBoard)){
             availableTilesStart.add(tile);
         }
         ArrayList<ArrayList<Integer>> beginningBoard = new ArrayList<>();
@@ -142,7 +142,7 @@ public class ActionSpaceGenerator {
             return false;
         }
         ArrayList<Integer> decomposedBoard = decompose(newBoard);
-        for(Integer tile: this.startingBoard){
+        for(Integer tile: decompose(this.startingBoard)){
             if(!decomposedBoard.contains(tile)){
                 return false;
             }
@@ -233,6 +233,12 @@ public class ActionSpaceGenerator {
     }
 
     public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
-        return resultingBoards;
+        // NOT ISEMPTY HAS TO BE IF THE ONLY BOARD FOUND IS THE STARTINGBOARD
+        if(this.resultingBoards.isEmpty()){
+            ArrayList<ArrayList<Integer>> result = deepCopy(startingBoard);
+            //this set containing a -1 indicates that the person could not play a move
+            result.add(new ArrayList<>(Arrays.asList(-1)));
+        }
+        return this.resultingBoards;
     }
 }
