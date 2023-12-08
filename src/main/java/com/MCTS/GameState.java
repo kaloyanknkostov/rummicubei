@@ -65,6 +65,14 @@ public class GameState {
         return 0;
     }
 
+    public ArrayList<Integer>[] getRacks(){
+        return this.racks;
+    }
+
+    public ArrayList<ArrayList<Integer>> getBoard(){
+        return this.board
+    }
+
     // -1 if noone won yet
     public int getWinner(){
         return this.winner;

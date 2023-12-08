@@ -56,7 +56,8 @@ public class Node {
     public Node playOut(){
         // Starts play-out at this node
         // when play-out reaches an end node (win, loss or draw) it backpropagates and adds the first node that was played to the childList
-
+        // also add the first node from the playout to the tree
+        
         //this.childList.add(Node Node(TODO))
         return null;
     }
