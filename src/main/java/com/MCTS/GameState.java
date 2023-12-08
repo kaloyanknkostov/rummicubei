@@ -15,8 +15,6 @@ public class GameState {
     private ArrayList<Integer> pile;
     private ArrayList<ArrayList<Integer>> board;
     private boolean[] couldntPlay;
-    private boolean hasFinished;
-    private boolean isDraw;
     private int winner;
     private Random random;
 
@@ -25,21 +23,20 @@ public class GameState {
         this.racks[1] = rackPlayer2;
         this.board = board;
         this.pile = pile;
-        this.hasFinished = false;
-        this.isDraw = false;
         this.random = new Random();
         this.couldntPlay[0] = false;
         this.couldntPlay[1] = false;
+        this.winner = -1;
     }
 
-    //we need a method that takes in a move a player makes and the player hows move it was and updates the entire game state
-    //first check if the game hasfinished
-    //first check if the board was the same, and if so draw one random mo
-    public void updateGameState(ArrayList<ArrayList<Integer>> newBoard, int playerIndex){
+    // kinda wonky code but if nothing happened returns a 0,
+    // if output is 1 someone won the game
+    // if output is 2 the game ended in a draw
+    public int updateGameState(ArrayList<ArrayList<Integer>> newBoard, int playerIndex){
         //check if the player whos move it was now has an empty rack
         if(racks[playerIndex].isEmpty()){
-            hasFinished = true;
-            winner = playerIndex;
+            this.winner = playerIndex;
+            return 1;
         }
         else if (newBoard.get(0).get(0) == -1){
             //this means that this player could not play so we dont modify the board
@@ -52,7 +49,7 @@ public class GameState {
                 //now if the previous player also could not play the game ends in a draw
                 if(this.couldntPlay[(playerIndex+1)%2]){
                     //this means that the current player could not play and the player before it also couldnt play thus its a draw
-                    isDraw = true;
+                    return 2;
                 }
             }
         }
@@ -65,6 +62,12 @@ public class GameState {
             customRemove(this.racks[playerIndex], getDifference(newBoard)); 
             this.couldntPlay[playerIndex] = false;
         }
+        return 0;
+    }
+
+    // -1 if noone won yet
+    public int getWinner(){
+        return this.winner;
     }
 
     private void drawCard(int playerIndex){
@@ -80,7 +83,7 @@ public class GameState {
         ArrayList<Integer> decomposedOld = decompose(this.board);
         ArrayList<Integer> decomposedNew = decompose(newBoard);
         for(Integer tile: decomposedNew){
-            if(!this.board.contains(tile)){
+            if(decomposedOld.contains(tile)){
                 result.add(tile);
             }
         }

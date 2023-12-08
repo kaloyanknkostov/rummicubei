@@ -233,11 +233,9 @@ public class ActionSpaceGenerator {
     }
 
     public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
-        // NOT ISEMPTY HAS TO BE IF THE ONLY BOARD FOUND IS THE STARTINGBOARD
-        if(this.resultingBoards.isEmpty()){
-            ArrayList<ArrayList<Integer>> result = deepCopy(startingBoard);
-            //this set containing a -1 indicates that the person could not play a move
-            result.add(new ArrayList<>(Arrays.asList(-1)));
+        //checks if the only element in resultingboard is the startingboard, thus that it could not play any move
+        if(decompose(this.resultingBoards.get(0)).equals(decompose(this.startingBoard))){
+
         }
         return this.resultingBoards;
     }
