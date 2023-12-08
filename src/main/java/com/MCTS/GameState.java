@@ -70,7 +70,7 @@ public class GameState {
     }
 
     public ArrayList<ArrayList<Integer>> getBoard(){
-        return this.board
+        return this.board;
     }
 
     // -1 if noone won yet
