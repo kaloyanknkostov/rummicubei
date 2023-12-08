@@ -2,6 +2,8 @@ package com.MCTS;
 
 import java.util.ArrayList;
 
+import javax.xml.stream.events.StartDocument;
+
 public class Node {
     private GameState gameState;
     private Node parent;
@@ -57,9 +59,39 @@ public class Node {
         // Starts play-out at this node
         // when play-out reaches an end node (win, loss or draw) it backpropagates and adds the first node that was played to the childList
         // also add the first node from the playout to the tree
-        
-        //this.childList.add(Node Node(TODO))
+
+        //first we get the first random move from this players persepctive and add it to the childlist
+        RandomMove randomMove = new RandomMove(this.gameState.getBoard(), this.gameState.getRacks()[0]);
+        ArrayList<ArrayList<Integer>> firstMove = randomMove.getRandomMove();
+        //now update the gamestates and check if it resulted in something
+        //copy the gamestate so as not to update the gamestate of this node
+        GameState firstChildState = this.gameState.copy();
+        int res = firstChildState.updateGameState(firstMove, 0);
+        if(res == 1){
+            //we won the game
+        } else if (res == 2){
+            //the game ended in a draw
+        } 
+        //if nothing of this sort happened we proceed to random playout
+        //itself idk how to do this ask freddy TODO, rn I use selectnode since it doesnt have any children yet
+        Node firstChild = new Node(firstChildState, selectNode());
+        this.childList.add(firstChild);
+        GameState stateForPlayout = firstChildState.copy();
+        playoutHelper(stateForPlayout, 1);
+        //now from the stateforplayout we can get what the result was and who won. 
         return null;
+    }
+
+    private void playoutHelper(GameState startingState, int startingPlayer){
+        //this function actually runs untill we reach a gamestate 
+        int res = startingState.updateGameState((new RandomMove(startingState.getBoard(), startingState.getRacks()[startingPlayer])).getRandomMove(),startingPlayer);
+        int player = startingPlayer;
+        while(res == 0){
+            //update so its the next players turn 
+            player = (player + 1) % 2;
+            res = startingState.updateGameState((new RandomMove(startingState.getBoard(), startingState.getRacks()[player])).getRandomMove(),player);
+            //if this loop terminates it means an endstate was reached, since startingstate is a reference it works in function before
+        }
     }
 
     public void backpropagate(){

@@ -65,6 +65,10 @@ public class GameState {
         return 0;
     }
 
+    public GameState copy(){
+        return new GameState(this.racks[0], this.racks[1], this.board, this.pile);
+    }
+
     public ArrayList<Integer>[] getRacks(){
         return this.racks;
     }
