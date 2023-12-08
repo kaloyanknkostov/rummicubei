@@ -11,17 +11,17 @@ import java.util.Set;
 public class RandomMove {
     private ArrayList<ArrayList<ArrayList<Integer>>> resultingBoards;
     private ArrayList<ArrayList<Integer>> resultingRacks;
-    private ArrayList<Integer> startingBoard;
+    private ArrayList<ArrayList<Integer>> startingBoard;
     private ArrayList<Integer> startingRack;
     private ArrayList<ArrayList<Integer>> allPossibleSets;
     private ArrayList<ArrayList<Integer>> possibleSets;
     private ArrayList<Integer> availableTilesStart;
     private ArrayList<ArrayList<Integer>> randomMove;
-    Random rand;
+    private Random rand;
     private boolean hasFinished;
 
 
-    public RandomMove(ArrayList<Integer> board, ArrayList<Integer> rack){
+    public RandomMove(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
         System.out.println("IN Action");
         //get all possible sets
         hasFinished = false;
@@ -30,7 +30,7 @@ public class RandomMove {
         this.resultingRacks = new ArrayList<>();
         this.startingBoard = board;
         this.startingRack = rack;
-        this.possibleSets = possibleSets(this.startingRack,this.startingBoard);
+        this.possibleSets = possibleSets(this.startingRack,decompose(board));
         // now the possiblesets are shuffled so it tries to add sets in a random order
         Collections.shuffle(this.possibleSets);
         //probably put this somewhere else
@@ -38,7 +38,7 @@ public class RandomMove {
         for(Integer tile: startingRack){
             availableTilesStart.add(tile);
         }
-        for(Integer tile: startingBoard){
+        for(Integer tile: decompose(board)){
             availableTilesStart.add(tile);
         }
         ArrayList<ArrayList<Integer>> beginningBoard = new ArrayList<>();
@@ -161,7 +161,7 @@ public class RandomMove {
             return false;
         }
         ArrayList<Integer> decomposedBoard = decompose(newBoard);
-        for(Integer tile: this.startingBoard){
+        for(Integer tile: decompose(this.startingBoard)){
             if(!decomposedBoard.contains(tile)){
                 return false;
             }
