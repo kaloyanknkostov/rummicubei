@@ -43,7 +43,7 @@ public class ActionSpaceGenerator {
         //now all moves are generated and the result can just be accesed through the get functions
     }
 
-
+    
     private void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){
         // if all sets have been checked return
         if(lastCheckedSet == this.possibleSets.size()){
@@ -235,7 +235,8 @@ public class ActionSpaceGenerator {
     public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
         //checks if the only element in resultingboard is the startingboard, thus that it could not play any move
         if(decompose(this.resultingBoards.get(0)).equals(decompose(this.startingBoard))){
-
+            // when it couldnt play anything add a set containing only -1 at the front of the only resulting board
+            this.resultingBoards.get(0).add(0, new ArrayList<>(Arrays.asList(-1)));
         }
         return this.resultingBoards;
     }

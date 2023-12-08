@@ -20,6 +20,7 @@ public class RandomMove {
     private Random rand;
     private boolean hasFinished;
 
+    //TODO randomMove doesn't handel not being able to play yet
 
     public RandomMove(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
         System.out.println("IN Action");
@@ -56,6 +57,12 @@ public class RandomMove {
         //include the prob of not playing anything at all
         int y = this.rand.nextInt(x);
         this.randomMove = deepCopy(this.resultingBoards.get(y));
+        if(decompose(this.resultingBoards.get(y)).equals(decompose(this.startingBoard)) && this.resultingBoards.size() == 1){
+            //meaning the only possible move was not doing anything
+            this.randomMove.add(0,new ArrayList<>(Arrays.asList(-1)));
+            //add a -1 as the first set of the resulting board
+        }
+
     }
 
     private void createRandomPlayouts(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){
