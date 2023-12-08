@@ -14,6 +14,7 @@ public class GameState {
     private ArrayList<Integer>[] racks;
     private ArrayList<Integer> pile;
     private ArrayList<ArrayList<Integer>> board;
+    private boolean[] couldntPlay;
     private boolean hasFinished;
     private boolean isDraw;
     private int winner;
@@ -27,6 +28,8 @@ public class GameState {
         this.hasFinished = false;
         this.isDraw = false;
         this.random = new Random();
+        this.couldntPlay[0] = false;
+        this.couldntPlay[1] = false;
     }
 
     //we need a method that takes in a move a player makes and the player hows move it was and updates the entire game state
@@ -34,15 +37,33 @@ public class GameState {
     //first check if the board was the same, and if so draw one random mo
     public void updateGameState(ArrayList<ArrayList<Integer>> newBoard, int playerIndex){
         //check if the player whos move it was now has an empty rack
-        if(racks[playerIndex].isEmpty())
+        if(racks[playerIndex].isEmpty()){
             hasFinished = true;
             winner = playerIndex;
-        } else if (newBoard.equals(this.board)){
+        }
+        else if (newBoard.get(0).get(0) == -1){
+            //this means that this player could not play so we dont modify the board
+            //then we check if there are tiles on the pile, if yes we can simply draw
+            if(!this.pile.isEmpty()){
+                drawCard(playerIndex);
+                //if there is none on the pile however we set that this player coulnt play and dont anything
+            } else {
+                this.couldntPlay[playerIndex] = true;
+                //now if the previous player also could not play the game ends in a draw
+                if(this.couldntPlay[(playerIndex+1)%2]){
+                    //this means that the current player could not play and the player before it also couldnt play thus its a draw
+                    isDraw = true;
+                }
+            }
+        }
+        else if (newBoard.equals(this.board)){
             drawCard(playerIndex);
+            this.couldntPlay[playerIndex] = false;
         //if the game did not finish or one player did not just draw, then one player played a move and we have to update his
         //rack and the board 
         } else {
             customRemove(this.racks[playerIndex], getDifference(newBoard)); 
+            this.couldntPlay[playerIndex] = false;
         }
     }
 
