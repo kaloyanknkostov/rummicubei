@@ -23,8 +23,8 @@ public class ActionSpaceGenerator {
 
     public ActionSpaceGenerator(ArrayList<Integer> board, ArrayList<Integer> rack){
         System.out.println("IN Action");
-        allPossibleSets= AllSetGenerator.generateAllSets();
-
+        //allPossibleSets= AllSetGenerator.generateAllSets();
+        // get all possible sets here
         this.resultingBoards = new ArrayList<>();
         this.resultingRacks = new ArrayList<>();
         this.startingBoard = board;
@@ -38,10 +38,13 @@ public class ActionSpaceGenerator {
         for(Integer tile: startingBoard){
             availableTilesStart.add(tile);
         }
+        ArrayList<ArrayList<Integer>> beginningBoard = new ArrayList<>();
+        createAllMoves(beginningBoard, availableTilesStart, rack, 0);
+        //now all moves are generated and the result can just be accesed through the get functions
     }
 
 
-    public void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){
+    private void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){
         // if all sets have been checked return
         if(lastCheckedSet == this.possibleSets.size()){
             return;

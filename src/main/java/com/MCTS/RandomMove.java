@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-public class RandomPlayout {
+public class RandomMove {
     private ArrayList<ArrayList<ArrayList<Integer>>> resultingBoards;
     private ArrayList<ArrayList<Integer>> resultingRacks;
     private ArrayList<Integer> startingBoard;
@@ -21,7 +21,7 @@ public class RandomPlayout {
     private boolean hasFinished;
 
 
-    public RandomPlayout(ArrayList<Integer> board, ArrayList<Integer> rack){
+    public RandomMove(ArrayList<Integer> board, ArrayList<Integer> rack){
         System.out.println("IN Action");
         //get all possible sets
         hasFinished = false;
@@ -41,6 +41,10 @@ public class RandomPlayout {
         for(Integer tile: startingBoard){
             availableTilesStart.add(tile);
         }
+        ArrayList<ArrayList<Integer>> beginningBoard = new ArrayList<>();
+        createRandomPlayouts(beginningBoard, availableTilesStart, rack, 0);
+        calculateRandomMove();
+        //now the resulting random move can just be accessed from the getMethod
     }
 
     public ArrayList<ArrayList<Integer>> getRandomMove(){
