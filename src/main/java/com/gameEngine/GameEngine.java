@@ -68,7 +68,7 @@ public class GameEngine {
                 System.out.println("DONE");
             }
             if (gameModel.isNextTurn()) {
-                logged = false;
+
                 System.out.println("the last board was:");
                 gameModel.setNextTurn(false);
                 System.out.println("Image board:");
@@ -151,6 +151,7 @@ public class GameEngine {
             currentPlayerIndex = 0;
         } else {
             currentPlayerIndex++;
+            logged = false;
         }
         gameModel.setCurrentPlayer(getCurrentPlayer());
         StartScreensApplication.activeController.playerTurn();
@@ -329,12 +330,11 @@ public class GameEngine {
     }
 
     private void writeGameStateLogToFile(String fileName) {
-        try (FileWriter writer = new FileWriter("data/" + fileName + ".csv")) {
+        try (FileWriter writer = new FileWriter("data/raw_data/" + fileName + ".csv")) {
             writer.write(gameStateLog.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
 }
