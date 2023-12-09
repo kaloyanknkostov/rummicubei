@@ -78,7 +78,7 @@ public class Node {
         this.childList.add(firstChild);
         GameState stateForPlayout = firstChildState.copy();
         playoutHelper(stateForPlayout, 1);
-        //now from the stateforplayout we can get what the result was and who won. 
+        //now from the stateforplayout we can get what the result was and who won.
         return null;
     }
 

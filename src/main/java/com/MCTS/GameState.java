@@ -33,9 +33,12 @@ public class GameState {
     // if output is 1 someone won the game
     // if output is 2 the game ended in a draw
     public int updateGameState(ArrayList<ArrayList<Integer>> newBoard, int playerIndex){
+
+        customRemove(this.racks[playerIndex], getDifference(newBoard));
         //check if the player whos move it was now has an empty rack
         if(racks[playerIndex].isEmpty()){
             this.winner = playerIndex;
+            this.board = newBoard;
             return 1;
         }
         else if (newBoard.get(0).get(0) == -1){
@@ -59,7 +62,7 @@ public class GameState {
         //if the game did not finish or one player did not just draw, then one player played a move and we have to update his
         //rack and the board 
         } else {
-            customRemove(this.racks[playerIndex], getDifference(newBoard)); 
+            this.board = newBoard;
             this.couldntPlay[playerIndex] = false;
         }
         return 0;
@@ -90,6 +93,7 @@ public class GameState {
     }
 
     //this function takes in a board and gets the difference in tiles from the old one
+    //check for empty
     private ArrayList<Integer> getDifference(ArrayList<ArrayList<Integer>> newBoard){
         ArrayList<Integer> result = new ArrayList<>();
         ArrayList<Integer> decomposedOld = decompose(this.board);
@@ -112,6 +116,7 @@ public class GameState {
         return result;
     }
 
+    //check if this handles empty as well
     private static void customRemove(List<Integer> list, ArrayList<Integer> elementsToRemove) {
         for (Integer element : elementsToRemove) {
             list.remove(element);
