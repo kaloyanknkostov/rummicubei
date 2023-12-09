@@ -92,6 +92,7 @@ public class GameState {
         this.racks[playerIndex].add(tile);
     }
 
+    
     //this function takes in a board and gets the difference in tiles from the old one
     //check for empty
     private ArrayList<Integer> getDifference(ArrayList<ArrayList<Integer>> newBoard){

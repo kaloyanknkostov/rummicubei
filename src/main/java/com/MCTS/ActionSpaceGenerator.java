@@ -78,6 +78,19 @@ public class ActionSpaceGenerator {
         }
     }
 
+    public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
+        //checks if the only element in resultingboard is the startingboard, thus that it could not play any move
+        if(this.getResultingBoards().size() == 1 || decompose(this.resultingBoards.get(0)).equals(decompose(this.startingBoard))){
+            // when it couldnt play anything add a set containing only -1 at the front of the only resulting board
+            this.resultingBoards.get(0).add(0, new ArrayList<>(Arrays.asList(-1)));
+        }
+        return this.resultingBoards;
+    }
+
+    public ArrayList<ArrayList<Integer>> getPossibleSets(){
+        return this.possibleSets;
+    }
+
     // this method keeps track of the available tiles by removing all the tiles in the board from the tiles available at the start.
     private ArrayList<Integer> getAvailableTiles(ArrayList<ArrayList<Integer>> board){
         ArrayList<Integer> result = new ArrayList<>(this.availableTilesStart);
@@ -86,6 +99,9 @@ public class ActionSpaceGenerator {
         }
         return result;
     }
+
+
+    //TODO everything below here
 
     /**
     * Creates a deep copy of a 2D ArrayList of integers.
@@ -199,10 +215,6 @@ public class ActionSpaceGenerator {
         return possibleSets;
     }
 
-    public ArrayList<ArrayList<Integer>> getPossibleSets(){
-        return this.possibleSets;
-    }
-
 
     // Helper function to check if a tile is present in a list
     private boolean containsTile(ArrayList<Integer> list, Integer tile) {
@@ -232,12 +244,5 @@ public class ActionSpaceGenerator {
         return count;
     }
 
-    public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
-        //checks if the only element in resultingboard is the startingboard, thus that it could not play any move
-        if(this.getResultingBoards().size() == 1 || decompose(this.resultingBoards.get(0)).equals(decompose(this.startingBoard))){
-            // when it couldnt play anything add a set containing only -1 at the front of the only resulting board
-            this.resultingBoards.get(0).add(0, new ArrayList<>(Arrays.asList(-1)));
-        }
-        return this.resultingBoards;
-    }
+
 }
