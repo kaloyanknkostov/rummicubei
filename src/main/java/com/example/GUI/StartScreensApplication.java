@@ -255,6 +255,19 @@ public class StartScreensApplication extends Application {
         initializeDragAndDrop();
     }
 
+    public void updateBoard(ImageView[] board) {
+        ArrayList<ArrayList<Image>> boardImages = transformIntoBoard();
+        ArrayList<Image> flatBoardImages = new ArrayList<>();
+        for (ArrayList<Image> row : boardImages) {
+            flatBoardImages.addAll(row);
+        }
+        for (int i = 0; i < board.length; i++) {
+            ImageView imageView = board[i];
+            Image image = flatBoardImages.get(i);
+            imageView.setImage(image);
+        }
+    }
+
     private boolean drewATile = false;
 
     public void handleDrawTile() {
