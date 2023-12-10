@@ -87,11 +87,10 @@ public class Node {
         int res = firstChildState.updateGameState(firstMoveMe, 0);
         if(res == 1){
             //we won the game
-            //backpropegate
+            backpropagate(1);
             return;
         } else if (res == 2){
-            //the game ended in a draw
-            //backpropegate
+            backpropagate(0.5f);
             return;
         }
         //now other player plays
@@ -101,12 +100,11 @@ public class Node {
         res = firstChildState.updateGameState(firstMoveOpponent, 1);
         //check draw or loss
         if(res == 1){
-            //we won the game
-            //backpropegate
+            //we lost
+            backpropagate(0);
             return;
         } else if (res == 2){
-            //the game ended in a draw
-            //backpropegate
+            backpropagate(0.5f);
             return;
         }
         // now its our turn again
@@ -116,12 +114,23 @@ public class Node {
         Node firstChild = new Node(firstChildState, this);
         this.childList.add(firstChild);
         GameState stateForPlayout = firstChildState.copy();
-        playoutHelper(stateForPlayout, 1);
+        int x = playoutHelper(stateForPlayout, 1);
         //now from the stateforplayout we can get what the result was and who won.
+        //backprop
+        if(x == 1){
+            if(stateForPlayout.getWinner() == 0){
+                backpropagate(1);
+            } else {
+                backpropagate(0);
+            }
+        } else {
+            backpropagate(0.5f);
+        }
+        
 
     }
 
-    private void playoutHelper(GameState startingState, int startingPlayer){
+    private int playoutHelper(GameState startingState, int startingPlayer){
         //this function actually runs untill we reach a gamestate
         int res = startingState.updateGameState((new RandomMove(startingState.getBoard(), startingState.getRacks()[startingPlayer])).getRandomMove(),startingPlayer);
         int player = startingPlayer;
@@ -132,6 +141,7 @@ public class Node {
             res = startingState.updateGameState((new RandomMove(startingState.getBoard(), startingState.getRacks()[player])).getRandomMove(),player);
             //if this loop terminates it means an endstate was reached, since startingstate is a reference it works in function before
         }
+        return res;
     }
 
     public void backpropagate(float new_result){
