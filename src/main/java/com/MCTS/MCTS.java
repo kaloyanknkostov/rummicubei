@@ -94,9 +94,9 @@ public class MCTS {
                 probabiltiyArray[i][j] = array[i][j]/numberOfUnkownTiles;
             }
         }
-
         // get probabilites of the tiles that can be in other players hands
     }
+
     public int colorToNumber(String color){
         switch (color.toLowerCase()) {
             case "red":
