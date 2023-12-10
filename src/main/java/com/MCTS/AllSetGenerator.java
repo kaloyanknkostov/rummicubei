@@ -1,17 +1,29 @@
 package com.MCTS;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 
 
 public class AllSetGenerator {
-    
+    private static AllSetGenerator instance;
+    private static ArrayList<ArrayList<Integer>> allSets;
+
+    public static AllSetGenerator getInstance() {
+        if (instance == null) {
+            instance = new AllSetGenerator();
+        }
+        return instance;
+    }
+
+    private AllSetGenerator() {
+        allSets = new ArrayList<>();
+    }
+    public static ArrayList<ArrayList<Integer>> getAllSets() {
+        return allSets;
+    }
+
     public static ArrayList<ArrayList<Integer>> generateAllSets() {
-        ArrayList<ArrayList<Integer>> allSets = new ArrayList<>();
         ArrayList<ArrayList<Integer>> runs=generateRunsWithoutJokers();
         ArrayList<ArrayList<Integer>> group=generateGroupsWithoutJokers();
         allSets.addAll(runs);

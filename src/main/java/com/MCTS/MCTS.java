@@ -19,7 +19,7 @@ public class MCTS {
 
         // Get predictions of other players decks
         // We can decide here if we want to create multiple trees by sampling the tiles based on the predictions/ probabilities we got (advanced stuff)
-        this.gameState = new GameState();
+        //this.gameState = new GameState();
 
         this.root = new Node(gameState, null);
     }
