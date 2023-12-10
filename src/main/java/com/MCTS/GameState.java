@@ -51,6 +51,7 @@ public class GameState {
                 this.couldntPlay[playerIndex] = true;
                 //now if the previous player also could not play the game ends in a draw
                 if(this.couldntPlay[(playerIndex+1)%2]){
+                    //TODO only works for two players
                     //this means that the current player could not play and the player before it also couldnt play thus its a draw
                     return 2;
                 }
@@ -69,7 +70,7 @@ public class GameState {
     }
 
     public GameState copy(){
-        return new GameState(this.racks[0], this.racks[1], this.board, this.pile);
+        return new GameState(new ArrayList<>(this.racks[0]), new ArrayList<>(this.racks[1]), deepCopy(this.board), new ArrayList<>(this.pile));
     }
 
     public ArrayList<Integer>[] getRacks(){
@@ -122,6 +123,24 @@ public class GameState {
         for (Integer element : elementsToRemove) {
             list.remove(element);
         }
+    }
+
+    /**
+    * Creates a deep copy of a 2D ArrayList of integers.
+    *
+    * @param original The 2D ArrayList to be copied.
+    * @return A deep copy of the input 2D ArrayList.
+     */
+    private ArrayList<ArrayList<Integer>> deepCopy(ArrayList<ArrayList<Integer>> original) {
+        ArrayList<ArrayList<Integer>> copy = new ArrayList<>();
+
+        for (ArrayList<Integer> innerList : original) {
+            // Create a new ArrayList for each inner list
+            ArrayList<Integer> innerCopy = new ArrayList<>(innerList);
+            copy.add(innerCopy);
+        }
+
+        return copy;
     }
 
 }

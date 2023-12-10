@@ -55,31 +55,53 @@ public class Node {
         return nextNode.selectNode();
     }
 
-    public Node playOut(){
+    public void playOut(){
         // Starts play-out at this node
         // when play-out reaches an end node (win, loss or draw) it backpropagates and adds the first node that was played to the childList
         // also add the first node from the playout to the tree
 
         //first we get the first random move from this players persepctive and add it to the childlist
-        RandomMove randomMove = new RandomMove(this.gameState.getBoard(), this.gameState.getRacks()[0]);
-        ArrayList<ArrayList<Integer>> firstMove = randomMove.getRandomMove();
+        //TODO add this for other players as well so gamestate is from our perspective again
+        RandomMove randomMoveMe = new RandomMove(this.gameState.getBoard(), this.gameState.getRacks()[0]);
+        ArrayList<ArrayList<Integer>> firstMoveMe = randomMoveMe.getRandomMove();
         //now update the gamestates and check if it resulted in something
         //copy the gamestate so as not to update the gamestate of this node
         GameState firstChildState = this.gameState.copy();
-        int res = firstChildState.updateGameState(firstMove, 0);
+        int res = firstChildState.updateGameState(firstMoveMe, 0);
         if(res == 1){
             //we won the game
+            //backpropegate
+            return;
         } else if (res == 2){
             //the game ended in a draw
-        } 
+            //backpropegate
+            return;
+        }
+        //now other player plays
+        //TODO this only works for 2 players, have to fix this next phase
+        RandomMove randomMoveOpponent = new RandomMove(firstChildState.getBoard(), firstChildState.getRacks()[1]);
+        ArrayList<ArrayList<Integer>> firstMoveOpponent = randomMoveOpponent.getRandomMove();
+        res = firstChildState.updateGameState(firstMoveOpponent, 1);
+        //check draw or loss
+        if(res == 1){
+            //we won the game
+            //backpropegate
+            return;
+        } else if (res == 2){
+            //the game ended in a draw
+            //backpropegate
+            return;
+        }
+        // now its our turn again
+
         //if nothing of this sort happened we proceed to random playout
-        //itself idk how to do this ask freddy TODO, rn I use selectnode since it doesnt have any children yet
-        Node firstChild = new Node(firstChildState, selectNode());
+        //TODO, rn I use selectnode since it doesnt have any children yet
+        Node firstChild = new Node(firstChildState, this);
         this.childList.add(firstChild);
         GameState stateForPlayout = firstChildState.copy();
         playoutHelper(stateForPlayout, 1);
         //now from the stateforplayout we can get what the result was and who won.
-        return null;
+
     }
 
     private void playoutHelper(GameState startingState, int startingPlayer){
@@ -88,6 +110,7 @@ public class Node {
         int player = startingPlayer;
         while(res == 0){
             //update so its the next players turn 
+            //TODO this is constrained for 2 players
             player = (player + 1) % 2;
             res = startingState.updateGameState((new RandomMove(startingState.getBoard(), startingState.getRacks()[player])).getRandomMove(),player);
             //if this loop terminates it means an endstate was reached, since startingstate is a reference it works in function before
