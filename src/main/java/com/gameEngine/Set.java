@@ -107,7 +107,11 @@ public class Set {
     }
 
     public int getValue() {
-        return value;
+        int totalValue = 0;
+        for(int i=0; i<tilesList.size(); i++) {
+            totalValue+=tilesList.get(i).getNumber();
+        }
+        return totalValue;
     }
 
     public Set copy() {

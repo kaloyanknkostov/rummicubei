@@ -13,6 +13,7 @@ public class GameModel {
     private int numberOfPlayers = 0;
     private Player currentPlayer;
     private boolean nextTurn = false;
+    private int numberOfBots = 0;
     private ArrayList<ArrayList<Image>> transferBoardViaImages;
     public ArrayList<String> playerNames = new ArrayList();
     public void setCurrentBoard(Board currentBoard) {
@@ -20,6 +21,13 @@ public class GameModel {
 
     public Tile drawTile;
 
+    public void setNumberOfBots(int bots){
+        this.numberOfBots = numberOfBots;
+    }
+
+    public int getNumberOfBots(){
+        return this.numberOfBots;
+    }
     public boolean isNextTurn() {
         return nextTurn;
     }
