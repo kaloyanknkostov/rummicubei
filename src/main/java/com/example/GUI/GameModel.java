@@ -22,7 +22,7 @@ public class GameModel {
     public Tile drawTile;
 
     public void setNumberOfBots(int bots){
-        this.numberOfBots = numberOfBots;
+        this.numberOfBots = bots;
     }
 
     public int getNumberOfBots(){

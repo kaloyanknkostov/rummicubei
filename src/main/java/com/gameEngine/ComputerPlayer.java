@@ -3,6 +3,7 @@ package com.gameEngine;
 
 
 import com.MCTS.ActionSpaceGenerator;
+import com.MCTS.BaselineAgent;
 import com.MCTS.MCTS;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class ComputerPlayer implements Player
     @Override
     public Board getNewBoard(Board oldBoard)
     {
+
         /*
         ArrayList<ArrayList<Integer>> intBoard = oldBoard.turnToIntBoard();
         for(ArrayList<Integer> set:intBoard)
@@ -46,10 +48,14 @@ public class ComputerPlayer implements Player
         return actionSpaceGenerator.getResultingBoards().get(0);
          */
 
-
-        MCTS mcts =new MCTS(oldBoard,deckOfTiles);
-        ArrayList<ArrayList<Integer>> newBoard =mcts.getNextMove();
-
+        ArrayList<Integer> deckOfIntTiles =new ArrayList<>();
+        for (Tile tile: deckOfTiles){
+            deckOfIntTiles.add(tile.turnToInt());
+        }
+        //not giving him new cards
+        System.out.println(deckOfIntTiles);
+        BaselineAgent baselineAgent =new BaselineAgent(oldBoard.turnToIntBoard(),deckOfIntTiles);
+        ArrayList<ArrayList<Integer>> newBoard =baselineAgent.getBestMove();
         ArrayList<Tile> playableTiles =oldBoard.getTilesInBoard();
         playableTiles.addAll(deckOfTiles);
         Board board=new Board();
@@ -64,6 +70,7 @@ public class ComputerPlayer implements Player
             }
             board.addSet(newSet);
         }
+        board.printBoard();
         return  board;
     }
 

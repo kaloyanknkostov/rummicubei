@@ -1,0 +1,63 @@
+package com.MCTS;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class BaselineAgent {
+
+    private ArrayList<ArrayList<Integer>> board;
+    private ArrayList<Integer> rack;
+
+    public BaselineAgent(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack) {
+        this.board = board;
+        this.rack = rack;
+    }
+    public ArrayList<ArrayList<Integer>> getBestMove(){
+        ArrayList<ArrayList<Integer>> empty = new ArrayList<>();
+        ArrayList<Integer> allBoardTile=new ArrayList<>();
+        for(ArrayList<Integer> set : board){
+           allBoardTile .addAll(set);
+        }
+        ActionSpaceGenerator actionSpaceGenerator = new ActionSpaceGenerator(allBoardTile,rack);
+        actionSpaceGenerator.createAllMoves(empty,rack,0);
+        ArrayList<ArrayList<ArrayList<Integer>>> actionspace =actionSpaceGenerator.getResultingBoards();
+        int maxSize = 0; // the biggest set of tiles we have found.
+        int currentSize = 0; // the total size of the current arraylist that we are checking
+        int keepingTrack = 0; // the index we are currently checking
+        int bestMove = 0;  // the index of the best move in the actionspace
+        int currentNumerical = 0; // the values of the best move numerically (all the tiles added)
+        ArrayList<ArrayList<Integer>> maxArrayList = null; // the bast move as the array list of array lists of integers
+        for (ArrayList<ArrayList<Integer>> move : actionspace) { // loop through each moves
+            currentSize = 0;
+            for (ArrayList<Integer> set : move) {  // check each set of the move and add the size of that set to the current size
+                currentSize += set.size();
+            }
+
+            if (currentSize > maxSize) {  //if the current size is bigger than max size we replace it and update all  the values
+                maxSize = currentSize;
+                bestMove = keepingTrack;
+                maxArrayList = actionspace.get(bestMove);
+            } else if (currentSize == maxSize){   // if the size is the same we decide the move that gets rid of the higher valued tiles.
+                int newPossibility= 0;
+
+                for (ArrayList<Integer> set : maxArrayList) {
+                    for (Integer tile : set) {
+                        if (tile.intValue() % 13==0) {
+                            newPossibility += 13;
+                        } else {
+                            newPossibility += tile.intValue() % 13; // adds the vlaues of the tiles to get the best move poitns wise
+                            // we still need to account for joker.
+                        }
+                    }
+                }
+                if(newPossibility> currentNumerical){
+                    bestMove = keepingTrack;
+                    currentNumerical = newPossibility;
+                }
+            }
+            keepingTrack++;
+        }
+        return actionspace.get(bestMove);
+
+    }
+}

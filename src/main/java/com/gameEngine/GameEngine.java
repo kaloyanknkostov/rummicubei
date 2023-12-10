@@ -30,7 +30,8 @@ public class GameEngine {
             }
         }
         engine.numberOfRealPlayers = engine.gameModel.getNumberOfPlayers();
-        engine.numberOfBots = 0;
+        engine.numberOfBots =1;
+
         engine.board = new Board();
         engine.generateTiles();
         engine.gameLoop();
@@ -46,6 +47,9 @@ public class GameEngine {
         gameModel.setCurrentBoard(board);
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
         currentDraw = getThisDrawnTile();
+
+        System.out.println("Number of Real Players is: "+numberOfRealPlayers);
+        System.out.println("Number of Bot Players is: "+numberOfBots);
         while (!isGameEnding()) {
             if (gameModel.isNextTurn()|| getCurrentPlayer() instanceof ComputerPlayer) {
                 //System.out.println("the last board was:");
@@ -59,13 +63,16 @@ public class GameEngine {
                     incomingBoard = createBoardFromTiles(transformImagesToTiles());
                 }
                 else {
-                     incomingBoard = getCurrentPlayer().getNewBoard(board);
+                    System.out.println("Computer is playing");
+                    incomingBoard = getCurrentPlayer().getNewBoard(board);
                 }
                 //System.out.println("Incoming board (tiles)");
                 //incomingBoard.printBoard();
 
                 if (incomingBoard.checkBoardValidity()) {
-                    if (getCurrentPlayer().getIsOut()) {
+
+                   // if (getCurrentPlayer().getIsOut()) {
+                    if (true) {
                         if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                             getCurrentPlayer().setDeckOfTiles(copy);
                             getCurrentPlayer().getDeckOfTiles().add(currentDraw);
@@ -84,7 +91,8 @@ public class GameEngine {
                         for (Set set : board.getSetList()) {
                             if (!incomingBoard.getSetList().contains(set)) {
                                 gotOut = false;
-                                StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
+
+                                StartScreensApplication.getInstance().setMessageLabel("1", "You can't use the tiles on the board!");
                                 System.out.println("You can't the tiles in the board!");
                                 break;
                             }
@@ -104,13 +112,13 @@ public class GameEngine {
                                 gameTurn();
                             } else {
                                 System.out.println("Get more then 30");
-                                StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You need to get more then 30 points!");
+                                StartScreensApplication.getInstance().setMessageLabel("1", "You need to get more then 30 points!");
                             }
                         }
                     }
                 } else {
                     getCurrentPlayer().setDeckOfTiles(copy);
-                    StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "Not a valid board");
+                    StartScreensApplication.getInstance().setMessageLabel("1", "Not a valid board");
                     System.out.println("NOT VALID");
                 }
             } else {
@@ -144,9 +152,15 @@ public class GameEngine {
             System.out.println(s);
         }
         System.out.println("changing that to the player index: " + currentPlayerIndex);
-        StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
-        gameModel.setCurrentBoard(board);
-         }
+        if (getCurrentPlayer() instanceof HumanPlayer) {
+            StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
+        }
+        else {
+            StartScreensApplication.getInstance().setMessageLabel("Bot", "");
+        }
+        System.out.println(board);
+            gameModel.setCurrentBoard(board);
+        }
 
 
     private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
