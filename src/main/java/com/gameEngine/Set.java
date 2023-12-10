@@ -107,7 +107,11 @@ public class Set {
     }
 
     public int getValue() {
-        return value;
+        int totalValue = 0;
+        for(int i=0; i<tilesList.size(); i++) {
+            totalValue+=tilesList.get(i).getNumber();
+        }
+        return totalValue;
     }
 
     public Set copy() {
@@ -116,5 +120,13 @@ public class Set {
             newSet.addTile(tile.copy());
         }
         return newSet;
+    }
+
+    public ArrayList<Integer> turnSetToInt(){
+        ArrayList<Integer> list=new ArrayList<>();
+        for(Tile tile:tilesList){
+           list.add(tile.turnToInt());
+        }
+        return list;
     }
 }

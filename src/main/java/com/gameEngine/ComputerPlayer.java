@@ -2,6 +2,10 @@ package com.gameEngine;
 
 
 
+import com.MCTS.ActionSpaceGenerator;
+import com.MCTS.BaselineAgent;
+import com.MCTS.MCTS;
+
 import java.util.ArrayList;
 
 public class ComputerPlayer implements Player
@@ -24,11 +28,50 @@ public class ComputerPlayer implements Player
     }
 
     @Override
-    public Board getNewBoard()
+    public Board getNewBoard(Board oldBoard)
     {
+
+        /*
+        ArrayList<ArrayList<Integer>> intBoard = oldBoard.turnToIntBoard();
+        for(ArrayList<Integer> set:intBoard)
+        {
+           // board.addAll(set);
+        }
+        ArrayList<Integer>hand=new ArrayList<>();
+        for ( Tile tile:deckOfTiles){
+            hand.add(tile.turnToInt());
+        }
+        ActionSpaceGenerator actionSpaceGenerator = new ActionSpaceGenerator(board,hand);
+        ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> currentRack, int lastCheckedSet)
+        ArrayList<ArrayList<Integer>> emptyBoard = new ArrayList<>();
+        actionSpaceGenerator.createAllMoves(emptyBoard,hand,0);
+        return actionSpaceGenerator.getResultingBoards().get(0);
+         */
+
+        ArrayList<Integer> deckOfIntTiles =new ArrayList<>();
+        for (Tile tile: deckOfTiles){
+            deckOfIntTiles.add(tile.turnToInt());
+        }
+        //not giving him new cards
+        System.out.println(deckOfIntTiles);
+        BaselineAgent baselineAgent =new BaselineAgent(oldBoard.turnToIntBoard(),deckOfIntTiles);
+        ArrayList<ArrayList<Integer>> newBoard =baselineAgent.getBestMove();
+        ArrayList<Tile> playableTiles =oldBoard.getTilesInBoard();
+        playableTiles.addAll(deckOfTiles);
         Board board=new Board();
-        // AI PART
-        return board;
+        for (ArrayList<Integer> set:newBoard){
+            Set newSet = new Set();
+            for(Integer tileId:set){
+                for(Tile tile:playableTiles){
+                    if(tile.turnToInt()==tileId){
+                        newSet.addTile(tile);
+                    }
+                }
+            }
+            board.addSet(newSet);
+        }
+        board.printBoard();
+        return  board;
     }
 
     @Override

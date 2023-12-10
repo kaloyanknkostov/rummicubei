@@ -2,8 +2,6 @@ package com.gameEngine;
 
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
-
 public class Board {
 
     private ArrayList<Set> setList;
@@ -13,8 +11,8 @@ public class Board {
     }
 
     public boolean checkBoardValidity() {
-        for(int i=0; i<setList.size(); i++) {
-            if(!setList.get(i).isValid()) return false;
+        for (Set set : setList) {
+            if (!set.isValid()) return false;
         }
         return true;
     }
@@ -54,18 +52,13 @@ public class Board {
         }
         return newBoard;
     }
-    @Override
-    public String toString() {
-        if (setList.isEmpty()) {
-            return "Empty Board";
-        }
-
-        return setList.stream()
-                .map(set -> set.getTilesList().stream()
-                        .map(Tile::toString)
-                        .collect(Collectors.joining(" ")))
-                .collect(Collectors.joining(";"));
+    public ArrayList<ArrayList<Integer>> turnToIntBoard()
+    {
+        ArrayList<ArrayList<Integer>> board=new ArrayList<>();
+       for (Set set:setList){
+          ArrayList<Integer> intSet=set.turnSetToInt();
+          board.add(intSet);
+       }
+       return board;
     }
-
-
 }

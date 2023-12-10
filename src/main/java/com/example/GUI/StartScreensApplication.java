@@ -79,11 +79,15 @@ public class StartScreensApplication extends Application {
             System.out.print("checkNames passed");
             gameModel.setStartGame(true);
             switchScene("GamePane.fxml", event);
+        }else {
+            System.out.println("checkNames not passed");
         }
     }
 
     public void handleSingleAction(ActionEvent event) {
-        switchScene("ErrorAI.fxml", event);
+        gameModel.setNumberOfBots(1);
+        gameModel.setNumberOfPlayers(1);
+        switchScene("SinglePlayerNameInputScence.fxml", event);
     }
 
     public void handleNextTurn() {
