@@ -1,4 +1,4 @@
-GameId, Board, PlayersHands, MoveNumber, CurrentPlayer
+GameId,Board,PlayersHands,MoveNumber,CurrentPlayer
 0,Empty Board,black|7 red|2 yellow|2 yellow|8 blue|12 yellow|6 red|8 yellow|1 yellow|4 blue|11 black|10 black|2 blue|11 black|9 red|12;yellow|9 black|4 red|4 yellow|7 red|1 yellow|2 yellow|11 red|6 red|1 red|4 red|11 red|7 blue|3 black|8 red|5,0,0
 0,Empty Board,black|7 red|2 yellow|2 yellow|8 blue|12 yellow|6 red|8 yellow|1 yellow|4 blue|11 black|10 black|2 blue|11 black|9 red|12 red|13;yellow|9 black|4 red|4 yellow|7 red|1 yellow|2 yellow|11 red|6 red|1 red|4 red|11 red|7 blue|3 black|8 red|5,1,1
 0,Empty Board,black|7 red|2 yellow|2 yellow|8 blue|12 yellow|6 red|8 yellow|1 yellow|4 blue|11 black|10 black|2 blue|11 black|9 red|12 red|13;yellow|9 black|4 red|4 yellow|7 red|1 yellow|2 yellow|11 red|6 red|1 red|4 red|11 red|7 blue|3 black|8 red|5 yellow|8,2,0
