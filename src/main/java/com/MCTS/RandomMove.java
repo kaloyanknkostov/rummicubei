@@ -2,57 +2,82 @@ package com.MCTS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
-
-
-public class ActionSpaceGenerator {
-
+public class RandomMove {
     private ArrayList<ArrayList<ArrayList<Integer>>> resultingBoards;
     private ArrayList<ArrayList<Integer>> resultingRacks;
     private ArrayList<ArrayList<Integer>> startingBoard;
     private ArrayList<Integer> startingRack;
     private ArrayList<ArrayList<Integer>> allPossibleSets;
     private ArrayList<ArrayList<Integer>> possibleSets;
-    private  ArrayList<Integer> availableTilesStart;
+    private ArrayList<Integer> availableTilesStart;
+    private ArrayList<ArrayList<Integer>> randomMove;
+    private Random rand;
+    private boolean hasFinished;
 
+    //TODO randomMove doesn't handel not being able to play yet
 
-
-
-    public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
+    public RandomMove(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
         System.out.println("IN Action");
-        //allPossibleSets= AllSetGenerator.generateAllSets();
-        // get all possible sets here
+        //get all possible sets
+        hasFinished = false;
+        rand = new Random();
         this.resultingBoards = new ArrayList<>();
         this.resultingRacks = new ArrayList<>();
         this.startingBoard = board;
         this.startingRack = rack;
         this.possibleSets = possibleSets(this.startingRack,decompose(board));
+        // now the possiblesets are shuffled so it tries to add sets in a random order
+        Collections.shuffle(this.possibleSets);
         //probably put this somewhere else
         availableTilesStart = new ArrayList<>();
         for(Integer tile: startingRack){
             availableTilesStart.add(tile);
         }
-        for(Integer tile: decompose(startingBoard)){
+        for(Integer tile: decompose(board)){
             availableTilesStart.add(tile);
         }
         ArrayList<ArrayList<Integer>> beginningBoard = new ArrayList<>();
-        createAllMoves(beginningBoard, availableTilesStart, rack, 0);
-        //now all moves are generated and the result can just be accesed through the get functions
+        createRandomPlayouts(beginningBoard, availableTilesStart, rack, 0);
+        calculateRandomMove();
+        //now the resulting random move can just be accessed from the getMethod
     }
 
-    
-    private void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){
+    public ArrayList<ArrayList<Integer>> getRandomMove(){
+        return this.randomMove;
+    }
+
+    private void calculateRandomMove(){
+        int x = this.resultingBoards.size()-1;
+        //include the prob of not playing anything at all
+        int y = this.rand.nextInt(x);
+        this.randomMove = deepCopy(this.resultingBoards.get(y));
+        if(decompose(this.resultingBoards.get(y)).equals(decompose(this.startingBoard)) && this.resultingBoards.size() == 1){
+            //meaning the only possible move was not doing anything
+            this.randomMove.add(0,new ArrayList<>(Arrays.asList(-1)));
+            //add a -1 as the first set of the resulting board
+        }
+
+    }
+
+    private void createRandomPlayouts(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){
         // if all sets have been checked return
-        if(lastCheckedSet == this.possibleSets.size()){
+        if(lastCheckedSet == this.possibleSets.size() && validBoard(currentBoard)){
+            hasFinished = true;
+            return;
+        } else if(lastCheckedSet == this.possibleSets.size()){
             return;
         }
 
         for(int i = lastCheckedSet ; i < this.possibleSets.size();i++){
-            // If cannot create set with tiles go to next one
-            if(!canCreateSet(availableTiles, possibleSets.get(i))){
+            // If cannot create set with tiles go to next one or if it has finsihed
+            if(hasFinished ||!canCreateSet(availableTiles, possibleSets.get(i))){
+                //cause then it wil not run the for loop and reach the return of all the active calls without doing anything
                 continue;
             }
             // Create copy of board so changes in this iteration of the loop are unique to the next iteration
@@ -74,21 +99,9 @@ public class ActionSpaceGenerator {
                 resultingRacks.add(currentValidRack);
 
             }
-            createAllMoves(currentBoardCopy, currentAvailableTiles,currentRack, i);
+            createRandomPlayouts(currentBoardCopy, currentAvailableTiles,currentRack,i);
+            
         }
-    }
-
-    public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
-        //checks if the only element in resultingboard is the startingboard, thus that it could not play any move
-        if(this.getResultingBoards().size() == 1 || decompose(this.resultingBoards.get(0)).equals(decompose(this.startingBoard))){
-            // when it couldnt play anything add a set containing only -1 at the front of the only resulting board
-            this.resultingBoards.get(0).add(0, new ArrayList<>(Arrays.asList(-1)));
-        }
-        return this.resultingBoards;
-    }
-
-    public ArrayList<ArrayList<Integer>> getPossibleSets(){
-        return this.possibleSets;
     }
 
     // this method keeps track of the available tiles by removing all the tiles in the board from the tiles available at the start.
@@ -99,9 +112,6 @@ public class ActionSpaceGenerator {
         }
         return result;
     }
-
-
-    //TODO everything below here
 
     /**
     * Creates a deep copy of a 2D ArrayList of integers.
@@ -215,6 +225,10 @@ public class ActionSpaceGenerator {
         return possibleSets;
     }
 
+    public ArrayList<ArrayList<Integer>> getPossibleSets(){
+        return this.possibleSets;
+    }
+
 
     // Helper function to check if a tile is present in a list
     private boolean containsTile(ArrayList<Integer> list, Integer tile) {
@@ -243,6 +257,4 @@ public class ActionSpaceGenerator {
         }
         return count;
     }
-
-
 }

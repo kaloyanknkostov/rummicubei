@@ -9,10 +9,7 @@ import java.util.Set;
 
 
 public class AllSetGenerator {
-
-    public static void main(String[] args) {
-        generateAllSets();
-    }
+    
     public static ArrayList<ArrayList<Integer>> generateAllSets() {
         ArrayList<ArrayList<Integer>> allSets = new ArrayList<>();
         ArrayList<ArrayList<Integer>> runs=generateRunsWithoutJokers();
