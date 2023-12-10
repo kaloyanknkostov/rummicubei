@@ -16,13 +16,15 @@ public class ActionSpaceGenerator {
     private ArrayList<ArrayList<Integer>> allPossibleSets;
     private ArrayList<ArrayList<Integer>> possibleSets;
     private  ArrayList<Integer> availableTilesStart;
-    private static ActionSpaceGenerator instance;
+
 
 
     public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
         System.out.println("IN Action");
-        //allPossibleSets= AllSetGenerator.generateAllSets();
-        // get all possible sets here
+
+        AllSetGenerator generator = AllSetGenerator.getInstance();
+        allPossibleSets = generator.getAllSets();
+
         this.resultingBoards = new ArrayList<>();
         this.startingBoard = board;
         this.startingRack = rack;
@@ -92,8 +94,6 @@ public class ActionSpaceGenerator {
         return result;
     }
 
-
-    //TODO everything below here
 
     /**
     * Creates a deep copy of a 2D ArrayList of integers.
