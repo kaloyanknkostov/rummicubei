@@ -53,6 +53,20 @@ public class GameEngine {
         while (!isGameEnding()) {
             if (gameModel.isNextTurn()|| getCurrentPlayer() instanceof ComputerPlayer) {
                 //System.out.println("the last board was:");
+            // log the state for the ML model
+            if(!logged){
+                logCurrentGameState();
+                moveNumber++;
+                logged = true;
+                System.out.println("LOGGING");
+                System.out.println(gameStateLog);
+                String fileName = "Game" + Integer.toString(gameId);
+                writeGameStateLogToFile(fileName);
+                System.out.println("DONE");
+            }
+            if (gameModel.isNextTurn()) {
+
+                System.out.println("the last board was:");
                 gameModel.setNextTurn(false);
                 //System.out.println("Image board:");
                 //printBoard(gameModel.getTransferBoardViaImages());
@@ -145,6 +159,7 @@ public class GameEngine {
             currentPlayerIndex = 0;
         } else {
             currentPlayerIndex++;
+            logged = false;
         }
         gameModel.setCurrentPlayer(getCurrentPlayer());
         StartScreensApplication.activeController.playerTurn();
@@ -307,5 +322,33 @@ public class GameEngine {
         }
     }
 
+    private StringBuilder gameStateLog = new StringBuilder();
+
+    // New method to format the current game state into a CSV-compatible string
+    private void logCurrentGameState() {
+        StringJoiner sj = new StringJoiner(",");
+        sj.add(String.valueOf(gameId)); // Logging gameId
+        sj.add(board.toString()); // Logging the board
+        sj.add(listOfPlayers.stream()
+                .map(player -> player.getDeckOfTiles().stream()
+                        .map(Tile::toString)
+                        .collect(Collectors.joining(" ")))
+                .collect(Collectors.joining(";"))); // Logging player's hands
+        sj.add(String.valueOf(moveNumber)); // Logging moveNumber
+        sj.add(Integer.toString(currentPlayerIndex)); // Logging the current player
+        gameStateLog.append(sj.toString()).append("\n");
+    }
+
+    private void startLog(){
+        gameStateLog.append("GameId, Board, PlayersHands, MoveNumber, CurrentPlayer");
+    }
+
+    private void writeGameStateLogToFile(String fileName) {
+        try (FileWriter writer = new FileWriter("data/raw_data/" + fileName + ".csv")) {
+            writer.write(gameStateLog.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
