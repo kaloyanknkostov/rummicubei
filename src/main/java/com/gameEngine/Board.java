@@ -11,8 +11,8 @@ public class Board {
     }
 
     public boolean checkBoardValidity() {
-        for(int i=0; i<setList.size(); i++) {
-            if(!setList.get(i).isValid()) return false;
+        for (Set set : setList) {
+            if (!set.isValid()) return false;
         }
         return true;
     }

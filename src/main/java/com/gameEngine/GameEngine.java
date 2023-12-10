@@ -3,7 +3,6 @@ package com.gameEngine;
 import com.example.GUI.GameModel;
 import com.example.GUI.StartScreensApplication;
 import javafx.scene.image.Image;
-import com.MCTS.runner;
 import java.util.ArrayList;
 
 
@@ -48,16 +47,23 @@ public class GameEngine {
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
         currentDraw = getThisDrawnTile();
         while (!isGameEnding()) {
-            if (gameModel.isNextTurn()) {
-                System.out.println("the last board was:");
+            if (gameModel.isNextTurn()|| getCurrentPlayer() instanceof ComputerPlayer) {
+                //System.out.println("the last board was:");
                 gameModel.setNextTurn(false);
-                System.out.println("Image board:");
-                printBoard(gameModel.getTransferBoardViaImages());
-                System.out.println("---------------------------------------------------------------------------------");
+                //System.out.println("Image board:");
+                //printBoard(gameModel.getTransferBoardViaImages());
+                //System.out.println("---------------------------------------------------------------------------------");
                 ArrayList<Tile> copy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
-                Board incomingBoard = createBoardFromTiles(transformImagesToTiles());
-                System.out.println("Incoming board (tiles)");
-                incomingBoard.printBoard();
+                Board incomingBoard;
+                if(getCurrentPlayer() instanceof HumanPlayer) {
+                    incomingBoard = createBoardFromTiles(transformImagesToTiles());
+                }
+                else {
+                     incomingBoard = getCurrentPlayer().getNewBoard(board);
+                }
+                //System.out.println("Incoming board (tiles)");
+                //incomingBoard.printBoard();
+
                 if (incomingBoard.checkBoardValidity()) {
                     if (getCurrentPlayer().getIsOut()) {
                         if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
@@ -140,10 +146,7 @@ public class GameEngine {
         System.out.println("changing that to the player index: " + currentPlayerIndex);
         StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
         gameModel.setCurrentBoard(board);
-        runner runner=new runner();
-        runner.start(board.turnToIntBoard());
-
-    }
+         }
 
 
     private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
