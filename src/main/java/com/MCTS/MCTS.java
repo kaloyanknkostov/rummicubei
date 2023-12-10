@@ -19,7 +19,7 @@ public class MCTS {
 
         // Get predictions of other players decks
         // We can decide here if we want to create multiple trees by sampling the tiles based on the predictions/ probabilities we got (advanced stuff)
-        this.gameState = new GameState();
+        //this.gameState = new GameState();
 
         this.root = new Node(gameState, null);
     }
@@ -94,9 +94,9 @@ public class MCTS {
                 probabiltiyArray[i][j] = array[i][j]/numberOfUnkownTiles;
             }
         }
-
         // get probabilites of the tiles that can be in other players hands
     }
+
     public int colorToNumber(String color){
         switch (color.toLowerCase()) {
             case "red":
