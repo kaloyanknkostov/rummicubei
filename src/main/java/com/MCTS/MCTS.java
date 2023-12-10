@@ -10,9 +10,9 @@ import com.gameEngine.Tile;
 
 public class MCTS {
     private GameState gameState;
-    private ComputerPlayer computerPlayer; // needs to probably been got from the gameState. 
+    private ComputerPlayer computerPlayer; // needs to probably been got from the gameState.
     private Node root;
-    private Board board; 
+    private Board board;
 
     public MCTS(Board board, ArrayList<Tile> deck){
         // get game state
@@ -26,14 +26,14 @@ public class MCTS {
 
     public void loopMCTS(int loops){
         for (int i = 0; i < loops; i++){
-            this.root.selectNode().playOut().backpropagate();
+            this.root.selectNode().playOut();
         }
     }
 
     public void getDeckProbabilities(){
-        ArrayList<Tile> tilesBoard = board.getTilesInBoard(); 
-        ArrayList<Tile> tilesHand = computerPlayer.getDeckOfTiles(); 
-        int numberOfUnkownTiles = 106; 
+        ArrayList<Tile> tilesBoard = board.getTilesInBoard();
+        ArrayList<Tile> tilesHand = computerPlayer.getDeckOfTiles();
+        int numberOfUnkownTiles = 106;
         int[][] array = {
             {2, 2, 2, 2},
             {2, 2, 2, 2},
@@ -48,7 +48,7 @@ public class MCTS {
             {2, 2, 2, 2},
             {2, 2, 2, 2},
             {2, 2, 2, 2},
-            {2} 
+            {2}
         };
         double[][] probabiltiyArray = {
             {0, 0, 0, 0},
@@ -64,34 +64,34 @@ public class MCTS {
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 0},
-            {0} 
+            {0}
         };
-    
+
         for (Tile t : tilesBoard) {
             if(t.isJoker()){
-                array[13][0] -= 1; 
-                numberOfUnkownTiles--; 
+                array[13][0] -= 1;
+                numberOfUnkownTiles--;
             } else {
-            array[t.getNumber()][colorToNumber(t.getColor())] -= 1;   
-                numberOfUnkownTiles--; 
+            array[t.getNumber()][colorToNumber(t.getColor())] -= 1;
+                numberOfUnkownTiles--;
             }
         }
         for (Tile t: tilesHand) {
            if(t.isJoker()){
-                array[13][0] -= 1; 
-                numberOfUnkownTiles--; 
+                array[13][0] -= 1;
+                numberOfUnkownTiles--;
             } else {
-            array[t.getNumber()][colorToNumber(t.getColor())] -= 1;   
-                numberOfUnkownTiles--; 
+            array[t.getNumber()][colorToNumber(t.getColor())] -= 1;
+                numberOfUnkownTiles--;
             }
         }
-        // probabilty for a given tile: 
+        // probabilty for a given tile:
         for (int i = 0; i < probabiltiyArray.length; i++) {
             for (int j = 0; j < probabiltiyArray[0].length; j++) {
                 if(i == 13){
-                    probabiltiyArray [13][0] = array[13][0]/numberOfUnkownTiles; 
+                    probabiltiyArray [13][0] = array[13][0]/numberOfUnkownTiles;
                 }
-                probabiltiyArray[i][j] = array[i][j]/numberOfUnkownTiles; 
+                probabiltiyArray[i][j] = array[i][j]/numberOfUnkownTiles;
             }
         }
 

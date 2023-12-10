@@ -3,6 +3,7 @@ package com.MCTS;
 import java.util.ArrayList;
 
 import javax.xml.stream.events.StartDocument;
+import java.lang.Math;
 
 public class Node {
     private GameState gameState;
@@ -10,11 +11,14 @@ public class Node {
     private int visitCount;
     private boolean endNode;
     private ArrayList<Node> childList;
+    private ArrayList<Float> results; // results of the playouts of all childs
+    private double uct;
+    private double c = 0.6; // factor for uct (see lecture 4 slide 20)
 
     public Node(GameState gameState, Node parent){
         this.gameState = gameState;
         this.parent = parent;
-        this.visitCount = 0;
+        this.visitCount = 1; // visit count at generation is 1 (otherwise uct will not work)
 
         // Check if current game state is a win/ loss/ draw
         if (false){ // TODO
@@ -26,25 +30,38 @@ public class Node {
 
     }
 
-    public float getUCT(){
+    public double getUCT(){
         // returns -infinity as default as the highest UCT is selected -> see lecture 4 in RT
-        if(visitCount== 0){
-            return Float.NEGATIVE_INFINITY;
-        }
-        return Float.NaN;
+        return this.uct;
     }
 
+    public void calculateUCT(){
+        // calculates the current UCT and stores it in a variable to save computing time
+        if(visitCount== 0){
+            this.uct = Float.NEGATIVE_INFINITY;
+            return;
+        }
+        double results_sum = 0;
+        for (double result : results){
+            results_sum += result;
+        }
+        this.uct = (results_sum / results.size()); // mean of the results at this node
+        this.uct += this.c * Math.sqrt(Math.log(this.parent.getVisitCount())/this.getVisitCount());
+
+    }
     /*
      * Returns the next node in the search tree that has to be expanded.
      * This is an recursive method that searches for the highest UCT value in the children nodes.
      */
     public Node selectNode(){
         // if this Node has no children then we return this node (to execute play-out)
+        this.visitCount += 1;
         if(childList.isEmpty()){
             return this;
         }
 
         // Search for the highest UCT value in the list of children nodes
+        // ARGMAX
         float highestUCT = 0;
         Node nextNode = null;
         for (Node child: childList){
@@ -60,7 +77,7 @@ public class Node {
         // when play-out reaches an end node (win, loss or draw) it backpropagates and adds the first node that was played to the childList
         // also add the first node from the playout to the tree
 
-        //first we get the first random move from this players persepctive and add it to the childlist
+        //first we get the first random move from this players perspective and add it to the childlist
         //TODO add this for other players as well so gamestate is from our perspective again
         RandomMove randomMoveMe = new RandomMove(this.gameState.getBoard(), this.gameState.getRacks()[0]);
         ArrayList<ArrayList<Integer>> firstMoveMe = randomMoveMe.getRandomMove();
@@ -105,11 +122,11 @@ public class Node {
     }
 
     private void playoutHelper(GameState startingState, int startingPlayer){
-        //this function actually runs untill we reach a gamestate 
+        //this function actually runs untill we reach a gamestate
         int res = startingState.updateGameState((new RandomMove(startingState.getBoard(), startingState.getRacks()[startingPlayer])).getRandomMove(),startingPlayer);
         int player = startingPlayer;
         while(res == 0){
-            //update so its the next players turn 
+            //update so its the next players turn
             //TODO this is constrained for 2 players
             player = (player + 1) % 2;
             res = startingState.updateGameState((new RandomMove(startingState.getBoard(), startingState.getRacks()[player])).getRandomMove(),player);
@@ -117,13 +134,17 @@ public class Node {
         }
     }
 
-    public void backpropagate(){
+    public void backpropagate(float new_result){
         // propagate the result of the play-out back to the root of the tree
-
-        // TODO do some stuff and adjust UCT
+        results.add(new_result);
+        this.calculateUCT(); // Calc new uct and save it to save on computation
 
         if(this.parent != null){
-            this.parent.backpropagate();
+            this.parent.backpropagate(new_result);
         }
+    }
+
+    public int getVisitCount(){
+        return this.visitCount;
     }
 }
