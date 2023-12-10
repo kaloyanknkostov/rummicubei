@@ -18,6 +18,7 @@ public class AllSetGenerator {
 
     private AllSetGenerator() {
         allSets = new ArrayList<>();
+        generateAllSets();
     }
     public static ArrayList<ArrayList<Integer>> getAllSets() {
         return allSets;

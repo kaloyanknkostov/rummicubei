@@ -24,6 +24,9 @@ public class RandomMove {
     public RandomMove(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
         System.out.println("IN Action");
         //get all possible sets
+        //Here we are getting all the sets
+        AllSetGenerator generator = AllSetGenerator.getInstance();
+        allPossibleSets = generator.getAllSets();
         hasFinished = false;
         rand = new Random();
         this.resultingBoards = new ArrayList<>();
