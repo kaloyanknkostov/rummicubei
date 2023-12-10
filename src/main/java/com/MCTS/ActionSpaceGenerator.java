@@ -16,11 +16,15 @@ public class ActionSpaceGenerator {
     private ArrayList<ArrayList<Integer>> allPossibleSets;
     private ArrayList<ArrayList<Integer>> possibleSets;
     private  ArrayList<Integer> availableTilesStart;
+    private static ActionSpaceGenerator instance;
 
-
-
-
-    public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
+    public static ActionSpaceGenerator getInstance(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack) {
+        if (instance == null) {
+            instance = new ActionSpaceGenerator(board, rack);
+        }
+        return instance;
+    }
+    private ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
         System.out.println("IN Action");
         //allPossibleSets= AllSetGenerator.generateAllSets();
         // get all possible sets here
