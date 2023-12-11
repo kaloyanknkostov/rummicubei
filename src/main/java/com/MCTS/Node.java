@@ -8,7 +8,6 @@ public class Node {
     private GameState gameState;
     private Node parent;
     private int visitCount;
-    private boolean endNode;
     private ArrayList<Node> childList;
     private ArrayList<Float> results; // results of the playouts of all childs
     private double uct;
