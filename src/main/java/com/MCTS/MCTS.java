@@ -88,7 +88,6 @@ public class MCTS {
             case "yellow":
                 return 0;}
         return -1; //represnting a joker
-        return -1; //represnting a joker
 
     }
 
