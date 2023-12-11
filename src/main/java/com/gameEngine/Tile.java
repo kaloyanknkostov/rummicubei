@@ -9,8 +9,13 @@ public class Tile
     private int number;
     private String color;
     private boolean isJoker;
-    private String pictureName;
-    private Image image;
+    private final String pictureName;
+    private final Image image;
+
+    public void setJoker(boolean joker) {
+        isJoker = joker;
+    }
+
     public Tile(int number, String color, boolean isJoker, String pictureName)
     {
         this.number = number;
@@ -44,22 +49,12 @@ public class Tile
         this.color = color;
     }
 
-    public void setJoker(boolean joker) {
-        isJoker = joker;
-    }
     public String getPicture(){
         return pictureName;
     }
 
     @Override
     public String toString() {
-//        return "Tile{" +
-//                "number=" + number +
-//                ", color='" + color + '\'' +
-//                ", isJoker=" + isJoker +
-//                ", pictureName='" + pictureName + '\'' +
-//                ", image=" + image +
-//                '}';
         if(isJoker){
             return "Joker";
         }
