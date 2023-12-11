@@ -19,7 +19,7 @@ public class MCTS {
 
         // Get predictions of other players decks
         // We can decide here if we want to create multiple trees by sampling the tiles based on the predictions/ probabilities we got (advanced stuff)
-        this.gameState = new GameState();
+        //this.gameState = new GameState();
 
         this.root = new Node(gameState, null);
     }
@@ -35,36 +35,36 @@ public class MCTS {
         ArrayList<Tile> tilesHand = computerPlayer.getDeckOfTiles();
         int numberOfUnkownTiles = 106;
         int[][] array = {
-            {2, 2, 2, 2},
-            {2, 2, 2, 2},
-            {2, 2, 2, 2},
-            {2, 2, 2, 2},
-            {2, 2, 2, 2},
-            {2, 2, 2, 2},
-            {2, 2, 2, 2},
-            {2, 2, 2, 2},
-            {2, 2, 2, 2},
-            {2, 2, 2, 2},
-            {2, 2, 2, 2},
-            {2, 2, 2, 2},
-            {2, 2, 2, 2},
-            {2}
+                {2, 2, 2, 2},
+                {2, 2, 2, 2},
+                {2, 2, 2, 2},
+                {2, 2, 2, 2},
+                {2, 2, 2, 2},
+                {2, 2, 2, 2},
+                {2, 2, 2, 2},
+                {2, 2, 2, 2},
+                {2, 2, 2, 2},
+                {2, 2, 2, 2},
+                {2, 2, 2, 2},
+                {2, 2, 2, 2},
+                {2, 2, 2, 2},
+                {2}
         };
         double[][] probabiltiyArray = {
-            {0, 0, 0, 0},
-            {0, 0, 0, 0},
-            {0, 0, 0, 0},
-            {0, 0, 0, 0},
-            {0, 0, 0, 0},
-            {0, 0, 0, 0},
-            {0, 0, 0, 0},
-            {0, 0, 0, 0},
-            {0, 0, 0, 0},
-            {0, 0, 0, 0},
-            {0, 0, 0, 0},
-            {0, 0, 0, 0},
-            {0, 0, 0, 0},
-            {0}
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0}
         };
 
         for (Tile t : tilesBoard) {
@@ -72,16 +72,16 @@ public class MCTS {
                 array[13][0] -= 1;
                 numberOfUnkownTiles--;
             } else {
-            array[t.getNumber()][colorToNumber(t.getColor())] -= 1;
+                array[t.getNumber()][colorToNumber(t.getColor())] -= 1;
                 numberOfUnkownTiles--;
             }
         }
         for (Tile t: tilesHand) {
-           if(t.isJoker()){
+            if(t.isJoker()){
                 array[13][0] -= 1;
                 numberOfUnkownTiles--;
             } else {
-            array[t.getNumber()][colorToNumber(t.getColor())] -= 1;
+                array[t.getNumber()][colorToNumber(t.getColor())] -= 1;
                 numberOfUnkownTiles--;
             }
         }
@@ -94,9 +94,9 @@ public class MCTS {
                 probabiltiyArray[i][j] = array[i][j]/numberOfUnkownTiles;
             }
         }
-
         // get probabilites of the tiles that can be in other players hands
     }
+
     public int colorToNumber(String color){
         switch (color.toLowerCase()) {
             case "red":
@@ -107,7 +107,7 @@ public class MCTS {
                 return 3;
             case "yellow":
                 return 0;}
-    return -1; //represnting a joker
+        return -1; //represnting a joker
 
     }
 

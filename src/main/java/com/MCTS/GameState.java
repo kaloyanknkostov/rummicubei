@@ -60,8 +60,8 @@ public class GameState {
         else if (newBoard.equals(this.board)){
             drawCard(playerIndex);
             this.couldntPlay[playerIndex] = false;
-        //if the game did not finish or one player did not just draw, then one player played a move and we have to update his
-        //rack and the board 
+            //if the game did not finish or one player did not just draw, then one player played a move and we have to update his
+            //rack and the board
         } else {
             this.board = newBoard;
             this.couldntPlay[playerIndex] = false;
@@ -93,7 +93,7 @@ public class GameState {
         this.racks[playerIndex].add(tile);
     }
 
-    
+
     //this function takes in a board and gets the difference in tiles from the old one
     //check for empty
     private ArrayList<Integer> getDifference(ArrayList<ArrayList<Integer>> newBoard){
@@ -126,10 +126,10 @@ public class GameState {
     }
 
     /**
-    * Creates a deep copy of a 2D ArrayList of integers.
-    *
-    * @param original The 2D ArrayList to be copied.
-    * @return A deep copy of the input 2D ArrayList.
+     * Creates a deep copy of a 2D ArrayList of integers.
+     *
+     * @param original The 2D ArrayList to be copied.
+     * @return A deep copy of the input 2D ArrayList.
      */
     private ArrayList<ArrayList<Integer>> deepCopy(ArrayList<ArrayList<Integer>> original) {
         ArrayList<ArrayList<Integer>> copy = new ArrayList<>();

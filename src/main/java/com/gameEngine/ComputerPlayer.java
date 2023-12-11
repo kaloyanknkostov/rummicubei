@@ -31,46 +31,43 @@ public class ComputerPlayer implements Player
     public Board getNewBoard(Board oldBoard)
     {
 
-        /*
-        ArrayList<ArrayList<Integer>> intBoard = oldBoard.turnToIntBoard();
-        for(ArrayList<Integer> set:intBoard)
-        {
-           // board.addAll(set);
-        }
-        ArrayList<Integer>hand=new ArrayList<>();
-        for ( Tile tile:deckOfTiles){
-            hand.add(tile.turnToInt());
-        }
-        ActionSpaceGenerator actionSpaceGenerator = new ActionSpaceGenerator(board,hand);
-        ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> currentRack, int lastCheckedSet)
-        ArrayList<ArrayList<Integer>> emptyBoard = new ArrayList<>();
-        actionSpaceGenerator.createAllMoves(emptyBoard,hand,0);
-        return actionSpaceGenerator.getResultingBoards().get(0);
-         */
-
         ArrayList<Integer> deckOfIntTiles =new ArrayList<>();
         for (Tile tile: deckOfTiles){
             deckOfIntTiles.add(tile.turnToInt());
         }
-        //not giving him new cards
         System.out.println(deckOfIntTiles);
         BaselineAgent baselineAgent =new BaselineAgent(oldBoard.turnToIntBoard(),deckOfIntTiles);
         ArrayList<ArrayList<Integer>> newBoard =baselineAgent.getBestMove();
-        ArrayList<Tile> playableTiles =oldBoard.getTilesInBoard();
-        playableTiles.addAll(deckOfTiles);
+        ArrayList<Tile> oldBoardTilesInBoard =oldBoard.getTilesInBoard();
         Board board=new Board();
         for (ArrayList<Integer> set:newBoard){
             Set newSet = new Set();
             for(Integer tileId:set){
-                for(Tile tile:playableTiles){
+                //check if taken from board
+                for(Tile tile:oldBoardTilesInBoard){
                     if(tile.turnToInt()==tileId){
                         newSet.addTile(tile);
                     }
                 }
+                //check if taken from player tile
+                ArrayList<Tile> removed =new ArrayList<>();
+                for(Tile tile:deckOfTiles){
+                    if(tile.turnToInt()==tileId){
+                        newSet.addTile(tile);
+                        removed.add(tile);
+                    }
+                }
+                for(Tile tile:removed){
+                    deckOfTiles.remove(tile);
+                }
+
+
             }
             board.addSet(newSet);
         }
         board.printBoard();
+
+
         return  board;
     }
 

@@ -3,6 +3,8 @@ package com.gameEngine;
 import com.example.GUI.GameModel;
 import com.example.GUI.StartScreensApplication;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
 import java.util.ArrayList;
 
 
@@ -53,20 +55,6 @@ public class GameEngine {
         while (!isGameEnding()) {
             if (gameModel.isNextTurn()|| getCurrentPlayer() instanceof ComputerPlayer) {
                 //System.out.println("the last board was:");
-            // log the state for the ML model
-            if(!logged){
-                logCurrentGameState();
-                moveNumber++;
-                logged = true;
-                System.out.println("LOGGING");
-                System.out.println(gameStateLog);
-                String fileName = "Game" + Integer.toString(gameId);
-                writeGameStateLogToFile(fileName);
-                System.out.println("DONE");
-            }
-            if (gameModel.isNextTurn()) {
-
-                System.out.println("the last board was:");
                 gameModel.setNextTurn(false);
                 //System.out.println("Image board:");
                 //printBoard(gameModel.getTransferBoardViaImages());
@@ -85,7 +73,7 @@ public class GameEngine {
 
                 if (incomingBoard.checkBoardValidity()) {
 
-                   // if (getCurrentPlayer().getIsOut()) {
+                    // if (getCurrentPlayer().getIsOut()) {
                     if (true) {
                         if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                             getCurrentPlayer().setDeckOfTiles(copy);
@@ -159,8 +147,8 @@ public class GameEngine {
             currentPlayerIndex = 0;
         } else {
             currentPlayerIndex++;
-            logged = false;
         }
+        //move to end maybe
         gameModel.setCurrentPlayer(getCurrentPlayer());
         StartScreensApplication.activeController.playerTurn();
         for (String s : gameModel.playerNames) {
@@ -174,11 +162,11 @@ public class GameEngine {
             StartScreensApplication.getInstance().setMessageLabel("Bot", "");
         }
         System.out.println(board);
-            gameModel.setCurrentBoard(board);
-        }
+        StartScreensApplication.activeController.updateBoard(board);
+    }
 
 
-    private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
+private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
         Board newBoard = new Board();
         for (ArrayList<Tile> row : map) {
             Set set = new Set();
@@ -257,7 +245,7 @@ public class GameEngine {
 
     private Tile drawTile() {
         int index = (int) Math.floor(Math.random() * potOfTiles.size());
-        index=1;
+       // index=1;
         Tile a = potOfTiles.get(index);
         potOfTiles.remove(index);
         return a;
@@ -322,33 +310,5 @@ public class GameEngine {
         }
     }
 
-    private StringBuilder gameStateLog = new StringBuilder();
-
-    // New method to format the current game state into a CSV-compatible string
-    private void logCurrentGameState() {
-        StringJoiner sj = new StringJoiner(",");
-        sj.add(String.valueOf(gameId)); // Logging gameId
-        sj.add(board.toString()); // Logging the board
-        sj.add(listOfPlayers.stream()
-                .map(player -> player.getDeckOfTiles().stream()
-                        .map(Tile::toString)
-                        .collect(Collectors.joining(" ")))
-                .collect(Collectors.joining(";"))); // Logging player's hands
-        sj.add(String.valueOf(moveNumber)); // Logging moveNumber
-        sj.add(Integer.toString(currentPlayerIndex)); // Logging the current player
-        gameStateLog.append(sj.toString()).append("\n");
-    }
-
-    private void startLog(){
-        gameStateLog.append("GameId, Board, PlayersHands, MoveNumber, CurrentPlayer");
-    }
-
-    private void writeGameStateLogToFile(String fileName) {
-        try (FileWriter writer = new FileWriter("data/raw_data/" + fileName + ".csv")) {
-            writer.write(gameStateLog.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 }

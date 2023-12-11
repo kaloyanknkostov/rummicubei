@@ -121,7 +121,9 @@ public class Set {
         }
         return newSet;
     }
-
+    public int getSize(){
+        return tilesList.size();
+    }
     public ArrayList<Integer> turnSetToInt(){
         ArrayList<Integer> list=new ArrayList<>();
         for(Tile tile:tilesList){

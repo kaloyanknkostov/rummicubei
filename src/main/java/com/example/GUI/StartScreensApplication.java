@@ -1,6 +1,8 @@
 package com.example.GUI;
 
+import com.gameEngine.Board;
 import com.gameEngine.Player;
+import com.gameEngine.Set;
 import com.gameEngine.Tile;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
@@ -255,19 +257,26 @@ public class StartScreensApplication extends Application {
         initializeDragAndDrop();
     }
 
-    public void updateBoard(ImageView[] board) {
-        ArrayList<ArrayList<Image>> boardImages = transformIntoBoard();
-        ArrayList<Image> flatBoardImages = new ArrayList<>();
-        for (ArrayList<Image> row : boardImages) {
-            flatBoardImages.addAll(row);
+    public void updateBoard(Board newBoard) {
+        ImageView[] GuiBoard = getBoard();
+        // clean the board
+        for (int index = 0; index < GuiBoard.length; index++) {
+            GuiBoard[index].setImage(null);
         }
-        for (int i = 0; i < board.length; i++) {
-            ImageView imageView = board[i];
-            Image image = flatBoardImages.get(i);
-            imageView.setImage(image);
+        ArrayList<Set> setArrayList = newBoard.getSetList();
+        int lastEmptySlot = 0;
+        //go thought the sets
+        for (int setIndex = 0; setIndex < setArrayList.size(); setIndex++) {
+            //go thought the tiles in the set
+            Set currentTileSet = setArrayList.get(setIndex);
+            for (int tileIndex = 0; tileIndex < currentTileSet.getSize(); tileIndex++) {
+                Tile currentTile = currentTileSet.getTileAtIndex(tileIndex);
+                GuiBoard[lastEmptySlot].setImage(currentTile.getImage());
+                lastEmptySlot+=1;
+            }
+            lastEmptySlot += 1;
         }
     }
-
     private boolean drewATile = false;
 
     public void handleDrawTile() {
