@@ -13,7 +13,6 @@ public class Node {
     private ArrayList<Float> results; // results of the playouts of all childs
     private double uct;
     private double c = 0.6; // factor for uct (see lecture 4 slide 20)
-    // i think node should iinclude maximizing player
     private int maximizingPlayer;
 
     public Node(GameState gameState, Node parent, int maximizingPlayer){
@@ -44,7 +43,7 @@ public class Node {
             return;
         }
         double results_sum = 0;
-        for (double result : results){
+        for (double result : this.results){
             results_sum += result;
         }
         this.uct = (results_sum / results.size()); // mean of the results at this node
@@ -87,26 +86,39 @@ public class Node {
 
 
     public void playOut(){
+        GameState stateForPlayout = this.gameState.copy();
+        int playoutMaxer = this.maximizingPlayer;
 
-    }
-
-    private int playoutHelper(GameState startingState, int startingPlayer){
-        //this function actually runs untill we reach a gamestate
-        int res = startingState.updateGameState((new RandomMove(startingState.getBoard(), startingState.getRacks()[startingPlayer])).getRandomMove(),startingPlayer);
-        int player = startingPlayer;
+        int res = stateForPlayout.updateGameState((new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[playoutMaxer])).getRandomMove(),playoutMaxer);
         while(res == 0){
             //update so its the next players turn
             //TODO this is constrained for 2 players
-            player = (player + 1) % 2;
-            res = startingState.updateGameState((new RandomMove(startingState.getBoard(), startingState.getRacks()[player])).getRandomMove(),player);
+            playoutMaxer = (playoutMaxer + 1) % 2;
+            res = stateForPlayout.updateGameState((new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[playoutMaxer])).getRandomMove(),playoutMaxer);
             //if this loop terminates it means an endstate was reached, since startingstate is a reference it works in function before
         }
-        return res;
+        if(res == 2){
+            //its a draw
+            backpropagate(0.5f);
+        } else {
+            //one of the players won, we have to check which one
+            backpropagate(stateForPlayout.getWinner());
+        }
     }
 
     public void backpropagate(float new_result){
         // propagate the result of the play-out back to the root of the tree
-        results.add(new_result);
+        if(new_result == 0.5){
+            //propagate the same result to everyone since its a draw
+            this.results.add(new_result);
+        } else {
+            // at every node check if new_result is equal to this.maximizing player, if yes add 1 if else add 0
+            if(this.maximizingPlayer == new_result){
+                this.results.add(1f);
+            } else {
+                this.results.add(0f);
+            }
+        }
         this.calculateUCT(); // Calc new uct and save it to save on computation
 
         if(this.parent != null){
