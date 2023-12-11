@@ -13,11 +13,14 @@ public class Node {
     private ArrayList<Float> results; // results of the playouts of all childs
     private double uct;
     private double c = 0.6; // factor for uct (see lecture 4 slide 20)
+    // i think node should iinclude maximizing player
+    private int maximizingPlayer;
 
-    public Node(GameState gameState, Node parent){
+    public Node(GameState gameState, Node parent, int maximizingPlayer){
         this.gameState = gameState;
         this.parent = parent;
         this.visitCount = 1; // visit count at generation is 1 (otherwise uct will not work)
+        this.maximizingPlayer = maximizingPlayer;
 
         // Check if current game state is a win/ loss/ draw
         if (false){ // TODO
@@ -71,65 +74,19 @@ public class Node {
         return nextNode.selectNode();
     }
 
-    private Node createChild(){
-        //
+    public void expand(){
+        ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[maximizingPlayer]);
+        for(ArrayList<ArrayList<Integer>> board: actionSpace.getResultingBoards()){
+            //for every action move it could make it copies the current gamestate and updates it based on the action
+            GameState newState = this.gameState.copy();
+            newState.updateGameState(board, maximizingPlayer);
+            //only works for two players 
+            this.childList.add(new Node(newState, this, (maximizingPlayer +1) %2));
+        }
     }
 
+
     public void playOut(){
-        // Starts play-out at this node
-        // when play-out reaches an end node (win, loss or draw) it backpropagates and adds the first node that was played to the childList
-        // also add the first node from the playout to the tree
-
-        //first we get the first random move from this players perspective and add it to the childlist
-        //TODO add this for other players as well so gamestate is from our perspective again
-        RandomMove randomMoveMe = new RandomMove(this.gameState.getBoard(), this.gameState.getRacks()[0]);
-        ArrayList<ArrayList<Integer>> firstMoveMe = randomMoveMe.getRandomMove();
-        //now update the gamestates and check if it resulted in something
-        //copy the gamestate so as not to update the gamestate of this node
-        GameState firstChildState = this.gameState.copy();
-        int res = firstChildState.updateGameState(firstMoveMe, 0);
-        if(res == 1){
-            //we won the game
-            backpropagate(1);
-            return;
-        } else if (res == 2){
-            backpropagate(0.5f);
-            return;
-        }
-        //now other player plays
-        //TODO this only works for 2 players, have to fix this next phase
-        RandomMove randomMoveOpponent = new RandomMove(firstChildState.getBoard(), firstChildState.getRacks()[1]);
-        ArrayList<ArrayList<Integer>> firstMoveOpponent = randomMoveOpponent.getRandomMove();
-        res = firstChildState.updateGameState(firstMoveOpponent, 1);
-        //check draw or loss
-        if(res == 1){
-            //we lost
-            backpropagate(0);
-            return;
-        } else if (res == 2){
-            backpropagate(0.5f);
-            return;
-        }
-        // now its our turn again
-
-        //if nothing of this sort happened we proceed to random playout
-        //TODO, rn I use selectnode since it doesnt have any children yet
-        Node firstChild = new Node(firstChildState, this);
-        this.childList.add(firstChild);
-        GameState stateForPlayout = firstChildState.copy();
-        int x = playoutHelper(stateForPlayout, 1);
-        //now from the stateforplayout we can get what the result was and who won.
-        //backprop
-        if(x == 1){
-            if(stateForPlayout.getWinner() == 0){
-                backpropagate(1);
-            } else {
-                backpropagate(0);
-            }
-        } else {
-            backpropagate(0.5f);
-        }
-        
 
     }
 

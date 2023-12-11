@@ -74,7 +74,7 @@ public class ActionSpaceGenerator {
 
     public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
         //checks if the only element in resultingboard is the startingboard, thus that it could not play any move
-        if(this.getResultingBoards().size() == 1 || decompose(this.resultingBoards.get(0)).equals(decompose(this.startingBoard))){
+        if(this.resultingBoards.size() == 1 || decompose(this.resultingBoards.get(0)).equals(decompose(this.startingBoard))){
             // when it couldnt play anything add a set containing only -1 at the front of the only resulting board
             this.resultingBoards.get(0).add(0, new ArrayList<>(Arrays.asList(-1)));
         }
