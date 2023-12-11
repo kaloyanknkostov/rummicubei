@@ -11,6 +11,7 @@ import java.util.Set;
 public class ActionSpaceGenerator {
 
     private ArrayList<ArrayList<ArrayList<Integer>>> resultingBoards;
+    private ArrayList<ArrayList<Integer>> resultingRacks;
     private ArrayList<ArrayList<Integer>> startingBoard;
     private ArrayList<Integer> startingRack;
     private ArrayList<ArrayList<Integer>> allPossibleSets;
@@ -19,13 +20,14 @@ public class ActionSpaceGenerator {
 
 
 
+
     public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
         System.out.println("IN Action");
-
         AllSetGenerator generator = AllSetGenerator.getInstance();
-        allPossibleSets = generator.getAllSets();
-
+        allPossibleSets = AllSetGenerator.getAllSets();
+        // get all possible sets here
         this.resultingBoards = new ArrayList<>();
+        this.resultingRacks = new ArrayList<>();
         this.startingBoard = board;
         this.startingRack = rack;
         this.possibleSets = possibleSets(this.startingRack,decompose(board));
@@ -38,12 +40,12 @@ public class ActionSpaceGenerator {
             availableTilesStart.add(tile);
         }
         ArrayList<ArrayList<Integer>> beginningBoard = new ArrayList<>();
-        createAllMoves(beginningBoard, availableTilesStart, 0);
+        createAllMoves(beginningBoard, availableTilesStart, rack, 0);
         //now all moves are generated and the result can just be accesed through the get functions
     }
 
     
-    private void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles, int lastCheckedSet){
+    private void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){
         // if all sets have been checked return
         if(lastCheckedSet == this.possibleSets.size()){
             return;
@@ -68,7 +70,7 @@ public class ActionSpaceGenerator {
                 resultingBoards.add(currentBoardCopy);
 
             }
-            createAllMoves(currentBoardCopy, currentAvailableTiles, i);
+            createAllMoves(currentBoardCopy, currentAvailableTiles,currentRack, i);
         }
     }
 
@@ -94,6 +96,8 @@ public class ActionSpaceGenerator {
         return result;
     }
 
+
+    //TODO everything below here
 
     /**
     * Creates a deep copy of a 2D ArrayList of integers.

@@ -61,15 +61,15 @@ public class MCTS {
 
         ArrayList<Integer> tilesHand = this.deck;
         ArrayList<Integer> arrayNumber = new ArrayList<>(Collections.nCopies(53, 2));
-        ArrayList<Double> arrayProb = new ArrayList<Double>(); 
-        int numberOfUnkownTiles = 106; 
+        ArrayList<Double> arrayProb = new ArrayList<Double>();
+        int numberOfUnkownTiles = 106;
         for (int i = 0; i < tilesHand.size(); i++) {
-            arrayNumber.set( arrayNumber.get(i), arrayNumber.get(i) -1); 
-            numberOfUnkownTiles--; 
+            arrayNumber.set( arrayNumber.get(i), arrayNumber.get(i) -1);
+            numberOfUnkownTiles--;
         }
         for (int i = 0; i < tilesBoard.size(); i++) {
-            arrayNumber.set(tilesBoard.get(i), tilesBoard.get(i) -1); 
-            numberOfUnkownTiles--; 
+            arrayNumber.set(tilesBoard.get(i), tilesBoard.get(i) -1);
+            numberOfUnkownTiles--;
         }
         for (int i = 0; i < arrayNumber.size(); i++) {
             arrayProb.add((arrayNumber.get(i)).doubleValue()/numberOfUnkownTiles);
@@ -87,6 +87,7 @@ public class MCTS {
                 return 3;
             case "yellow":
                 return 0;}
+        return -1; //represnting a joker
         return -1; //represnting a joker
 
     }
@@ -110,17 +111,17 @@ public class MCTS {
         allTilesNotPile.addAll(this.deck);
         allTilesNotPile.addAll(this.guessedOppononetDeck);
         ArrayList<Integer> allTiles = new ArrayList<>(Arrays.asList(
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
-            11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
-            21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 
-            31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
-            41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+            11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+            21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+            31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+            41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
             51, 52, 53,
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
-            11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
-            21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 
-            31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
-            41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+            11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+            21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+            31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+            41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
             51, 52, 53));
             customRemove(allTiles, allTilesNotPile);
             return allTiles;

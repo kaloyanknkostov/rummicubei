@@ -1,7 +1,6 @@
 package com.gameEngine;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,9 +8,8 @@ import java.util.Set;
 import com.MCTS.AllSetGenerator;
 
 public class BoardUtils {
-    private ArrayList<ArrayList<Integer>> board;
-    private ArrayList<ArrayList<Integer>> allPossibleSets;
-    private ArrayList<ArrayList<Integer>> startingBoard;
+    private final ArrayList<ArrayList<Integer>> board;
+    private final ArrayList<ArrayList<Integer>> allPossibleSets;
 
     BoardUtils(ArrayList<ArrayList<Integer>> board) {
         this.board = board;
@@ -51,7 +49,6 @@ public class BoardUtils {
 
     /**
     * Checks whether a set can be created from a given array.
-    *
     * This method compares two ArrayLists, 'array' and 'set', and determines if
     * the elements of 'set' can form a valid set (i.e., all elements of 'set'
     * are present in 'array' at least once).
@@ -75,24 +72,10 @@ public class BoardUtils {
     //function to check if the board is valid. thus if all tiles that are in startingBoard are also present in new board
     //cant use sets cause there can be duplicates in our board like 2 green 4's and a set would remove one of them
     //for optimization this can maybe be done in a faster way
-    boolean validBoard(ArrayList<ArrayList<Integer>> newBoard) {
-        //small check
-        if(countIntegers(newBoard) < startingBoard.size()){
-            return false;
-        }
-        ArrayList<Integer> decomposedBoard = decompose(newBoard);
-        for(Integer tile: decompose(this.startingBoard)){
-            if(!decomposedBoard.contains(tile)){
-                return false;
-            }
-        }
-        // All tiles in the new board are present in the starting board, so the board is valid
-        return true;
-    }
+
 
     /**
     * Decomposes a 2D ArrayList representing a board into a 1D ArrayList of integers.
-    *
     * This method takes a 2D ArrayList, 'board', and flattens it into a 1D ArrayList, 'result',
    * by iterating through each row and each element in the board and adding them to the result list.
     *
@@ -102,16 +85,13 @@ public class BoardUtils {
     ArrayList<Integer> decompose(ArrayList<ArrayList<Integer>> board){
         ArrayList<Integer> result = new ArrayList<>();
         for(ArrayList<Integer> row: board){
-            for(Integer tile: row){
-                result.add(tile);
-            }
+            result.addAll(row);
         }
         return result;
     }
 
     /**
     * Generates a list of possible sets based on a combination of tiles from the starting rack and starting board.
-    *
     * This method combines the tiles from the starting rack and starting board to form a list of all available tiles.
     * It then iterates through a pre-existing list of all possible sets and checks if each set can be created using
     * the combined tiles. Sets that can be created are added to the list of possible sets.
@@ -122,12 +102,8 @@ public class BoardUtils {
     */
     ArrayList<ArrayList<Integer>> possibleSets(ArrayList<Integer> startingRack, ArrayList<Integer> startingBoard){
         ArrayList<Integer> allTiles = new ArrayList<>();
-        for(Integer tile: startingRack){
-            allTiles.add(tile);
-        }
-        for(Integer tile: startingBoard){
-            allTiles.add(tile);
-        }
+        allTiles.addAll(startingRack);
+        allTiles.addAll(startingBoard);
         ArrayList<ArrayList<Integer>> possibleSets = new ArrayList<>();
         for(ArrayList<Integer> set: allPossibleSets){
             if(canCreateSet(allTiles, set)){
@@ -152,7 +128,6 @@ public class BoardUtils {
 
     /**
     * Counts the total number of integers in a list of lists.
-    *
     * This method iterates through each inner list in the provided list of lists and
     * calculates the total count of integers across all inner lists.
     *
