@@ -123,7 +123,8 @@ public class Set {
         }
         return newSet;
     }
-    public int getSize(){
+
+    public int getSizes(){
         return tilesList.size();
     }
     public ArrayList<Integer> turnSetToInt(){

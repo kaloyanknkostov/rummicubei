@@ -270,7 +270,7 @@ public class StartScreensApplication extends Application {
         for (int setIndex = 0; setIndex < setArrayList.size(); setIndex++) {
             //go thought the tiles in the set
             Set currentTileSet = setArrayList.get(setIndex);
-            for (int tileIndex = 0; tileIndex < currentTileSet.getSize(); tileIndex++) {
+            for (int tileIndex = 0; tileIndex < currentTileSet.getSizes(); tileIndex++) {
                 Tile currentTile = currentTileSet.getTileAtIndex(tileIndex);
                 GuiBoard[lastEmptySlot].setImage(currentTile.getImage());
                 lastEmptySlot+=1;
@@ -278,6 +278,7 @@ public class StartScreensApplication extends Application {
             lastEmptySlot += 1;
         }
     }
+
 
     private boolean drewATile = false;
 
