@@ -1,6 +1,8 @@
 package com.example.GUI;
 
+import com.gameEngine.Board;
 import com.gameEngine.Player;
+import com.gameEngine.Set;
 import com.gameEngine.Tile;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
@@ -22,6 +24,7 @@ import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -79,7 +82,7 @@ public class StartScreensApplication extends Application {
             System.out.print("checkNames passed");
             gameModel.setStartGame(true);
             switchScene("GamePane.fxml", event);
-        }else {
+        } else {
             System.out.println("checkNames not passed");
         }
     }
@@ -255,16 +258,24 @@ public class StartScreensApplication extends Application {
         initializeDragAndDrop();
     }
 
-    public void updateBoard(ImageView[] board) {
-        ArrayList<ArrayList<Image>> boardImages = transformIntoBoard();
-        ArrayList<Image> flatBoardImages = new ArrayList<>();
-        for (ArrayList<Image> row : boardImages) {
-            flatBoardImages.addAll(row);
+    public void updateBoard(Board newBoard) {
+        ImageView[] GuiBoard = getBoard();
+        // clean the board
+        for (int index = 0; index < GuiBoard.length; index++) {
+            GuiBoard[index].setImage(null);
         }
-        for (int i = 0; i < board.length; i++) {
-            ImageView imageView = board[i];
-            Image image = flatBoardImages.get(i);
-            imageView.setImage(image);
+        ArrayList<Set> setArrayList = newBoard.getSetList();
+        int lastEmptySlot = 0;
+        //go thought the sets
+        for (int setIndex = 0; setIndex < setArrayList.size(); setIndex++) {
+            //go thought the tiles in the set
+            Set currentTileSet = setArrayList.get(setIndex);
+            for (int tileIndex = 0; tileIndex < currentTileSet.getSize(); tileIndex++) {
+                Tile currentTile = currentTileSet.getTileAtIndex(tileIndex);
+                GuiBoard[lastEmptySlot].setImage(currentTile.getImage());
+                lastEmptySlot+=1;
+            }
+            lastEmptySlot += 1;
         }
     }
 
@@ -285,8 +296,9 @@ public class StartScreensApplication extends Application {
         ImageView[] playerBoard = getPlayerBoard();
         ImageView[] entireBoard = getEntireBoard();
         for (ImageView x : playerBoard) {
-                        tilesMovedFromDeck.add(x);}
-                    System.out.println("checkindeqfg");
+            tilesMovedFromDeck.add(x);
+        }
+        System.out.println("checkindeqfg");
 
         for (ImageView imageView : entireBoard) {
             if (imageView != null) {
@@ -305,60 +317,32 @@ public class StartScreensApplication extends Application {
                     event.consume();
                 });
                 imageView.setOnDragDropped(event -> {
-                    /*boolean destplayerstile=false;
-                    boolean legalmove=true;
-                    boolean playerstile=false;
                     ImageView source = dragSource.get();
-                    boolean destinationIsPlayerboard =false;
-                    System.out.println("checking");
-                    boolean fromPlayerDeck=false;
-                    for (ImageView x : playerBoard) {
-                        tilesMovedFromDeck.add(x);
-                        if(x.getId()==imageView.getId()){
-                            destinationIsPlayerboard=true;
+                    boolean legalmove = true;
+                    boolean noneedforswap = false;
+                    ;
+                    for (ImageView a : playerBoard) {
+                        if ((source.getId() == a.getId()) && (!tilesMovedFromDeck.contains(imageView) && imageView.getImage() != null)) {
+                            legalmove = false;
                         }
-                        if(source.getId()==x.getId()){
-                            fromPlayerDeck =true;
-                            playerstile=true;
+                        if ((imageView.getId() == a.getId()) && !tilesMovedFromDeck.contains(source)) {
+                            legalmove = false;
                         }
                     }
-                    for (ImageView x : tilesMovedFromDeck) {
-                        if(x.getId()==source.getId()){
-                            playerstile=true;
-                        }
-                        if(x.getId()==imageView.getId()){
-                            destplayerstile=true;
-                        }
+                    if (tilesMovedFromDeck.contains(imageView) && tilesMovedFromDeck.contains(source)) {
+                        noneedforswap = true;
                     }
-                    if((fromPlayerDeck&&(imageView.getImage()!=null)&&(!destplayerstile))||(destinationIsPlayerboard &&!playerstile)){
-                        legalmove=false;
-                    }
-                
-                        */
-                    ImageView source = dragSource.get();
-                    boolean legalmove=true;
-                    boolean noneedforswap=false;;
-                        for (ImageView a : playerBoard) {
-                            if((source.getId()==a.getId())&&(!tilesMovedFromDeck.contains(imageView)&&imageView.getImage()!=null)){
-                                legalmove=false;
-                            }
-                            if((imageView.getId()==a.getId())&&!tilesMovedFromDeck.contains(source)){
-                                legalmove=false;
-                            }
-                        }
-                        if(tilesMovedFromDeck.contains(imageView)&&tilesMovedFromDeck.contains(source)){
-                            noneedforswap=true;
-                        }
 
-                    if (source != null && source != imageView &&legalmove) {
-                        if(!noneedforswap){
-                        if(tilesMovedFromDeck.contains(source)){
+                    if (source != null && source != imageView && legalmove) {
+                        if (!noneedforswap) {
+                            if (tilesMovedFromDeck.contains(source)) {
                                 tilesMovedFromDeck.remove(source);
                                 tilesMovedFromDeck.add(imageView);
-                            }else if(tilesMovedFromDeck.contains(imageView)){
+                            } else if (tilesMovedFromDeck.contains(imageView)) {
                                 tilesMovedFromDeck.remove(imageView);
                                 tilesMovedFromDeck.add(source);
-                            }}
+                            }
+                        }
                         Image tempImage = imageView.getImage();
                         imageView.setImage(source.getImage());
                         source.setImage(tempImage);
@@ -368,7 +352,7 @@ public class StartScreensApplication extends Application {
                         event.setDropCompleted(false);
                     }
                     event.consume();
-            });
+                });
 
                 imageView.setOnDragDone(DragEvent::consume);
             }
