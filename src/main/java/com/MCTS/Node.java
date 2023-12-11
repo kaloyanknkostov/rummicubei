@@ -12,23 +12,16 @@ public class Node {
     private ArrayList<Node> childList;
     private ArrayList<Float> results; // results of the playouts of all childs
     private double uct;
+    private boolean isLeaf; // if its an endstate
     private double c = 0.6; // factor for uct (see lecture 4 slide 20)
-    private int maximizingPlayer;
+    private int currentPlayer;
 
-    public Node(GameState gameState, Node parent, int maximizingPlayer){
+    public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf){
         this.gameState = gameState;
         this.parent = parent;
         this.visitCount = 1; // visit count at generation is 1 (otherwise uct will not work)
-        this.maximizingPlayer = maximizingPlayer;
-
-        // Check if current game state is a win/ loss/ draw
-        if (false){ // TODO
-            this.endNode = true;
-        }
-        else {
-            this.endNode = false;
-        }
-
+        this.currentPlayer = currentPlayer;
+        this.isLeaf = isleaf;
     }
 
     public double getUCT(){
@@ -66,28 +59,46 @@ public class Node {
         float highestUCT = 0;
         Node nextNode = null;
         for (Node child: childList){
-            if(child.getUCT()>highestUCT){
+            if(child.getUCT()>highestUCT && !child.getLeaf()){
                 nextNode = child;
             }
         }
         return nextNode.selectNode();
     }
 
+    private boolean getLeaf(){
+        return this.isLeaf;
+    }
+
+
     public void expand(){
-        ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[maximizingPlayer]);
+        ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[currentPlayer]);
         for(ArrayList<ArrayList<Integer>> board: actionSpace.getResultingBoards()){
             //for every action move it could make it copies the current gamestate and updates it based on the action
             GameState newState = this.gameState.copy();
-            newState.updateGameState(board, maximizingPlayer);
+            int res = newState.updateGameState(board, currentPlayer);
+            if(res == 2){
+                //its a draw
+                backpropagate(0.5f);
+                Node child = new Node(newState, this, (currentPlayer +1) %2, true);
+                this.childList.add(child);
+            } else if(res == 1){
+                //one of the players won, we have to check which one
+                backpropagate(newState.getWinner());
+                Node child = new Node(newState, this, (currentPlayer +1) %2, true);
+                this.childList.add(child);
+            } else {
+                Node child = new Node(newState, this, (currentPlayer +1) %2, false);
+                this.childList.add(child);
+            }
             //only works for two players 
-            this.childList.add(new Node(newState, this, (maximizingPlayer +1) %2));
         }
     }
 
 
     public void playOut(){
         GameState stateForPlayout = this.gameState.copy();
-        int playoutMaxer = this.maximizingPlayer;
+        int playoutMaxer = this.currentPlayer;
 
         int res = stateForPlayout.updateGameState((new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[playoutMaxer])).getRandomMove(),playoutMaxer);
         while(res == 0){
@@ -106,14 +117,14 @@ public class Node {
         }
     }
 
-    public void backpropagate(float new_result){
+    public void backpropagate(float winner){
         // propagate the result of the play-out back to the root of the tree
-        if(new_result == 0.5){
+        if(winner == 0.5){
             //propagate the same result to everyone since its a draw
-            this.results.add(new_result);
+            this.results.add(winner);
         } else {
-            // at every node check if new_result is equal to this.maximizing player, if yes add 1 if else add 0
-            if(this.maximizingPlayer == new_result){
+            // at every node check if the winner is equal to the parent
+            if(this.parent.currentPlayer == winner){
                 this.results.add(1f);
             } else {
                 this.results.add(0f);
@@ -122,7 +133,7 @@ public class Node {
         this.calculateUCT(); // Calc new uct and save it to save on computation
 
         if(this.parent != null){
-            this.parent.backpropagate(new_result);
+            this.parent.backpropagate(winner);
         }
     }
 

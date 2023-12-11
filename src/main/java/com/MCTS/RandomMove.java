@@ -145,15 +145,25 @@ public class RandomMove {
     *              {@code false} otherwise.
     */
     private static boolean canCreateSet(ArrayList<Integer> array, ArrayList<Integer> set) {
-        if(array.isEmpty()){
-            return false;
+        if (array.isEmpty() || set.isEmpty()) {
+           return false;
+       }
+        ArrayList<Integer> tiles = new ArrayList<Integer>(); 
+        for (Integer integer : array) {
+           tiles.add(integer); 
         }
-        Set<Integer> arraySet = new HashSet<>(array);
-        Set<Integer> setAsSet = new HashSet<>(set);
-        return arraySet.containsAll(setAsSet);
-    }
-
-
+        for (Integer integer : set) { // checks if the array contains each elemnt to creaate the set
+           if (!tiles.contains(integer)) { 
+               return false; 
+           } else {
+               ArrayList<Integer> tileToRemove = new ArrayList<Integer>(List.of(integer)); // a but clunk but for now its fine 
+               customRemove(tiles,tileToRemove); // essentially removing it from available tiles after its checked but only removes first instance 
+               
+           }
+        }
+      
+       return true;
+   }
 
     //function to check if the board is valid. thus if all tiles that are in startingBoard are also present in new board
     //cant use sets cause there can be duplicates in our board like 2 green 4's and a set would remove one of them
