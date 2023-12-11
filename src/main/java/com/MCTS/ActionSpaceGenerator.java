@@ -75,6 +75,7 @@ public class ActionSpaceGenerator {
     }
 
     public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
+        if (resultingBoards.isEmpty())return new ArrayList<ArrayList<ArrayList<Integer>>>();
         //checks if the only element in resultingboard is the startingboard, thus that it could not play any move
         if(this.resultingBoards.size() == 1 || decompose(this.resultingBoards.get(0)).equals(decompose(this.startingBoard))){
             // when it couldnt play anything add a set containing only -1 at the front of the only resulting board
@@ -134,15 +135,27 @@ public class ActionSpaceGenerator {
     * @return      {@code true} if the set can be created from the array,
     *              {@code false} otherwise.
     */
-    private static boolean canCreateSet(ArrayList<Integer> array, ArrayList<Integer> set) {
-        if(array.isEmpty()){
+
+    public static boolean canCreateSet(ArrayList<Integer> array, ArrayList<Integer> set) {
+        if (array.isEmpty() || set.isEmpty()) {
             return false;
         }
-        Set<Integer> arraySet = new HashSet<>(array);
-        Set<Integer> setAsSet = new HashSet<>(set);
-        return arraySet.containsAll(setAsSet);
-    }
+        ArrayList<Integer> tiles = new ArrayList<Integer>();
+        for (Integer integer : array) {
+            tiles.add(integer);
+        }
+        for (Integer integer : set) { // checks if the array contains each elemnt to creaate the set
+            if (!tiles.contains(integer)) {
+                return false;
+            } else {
+                ArrayList<Integer> tileToRemove = new ArrayList<Integer>(List.of(integer)); // a but clunk but for now its fine
+                customRemove(tiles,tileToRemove); // essentially removing it from available tiles after its checked but only removes first instance
 
+            }
+        }
+
+        return true;
+    }
 
 
     //function to check if the board is valid. thus if all tiles that are in startingBoard are also present in new board
