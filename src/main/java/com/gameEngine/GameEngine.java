@@ -2,10 +2,16 @@ package com.gameEngine;
 
 import com.example.GUI.GameModel;
 import com.example.GUI.StartScreensApplication;
+import javafx.animation.FadeTransition;
 import javafx.scene.image.Image;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 
 public class GameEngine {
@@ -18,7 +24,9 @@ public class GameEngine {
     private int numberOfBots;
     private boolean endGame;
     private int currentPlayerIndex = 0;
-
+    private final int gameId = 0;
+    private int moveNumber  = 0;
+    private boolean logged = false;
 
     public static void main(String[] args) {
         GameEngine engine = new GameEngine();
@@ -32,8 +40,7 @@ public class GameEngine {
             }
         }
         engine.numberOfRealPlayers = engine.gameModel.getNumberOfPlayers();
-        engine.numberOfBots =1;
-
+        engine.numberOfBots = 1;
         engine.board = new Board();
         engine.generateTiles();
         engine.gameLoop();
@@ -43,16 +50,24 @@ public class GameEngine {
 
     public void gameLoop() {
         addPlayers();
+        startLog();
         StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
         gameModel.setCurrentPlayer(getCurrentPlayer());
         StartScreensApplication.activeController.playerTurn();
         gameModel.setCurrentBoard(board);
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
         currentDraw = getThisDrawnTile();
-
-        System.out.println("Number of Real Players is: "+numberOfRealPlayers);
-        System.out.println("Number of Bot Players is: "+numberOfBots);
         while (!isGameEnding()) {
+            if(!logged){
+                logCurrentGameState();
+                moveNumber++;
+                logged = true;
+                System.out.println("LOGGING");
+                System.out.println(gameStateLog);
+                String fileName = "Game" + Integer.toString(gameId);
+                writeGameStateLogToFile(fileName);
+                System.out.println("DONE");
+            }
             if (gameModel.isNextTurn()|| getCurrentPlayer() instanceof ComputerPlayer) {
                 //System.out.println("the last board was:");
                 gameModel.setNextTurn(false);
@@ -73,7 +88,7 @@ public class GameEngine {
 
                 if (incomingBoard.checkBoardValidity()) {
 
-                    // if (getCurrentPlayer().getIsOut()) {
+                   // if (getCurrentPlayer().getIsOut()) {
                     if (true) {
                         if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                             getCurrentPlayer().setDeckOfTiles(copy);
@@ -93,8 +108,7 @@ public class GameEngine {
                         for (Set set : board.getSetList()) {
                             if (!incomingBoard.getSetList().contains(set)) {
                                 gotOut = false;
-
-                                StartScreensApplication.getInstance().setMessageLabel("1", "You can't use the tiles on the board!");
+                                StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
                                 System.out.println("You can't the tiles in the board!");
                                 break;
                             }
@@ -310,5 +324,33 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
         }
     }
 
+    private StringBuilder gameStateLog = new StringBuilder();
+
+    // New method to format the current game state into a CSV-compatible string
+    private void logCurrentGameState() {
+        StringJoiner sj = new StringJoiner(",");
+        sj.add(String.valueOf(gameId)); // Logging gameId
+        sj.add(board.toString()); // Logging the board
+        sj.add(listOfPlayers.stream()
+                .map(player -> player.getDeckOfTiles().stream()
+                        .map(Tile::toString)
+                        .collect(Collectors.joining(" ")))
+                .collect(Collectors.joining(";"))); // Logging player's hands
+        sj.add(String.valueOf(moveNumber)); // Logging moveNumber
+        sj.add(Integer.toString(currentPlayerIndex)); // Logging the current player
+        gameStateLog.append(sj.toString()).append("\n");
+    }
+
+    private void startLog(){
+        gameStateLog.append("GameId, Board, PlayersHands, MoveNumber, CurrentPlayer");
+    }
+
+    private void writeGameStateLogToFile(String fileName) {
+        try (FileWriter writer = new FileWriter("data/raw_data/" + fileName + ".csv")) {
+            writer.write(gameStateLog.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

@@ -19,7 +19,9 @@ public class Set {
     }
 
 
-
+    public int getSize(){
+        return tilesList.size();
+    }
     public boolean isRun() {
         if(tilesList.get(0).isJoker()){
             if(tilesList.get(1).getNumber()==1)

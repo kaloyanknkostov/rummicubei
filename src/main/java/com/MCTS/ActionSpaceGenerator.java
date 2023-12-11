@@ -63,16 +63,11 @@ public class ActionSpaceGenerator {
             ArrayList<Integer> currentAvailableTiles = new ArrayList<>(availableTiles);
             customRemove(currentAvailableTiles, this.possibleSets.get(i));
 
-            // Remove tiles in the set in our rack and available tiles list
-            customRemove(currentRack, this.possibleSets.get(i));
             //now check if the board is valid
             if(validBoard(currentBoardCopy)){
-                // TODO: Check results of resulting racks
-                ArrayList<Integer> currentValidRack = new ArrayList<>(currentRack);
 
                 // Add board and racks to the results as board is valid
                 resultingBoards.add(currentBoardCopy);
-                resultingRacks.add(currentValidRack);
 
             }
             createAllMoves(currentBoardCopy, currentAvailableTiles,currentRack, i);
