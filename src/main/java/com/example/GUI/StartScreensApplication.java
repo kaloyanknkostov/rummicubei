@@ -27,8 +27,10 @@ import javafx.scene.image.ImageView;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public class StartScreensApplication extends Application {
     @FXML
     public TextField firstPlayerName, secondPlayerName, thirdPlayerName, fourthPlayerName;
@@ -90,7 +92,7 @@ public class StartScreensApplication extends Application {
     public void handleSingleAction(ActionEvent event) {
         gameModel.setNumberOfBots(1);
         gameModel.setNumberOfPlayers(1);
-        switchScene("SinglePlayerNameInputScence.fxml", event);
+        switchScene("SinglePlayerNameInputScene.fxml", event);
     }
 
     public void handleNextTurn() {
@@ -122,9 +124,7 @@ public class StartScreensApplication extends Application {
 
         Player currentPlayer = gameModel.getCurrentPlayer();
         if (currentPlayer != null) {
-            Platform.runLater(() -> {
-                currentPlayer.getDeckOfTiles().addAll(tilesToRemoveFromBoard);
-            });
+            Platform.runLater(() -> currentPlayer.getDeckOfTiles().addAll(tilesToRemoveFromBoard));
         }
         int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
         ImageView[] playerBoard = getPlayerBoard();
@@ -259,21 +259,21 @@ public class StartScreensApplication extends Application {
     }
 
     public void updateBoard(Board newBoard) {
+        //get the current board
         ImageView[] GuiBoard = getBoard();
         // clean the board
-        for (int index = 0; index < GuiBoard.length; index++) {
-            GuiBoard[index].setImage(null);
+        for (ImageView imageView : GuiBoard) {
+            imageView.setImage(null);
         }
         ArrayList<Set> setArrayList = newBoard.getSetList();
         int lastEmptySlot = 0;
         //go thought the sets
-        for (int setIndex = 0; setIndex < setArrayList.size(); setIndex++) {
+        for (Set currentTileSet : setArrayList) {
             //go thought the tiles in the set
-            Set currentTileSet = setArrayList.get(setIndex);
             for (int tileIndex = 0; tileIndex < currentTileSet.getSize(); tileIndex++) {
                 Tile currentTile = currentTileSet.getTileAtIndex(tileIndex);
                 GuiBoard[lastEmptySlot].setImage(currentTile.getImage());
-                lastEmptySlot+=1;
+                lastEmptySlot += 1;
             }
             lastEmptySlot += 1;
         }
@@ -291,14 +291,11 @@ public class StartScreensApplication extends Application {
     }
 
     private void initializeDragAndDrop() {
-        ArrayList<ImageView> tilesMovedFromDeck = new ArrayList<ImageView>();
+        ArrayList<ImageView> tilesMovedFromDeck = new ArrayList<>();
 
         ImageView[] playerBoard = getPlayerBoard();
         ImageView[] entireBoard = getEntireBoard();
-        for (ImageView x : playerBoard) {
-            tilesMovedFromDeck.add(x);
-        }
-        System.out.println("checkindeqfg");
+        Collections.addAll(tilesMovedFromDeck, playerBoard);
 
         for (ImageView imageView : entireBoard) {
             if (imageView != null) {
@@ -318,23 +315,22 @@ public class StartScreensApplication extends Application {
                 });
                 imageView.setOnDragDropped(event -> {
                     ImageView source = dragSource.get();
-                    boolean legalmove = true;
-                    boolean noneedforswap = false;
-                    ;
+                    boolean legalMove = true;
+                    boolean NoNeedToSwap = false;
                     for (ImageView a : playerBoard) {
-                        if ((source.getId() == a.getId()) && (!tilesMovedFromDeck.contains(imageView) && imageView.getImage() != null)) {
-                            legalmove = false;
+                        if ((Objects.equals(source.getId(), a.getId())) && (!tilesMovedFromDeck.contains(imageView) && imageView.getImage() != null)) {
+                            legalMove = false;
                         }
-                        if ((imageView.getId() == a.getId()) && !tilesMovedFromDeck.contains(source)) {
-                            legalmove = false;
+                        if ((Objects.equals(imageView.getId(), a.getId())) && !tilesMovedFromDeck.contains(source)) {
+                            legalMove = false;
                         }
                     }
                     if (tilesMovedFromDeck.contains(imageView) && tilesMovedFromDeck.contains(source)) {
-                        noneedforswap = true;
+                        NoNeedToSwap = true;
                     }
 
-                    if (source != null && source != imageView && legalmove) {
-                        if (!noneedforswap) {
+                    if (source != null && source != imageView && legalMove) {
+                        if (!NoNeedToSwap) {
                             if (tilesMovedFromDeck.contains(source)) {
                                 tilesMovedFromDeck.remove(source);
                                 tilesMovedFromDeck.add(imageView);
@@ -361,9 +357,7 @@ public class StartScreensApplication extends Application {
 
     public void setMessageLabel(String player, String extraMessage) {
         String text = "Current Player: " + player + "\n" + extraMessage;
-        Platform.runLater(() -> {
-            activeController.messageLabel.setText(text);
-        });
+        Platform.runLater(() -> activeController.messageLabel.setText(text));
     }
 
     private ImageView[] getPlayerBoard() {

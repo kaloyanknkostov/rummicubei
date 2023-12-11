@@ -146,7 +146,7 @@ public class GameEngine {
         return draw;
     }
 
-    private void gameTurn() {
+    private void gameTurn(){
         if (currentPlayerIndex == listOfPlayers.size() - 1) {
             currentPlayerIndex = 0;
         } else {
@@ -160,8 +160,8 @@ public class GameEngine {
         }
         System.out.println("changing that to the player index: " + currentPlayerIndex);
         StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
-        gameModel.setCurrentBoard(board);
-
+        //gameModel.setCurrentBoard(board);
+        StartScreensApplication.activeController.updateBoard(board);
     }
 
 
