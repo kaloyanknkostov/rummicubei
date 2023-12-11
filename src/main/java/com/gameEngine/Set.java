@@ -7,8 +7,6 @@ public class Set {
     private ArrayList<Tile> tilesList;
     private boolean group;
     private boolean run;
-    private int value;
-    private int number;
 
     public Set() {
         tilesList = new ArrayList<Tile>();
@@ -29,13 +27,13 @@ public class Set {
             tilesList.get(0).setNumber(tilesList.get(1).getNumber()-1);
             tilesList.get(0).setColor(tilesList.get(1).getColor());
         }
-        number= tilesList.get(0).getNumber();
         for(int i=1; i<tilesList.size(); i++) {
 
             if(tilesList.get(i).isJoker()){
                 if(tilesList.get(i-1).getNumber()==13)return false;
                 tilesList.get(i).setNumber(tilesList.get(i-1).getNumber()+1);
                 tilesList.get(i).setColor(tilesList.get(i-1).getColor());
+                tilesList.get(i).setJoker(false);
             }
             if(tilesList.get(i).getNumber() - 1 != tilesList.get(i-1).getNumber() ||  !tilesList.get(i).getColor().equals(tilesList.get(i-1).getColor())) {
                 return false;
@@ -64,8 +62,7 @@ public class Set {
 
             }
         }
-        number=numberUsed;
-            run = false;
+        run = false;
             group = true;
             return true;
 
@@ -81,14 +78,9 @@ public class Set {
         }
         else if( isGroup() )
         {
-            value=number*tilesList.size();
-           return true;
+            return true;
         }
-        else if(isRun()){
-          value=number*tilesList.size()+tilesList.size();
-          return true;
-        }
-        else return false;
+        else return isRun();
     }
 
     public ArrayList<Tile> getTilesList() {
@@ -110,8 +102,8 @@ public class Set {
 
     public int getValue() {
         int totalValue = 0;
-        for(int i=0; i<tilesList.size(); i++) {
-            totalValue+=tilesList.get(i).getNumber();
+        for (Tile tile : tilesList) {
+            totalValue += tile.getNumber();
         }
         return totalValue;
     }
