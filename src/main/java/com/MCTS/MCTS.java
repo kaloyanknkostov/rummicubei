@@ -22,7 +22,7 @@ public class MCTS {
         ArrayList<Integer> deck =  new ArrayList<>(Arrays.asList(9,10,11));
 
         MCTS mcts = new MCTS(board, deck, 3);
-        mcts.loopMCTS(3);
+        mcts.loopMCTS(1);
     }
 
 
@@ -39,14 +39,13 @@ public class MCTS {
 
     public void loopMCTS(int loops){
         // Should loop n* player count times
-        for (int i = 0; i < loops*2; i++){ // TODO only works for 2 players
+        for (int i = 0; i < loops*2; i++){//TODO only works for 2 players
             System.err.println("loop: " + i);
             Node selected_node = this.root.selectNode();
             selected_node.expand();
             // Get a child from the selected node to start Play-Out (first child node)
             selected_node = selected_node.selectNode();
             selected_node.playOut();
-            return;
         }
     }
 

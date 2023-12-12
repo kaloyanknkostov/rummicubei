@@ -39,11 +39,11 @@ public class ActionSpaceGenerator {
 
     public void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){
         // if all sets have been checked return
+
         if(lastCheckedSet == this.possibleSets.size()){
             return;
         }
-
-        for(int i = lastCheckedSet ; i < this.possibleSets.size();i++){
+        for(int i = lastCheckedSet ; i < this.possibleSets.size(); i++){
             // If cannot create set with tiles go to next one
             if(!CustomUtility.canCreateSet(availableTiles, possibleSets.get(i))){
                 continue;
@@ -61,7 +61,6 @@ public class ActionSpaceGenerator {
             if(CustomUtility.validBoard(currentBoardCopy,this.startingBoard)){
                 // Add board and racks to the results as board is valid
                 resultingBoards.add(currentBoardCopy);
-
             }
             createAllMoves(currentBoardCopy, currentAvailableTiles,currentRack, i);
         }

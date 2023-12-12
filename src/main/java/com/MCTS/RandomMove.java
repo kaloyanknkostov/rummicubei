@@ -22,29 +22,31 @@ public class RandomMove {
     //TODO randomMove doesn't handel not being able to play yet
 
     public RandomMove(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
+        System.out.println("this is the board random move got called with: "+board);
+        ArrayList<ArrayList<Integer>> boardForRandomMove = CustomUtility.deepCopy(board);
         // System.out.println("IN Action");
         //get all possible sets
         //Here we are getting all the sets
         AllSetGenerator generator = AllSetGenerator.getInstance();
         this.allPossibleSets = generator.getAllSets();
-        hasFinished = false;
-        rand = new Random();
+        this.hasFinished = false;
+        this.rand = new Random();
         this.resultingBoards = new ArrayList<>();
-        this.startingBoard = board;
-        this.startingRack = rack;
-        this.possibleSets = CustomUtility.possibleSets(rack,CustomUtility.decompose(board),this.allPossibleSets);
+        this.startingBoard = boardForRandomMove;
+        this.startingRack = new ArrayList<>(rack);
+        this.possibleSets = CustomUtility.possibleSets(rack,CustomUtility.decompose(this.startingBoard),this.allPossibleSets);
         // now the possiblesets are shuffled so it tries to add sets in a random order
         Collections.shuffle(this.possibleSets);
         //probably put this somewhere else
-        availableTilesStart = new ArrayList<>();
-        for(Integer tile: startingRack){
+        this.availableTilesStart = new ArrayList<>();
+        for(Integer tile: this.startingRack){
             availableTilesStart.add(tile);
         }
-        for(Integer tile: CustomUtility.decompose(board)){
+        for(Integer tile: CustomUtility.decompose(this.startingBoard)){
             availableTilesStart.add(tile);
         }
         ArrayList<ArrayList<Integer>> beginningBoard = new ArrayList<>();
-        createRandomPlayouts(beginningBoard, availableTilesStart, 0);
+        createRandomPlayouts(beginningBoard, this.availableTilesStart, 0);
         calculateRandomMove();
         //now the resulting random move can just be accessed from the getMethod
     }
@@ -73,18 +75,16 @@ public class RandomMove {
     private void createRandomPlayouts(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles, int lastCheckedSet){
         // if all sets have been checked return
         if(lastCheckedSet == this.possibleSets.size() && CustomUtility.validBoard(currentBoard, CustomUtility.decompose(this.startingBoard))){
-            hasFinished = true;
+            this.hasFinished = true;
             return;
         } else if(lastCheckedSet == this.possibleSets.size()){
             return;
         }
-
         for(int i = lastCheckedSet ; i < this.possibleSets.size();i++){
             // If cannot create set with tiles go to next one or if it has finsihed
-            if(hasFinished ||!CustomUtility.canCreateSet(availableTiles, this.possibleSets.get(i))){
+            if(this.hasFinished ||!CustomUtility.canCreateSet(availableTiles, this.possibleSets.get(i))){
                 //cause then it wil not run the for loop and reach the return of all the active calls without doing anything
                 continue;
-
             }
             // Create copy of board so changes in this iteration of the loop are unique to the next iteration
             // Pass this copy as a reference in the recursion

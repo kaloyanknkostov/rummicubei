@@ -57,7 +57,6 @@ public class Node {
         // if this Node has no children then we return this node (to execute play-out)
         this.visitCount += 1;
         if(this.childList.isEmpty()){
-            System.out.println("reached the end!!!!");
             return this;
         }
         // Search for the highest UCT value in the list of children nodes
@@ -67,7 +66,6 @@ public class Node {
         //System.err.println("STARTING UCT: "+ highestUCT);
         ///System.err.println("CHILD LIST:" + this.childList);
         for (Node child: this.childList){
-            System.err.println(child.getUCT());
             if(child.getUCT()>highestUCT && !child.getLeaf()){
                 highestUCT = child.getUCT();
                 nextNode = child;
@@ -80,13 +78,8 @@ public class Node {
         return this.isLeaf;
     }
 
-
     public void expand(){
-        System.out.println("yessssss");
-        System.out.println(this.gameState.getRacks()[0]);
         ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[currentPlayer]);
-        System.out.println("yessssss");
-        System.out.println(this.gameState.getRacks()[0]);
         for(ArrayList<ArrayList<Integer>> board: actionSpace.getResultingBoards()){
             //for every action move it could make it copies the current gamestate and updates it based on the action
             GameState newState = this.gameState.copy();
@@ -114,9 +107,12 @@ public class Node {
     public void playOut(){
         GameState stateForPlayout = this.gameState.copy();
         int playoutMaxer = this.currentPlayer;
-
-        int res = stateForPlayout.updateGameState((new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[playoutMaxer])).getRandomMove(),playoutMaxer);
+        RandomMove newMove = new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[playoutMaxer]);
+        ArrayList<ArrayList<Integer>> newBoard = newMove.getRandomMove();
+        int res = stateForPlayout.updateGameState(newBoard,playoutMaxer);
         while(res == 0){
+            System.out.println("the current rack is: " + stateForPlayout.getRacks()[playoutMaxer] + " for player " + playoutMaxer);
+            System.out.println("the current board is: " + stateForPlayout.getBoard());
             //update so its the next players turn
             //TODO this is constrained for 2 players
             playoutMaxer = (playoutMaxer + 1) % 2;

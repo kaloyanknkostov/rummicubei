@@ -36,12 +36,7 @@ public class GameState {
     // if output is 1 someone won the game
     // if output is 2 the game ended in a draw
     public int updateGameState(ArrayList<ArrayList<Integer>> newBoard, int playerIndex){
-        System.out.println("the old board is: " + this.board);
-        System.out.println("the new board is: " + newBoard);
         CustomUtility.customRemove(this.racks[playerIndex], CustomUtility.getDifference(newBoard, this.board));
-        System.out.println("difference between old and new board is");
-        System.out.println(CustomUtility.getDifference(newBoard, this.board));
-        System.out.println("the rack for the current player is" + this.racks[0]);
         //check if the player whos move it was now has an empty rack
         if(racks[playerIndex].isEmpty()){
             this.winner = playerIndex;
@@ -65,7 +60,6 @@ public class GameState {
             }
         }
         else if (equals(CustomUtility.decompose(newBoard),CustomUtility.decompose(this.board))){
-            System.out.println("reached draw a card");
             drawCard(playerIndex);
             this.couldntPlay[playerIndex] = false;
             //if the game did not finish or one player did not just draw, then one player played a move and we have to update his
