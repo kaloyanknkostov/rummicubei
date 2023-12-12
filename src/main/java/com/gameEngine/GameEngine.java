@@ -104,7 +104,6 @@ public class GameEngine {
                         System.out.println("VALID BOARD");
                         gameTurn();
                     } else {
-                        int valueOfTurn = 0;
                         for (Set set : incomingBoard.getSetList())
                             if (!board.getSetList().contains(set))
                                 //valueOfTurn += set.getValue();
