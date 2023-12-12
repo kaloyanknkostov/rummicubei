@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class BaselineVsMcts {
     private final BaselineVsMctsGameModel gameModel = BaselineVsMctsGameModel.getInstance();
     private static final ArrayList<Tile> potOfTiles = new ArrayList<>();
-    private final ArrayList<Player> listOfPlayers = new ArrayList<>();
+    private final ArrayList<ComputerPlayer> listOfPlayers = new ArrayList<>();
     private Board board;
     private int currentPlayerIndex = 0;
     private int gameId = 0;
@@ -62,20 +62,26 @@ public class BaselineVsMcts {
         writeGameStateLogToFile(fileName);
         // Main loop
         int turn = 0;
+        System.out.println("DECK OF PLAYERS ONE: ");
+        System.out.println(listOfPlayers.get(0).getDeckOfTiles());
+        System.out.println("DECK OF PLAYER TWO: ");
+        System.out.println(listOfPlayers.get(1).getDeckOfTiles());
         while (turn < 10000) {
             Board oryginalBoard = board.copy();
-            ArrayList<Tile> playerDeckCopy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
             Board incomingBoard = gameTurn();
+            ArrayList<Tile> playerDeckCopy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
             //Check if the board is valid
             if (incomingBoard.checkBoardValidity()) {
                 //If it's valid check if the player already got out, if not check, if he put 30 points on the board
-                if (getCurrentPlayer().getIsOut() || checkThirtyRule(incomingBoard)) {
+                //if (getCurrentPlayer().getIsOut() || checkThirtyRule(incomingBoard)) {
                     //if the board didn't change, then we set the hand to the copy of it draw a tile
                     if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                         System.out.println("Player did nothing, drawing a tile");
                         getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
                         drawTile();
                         board = oryginalBoard;
+                        System.out.println("OLD DECK:");
+                        System.out.println(playerDeckCopy);
                     } else {
                         System.out.println("Player did a move!!");
                         board = incomingBoard.copy();
@@ -87,12 +93,12 @@ public class BaselineVsMcts {
                         System.out.println("printing the board");
                         board.printBoard();
                     }
-                } else {
-                    System.out.println("Player did not play 30 points or used tile from the board, drawing a tile");
-                    board = oryginalBoard;
-                    getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
-                    drawTile();
-                }
+               // } else {            System.out.println("Player did not play 30 points or used tile from the board, drawing a tile");
+                    ////                    board = oryginalBoard;
+                    ////                    getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
+                    ////                    drawTile();
+//
+                //}
                 // If the board is not valid print an error and set the tiles in the players hand to the copy of them before the move
             } else {
                 getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
@@ -101,7 +107,7 @@ public class BaselineVsMcts {
                 System.out.println("Not a valid board, drawing a tile");
             }
             //here a player won
-            if (getCurrentPlayer().getDeckOfTiles().isEmpty()) {
+            if (getCurrentPlayer().deckOfTiles.isEmpty()) {
                 System.out.println("Player " + currentPlayerIndex + " won!");
                 break;
             }
@@ -132,7 +138,7 @@ public class BaselineVsMcts {
 
 
     private Tile getDrawnTile() {
-        System.out.println("There are " + potOfTiles.size() + " tiles");
+        //System.out.println("There are " + potOfTiles.size() + " tiles");
         int index = (int) Math.floor(Math.random() * potOfTiles.size());
         if (index >= potOfTiles.size()) {
             System.out.println("cant draw tiles");
@@ -164,19 +170,21 @@ public class BaselineVsMcts {
         potOfTiles.add(new Tile(0, "", true, "painted_tile_3.png"));
     }
 
-    public Player getCurrentPlayer() {
+    public ComputerPlayer getCurrentPlayer() {
         return listOfPlayers.get(currentPlayerIndex);
     }
 
     public void addPlayers() {
         // TODO: Adding the baseline bot
-        listOfPlayers.add(new ComputerPlayer("test"));
+        listOfPlayers.add(new ComputerPlayer("one"));
         // TODO: Adding the MCTS bot
-        listOfPlayers.add(new ComputerPlayer("test"));
+        listOfPlayers.add(new ComputerPlayer("two"));
 
         for (int k = 0; k < 15; k++) {
+            System.out.println("drawing a tile " + getDrawnTile() +" for player " + currentPlayerIndex);
             drawTile();
             currentPlayerIndex = 1;
+            System.out.println("drawing a tile" + getDrawnTile() +" for player " + currentPlayerIndex);
             drawTile();
             currentPlayerIndex = 0;
         }
@@ -250,7 +258,7 @@ public class BaselineVsMcts {
             newSets.clear(); // Reset before next turn
             valueOfPrevTurn = totalForTheRound;
             totalForTheRound -= totalForTheRound;
-            System.out.println("Player " + getCurrentPlayer() + " got out");
+            System.out.println("Player " + currentPlayerIndex + " got out");
             getCurrentPlayer().setIsOut(true);
             return true;
             // Here we check if the player just didnt do anything

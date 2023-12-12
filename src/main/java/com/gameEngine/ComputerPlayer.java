@@ -12,7 +12,7 @@ public class ComputerPlayer implements Player
 {
     String username;
     private Boolean isOut;
-    private ArrayList<Tile> deckOfTiles;
+    public ArrayList<Tile> deckOfTiles;
 
     public ComputerPlayer(String username)
     {
