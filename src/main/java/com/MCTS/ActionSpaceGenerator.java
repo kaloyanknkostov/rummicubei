@@ -1,6 +1,7 @@
 package com.MCTS;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 
@@ -33,7 +34,7 @@ public class ActionSpaceGenerator {
         for(Integer tile: startingBoard){
             this.availableTilesStart.add(tile);
         }
-        createAllMoves(board, this.availableTilesStart, this.startingRack, 0);
+        createAllMoves(new ArrayList<>(), this.availableTilesStart, this.startingRack, 0);
     }
 
     public void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){

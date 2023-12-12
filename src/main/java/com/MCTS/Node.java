@@ -57,9 +57,9 @@ public class Node {
         // if this Node has no children then we return this node (to execute play-out)
         this.visitCount += 1;
         if(this.childList.isEmpty()){
+            System.out.println("reached the end!!!!");
             return this;
         }
-
         // Search for the highest UCT value in the list of children nodes
         // ARGMAX
         double highestUCT = Double.NEGATIVE_INFINITY;
@@ -94,6 +94,8 @@ public class Node {
                 this.childList.add(child);
             } else if(res == 1){
                 //one of the players won, we have to check which one
+                System.out.println(newState.getBoard());
+                System.out.println("someone won");
                 backpropagate(newState.getWinner());
                 Node child = new Node(newState, this, (currentPlayer +1) %2, true);
                 this.childList.add(child);

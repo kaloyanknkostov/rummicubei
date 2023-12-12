@@ -1,7 +1,10 @@
 package com.MCTS;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class GameState {
@@ -57,7 +60,8 @@ public class GameState {
                 }
             }
         }
-        else if (newBoard.equals(this.board)){
+        else if (equals(CustomUtility.decompose(newBoard),CustomUtility.decompose(this.board))){
+            System.out.println("reached draw a card");
             drawCard(playerIndex);
             this.couldntPlay[playerIndex] = false;
             //if the game did not finish or one player did not just draw, then one player played a move and we have to update his
@@ -91,6 +95,20 @@ public class GameState {
         Integer tile = Integer.valueOf(this.pile.get(x));
         this.pile.remove(tile);
         this.racks[playerIndex].add(tile);
+    }
+
+    public static boolean equals(ArrayList<Integer> one, ArrayList<Integer> two){
+        if(one.size()!= two.size())return false;
+
+
+        Collections.sort(one);
+        Collections.sort(two);
+        for (int i = 0; i <one.size() ; i++) {
+            if(!Objects.equals(one.get(i), two.get(i))){
+                return false;
+            }
+        }
+        return true;
     }
 
 }

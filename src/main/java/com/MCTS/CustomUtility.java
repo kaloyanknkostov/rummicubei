@@ -23,7 +23,8 @@ public class CustomUtility {
         return count;
     }
 
-     // Helper function to check if a tile is present in a list
+    
+    // Helper function to check if a tile is present in a list
     public static boolean containsTile(ArrayList<Integer> list, Integer tile) {
         for (Integer element : list) {
 

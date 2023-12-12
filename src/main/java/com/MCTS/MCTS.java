@@ -15,6 +15,16 @@ public class MCTS {
     private ArrayList<Integer> deck;
     ArrayList<Integer> guessedOppononetDeck;
 
+    public static void main(String[] args) {
+        ArrayList<ArrayList<Integer>> board = new ArrayList<>();
+        board.add(new ArrayList<>(Arrays.asList(1,2,3)));
+        //board.add(new ArrayList<>(Arrays.asList(5,6,7)));
+        ArrayList<Integer> deck =  new ArrayList<>(Arrays.asList(9,10,11));
+
+        MCTS mcts = new MCTS(board, deck, 3);
+        mcts.loopMCTS(3);
+    }
+
 
     public MCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent){
         // get game state
