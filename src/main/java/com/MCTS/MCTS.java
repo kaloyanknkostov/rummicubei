@@ -3,10 +3,8 @@ package com.MCTS;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-
-
-
-
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class MCTS {
     private GameState gameState;
@@ -14,7 +12,7 @@ public class MCTS {
     private ArrayList<ArrayList<Integer>> board;
     private ArrayList<Integer> deck;
     ArrayList<Integer> guessedOppononetDeck;
-
+    private String time;
     public static void main(String[] args) {
         ArrayList<ArrayList<Integer>> board = new ArrayList<>();
         board.add(new ArrayList<>(Arrays.asList(1,2,3)));
@@ -40,11 +38,19 @@ public class MCTS {
     public void loopMCTS(int loops){
         // Should loop n* player count times
         for (int i = 0; i < loops*2; i++){//TODO only works for 2 players
-            System.err.println("loop: " + i);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            time = LocalTime.now().format(formatter);
+            System.err.println(time + " || Loop: " + i + " || SELECTION");
             Node selected_node = this.root.selectNode();
+            time = LocalTime.now().format(formatter);
+            System.err.println(time + " || Loop: " + i + " || EXPANSION");
             selected_node.expand();
             // Get a child from the selected node to start Play-Out (first child node)
+            time = LocalTime.now().format(formatter);
+            System.err.println(time + " || Loop: " + i + " || SELECTION FOR PLAYOUT");
             selected_node = selected_node.selectNode();
+            time = LocalTime.now().format(formatter);
+            System.err.println(time + " || Loop: " + i + " || PLAYOUT");
             selected_node.playOut();
         }
     }

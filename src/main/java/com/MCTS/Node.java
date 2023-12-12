@@ -100,7 +100,7 @@ public class Node {
             }
             //only works for two players
         }
-        
+
     }
 
 
@@ -155,5 +155,9 @@ public class Node {
 
     public GameState getGameState(){
         return this.gameState;
+    }
+
+    public ArrayList<Node> getChildList(){
+        return this.childList;
     }
 }

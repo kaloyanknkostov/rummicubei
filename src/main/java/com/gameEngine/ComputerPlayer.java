@@ -50,7 +50,17 @@ public class ComputerPlayer implements Player
         } else if (type == "mcts"){
             MCTS mctsAgent = new MCTS(oldBoard.turnToIntBoard(), deckOfIntTiles, deckLengths.get(0));
             mctsAgent.loopMCTS(5);
-            newBoard = mctsAgent.getRoot().selectNode().getGameState().getBoard();
+
+            double highestUCT = Double.NEGATIVE_INFINITY;
+            com.MCTS.Node nextNode = null;
+            System.err.println(mctsAgent.getRoot().getChildList());
+            for (com.MCTS.Node child: mctsAgent.getRoot().getChildList()){
+                if(child.getUCT()>highestUCT){
+                    highestUCT = child.getUCT();
+                    nextNode = child;
+                }
+            }
+            newBoard = nextNode.getGameState().getBoard();
         }
 
         System.out.println("NEW BOARD WITH INTS: "+newBoard);
