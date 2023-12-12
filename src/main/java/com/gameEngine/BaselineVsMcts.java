@@ -305,9 +305,9 @@ public class BaselineVsMcts {
 
     private boolean checkThirtyRule(Board incomingBoard, ArrayList<Tile> playerDeckCopy){
         ArrayList<Tile> copy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
-        ArrayList<Set> newSets = new ArrayList<>();
+        ArrayList<Set> newSets = new ArrayList<>(); //stores sets that have been added to the board in the current round
         for (Set set : incomingBoard.getSetList())
-            if (!board.getSetList().contains(set)){
+            if (!board.getSetList().contains(set)){ //If the new board contains a set and the old one doesn't, we add it to newSets
                 newSets.add(set);
             }
         boolean gotOut = true;
@@ -320,14 +320,14 @@ public class BaselineVsMcts {
         int totalForTheRound=0;
         for(Set set: newSets) {
             System.out.println(set.toString());
-            totalForTheRound+=set.getValue();
+            totalForTheRound+=set.getValue(); //we count the total amount a player put on the board this round
         }
-        if (totalForTheRound - valueOfPrevTurn >= 30 && gotOut) {
+        if (totalForTheRound - valueOfPrevTurn >= 30 && gotOut) { //checks if the player put at least 30 points on the board
             getCurrentPlayer().setIsOut(true);
             board = incomingBoard;
             System.out.println("VALID BOARD");
             gameTurn();
-            newSets.clear();
+            newSets.clear(); //reset before next turn
             valueOfPrevTurn = totalForTheRound;
             System.out.println("value of turn: "+totalForTheRound);
             totalForTheRound-=totalForTheRound;
