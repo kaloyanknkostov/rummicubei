@@ -33,7 +33,17 @@ public class BaselineVsMcts {
     }
 
     private Tile currentDraw;
+    public ArrayList<Tile> removeUsedTiles(ArrayList<ArrayList<Tile>> board, ArrayList<Tile> deck){
+        //ArrayList<Tile> updated=new ArrayList<>();
+        for (ArrayList<Tile> currentSet : board) {
+        for (Tile currentTile : currentSet) {
+            if(deck.contains(currentTile)){
+                deck.remove(currentTile);
+            }
+        }}
+        return deck;
 
+    }
     public void botLoop() {
         // Setting the random gameId
         Random random = new Random();
@@ -64,6 +74,7 @@ public class BaselineVsMcts {
                     }else{
                         System.out.println("Player did a move!!");
                         board = incomingBoard.copy();
+                        getCurrentPlayer().setDeckOfTiles(removeUsedTiles(incomingBoard.getSetList(), playerDeckCopy));
                     }
                     System.out.println("Player did a move!!");
                     board = incomingBoard;
