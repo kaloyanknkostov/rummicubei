@@ -62,7 +62,6 @@ public class BaselineVsMcts {
                         drawTile();
                         board = oryginalBoard;
                     }else{
-                        System.out.println("Using a new board");
                         System.out.println("Player did a move!!");
                         board = incomingBoard.copy();
                     }
@@ -223,13 +222,11 @@ public class BaselineVsMcts {
         }
         int totalForTheRound = 0;
         for (Set set : newSets) {
-            System.out.println(set.toString());
             totalForTheRound+=set.getValue(); // We count the total amount a player put on the board this round
         }
         if (totalForTheRound - valueOfPrevTurn >= 30 && getCurrentPlayer().getIsOut()) { // Checks if the player put at least 30 points on the board
             newSets.clear(); // Reset before next turn
             valueOfPrevTurn = totalForTheRound;
-            //System.out.println("value of turn: " + totalForTheRound);
             totalForTheRound -= totalForTheRound;
             System.out.println("Player " + getCurrentPlayer() + " got out");
             getCurrentPlayer().setIsOut(true);
