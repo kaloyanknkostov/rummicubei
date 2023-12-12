@@ -306,10 +306,12 @@ public class BaselineVsMcts {
         for (Set set : incomingBoard.getSetList())
             if (!board.getSetList().contains(set))
                 valueOfTurn += set.getValue();
+        boolean gotOut = true;
         for (Set set : board.getSetList()) {
             if (!incomingBoard.getSetList().contains(set)) {
+                gotOut = false;
                 System.out.println("You can't use the tiles in the board!");
-                return false;
+                break;
             }
         }
         if (valueOfTurn >= 30 && gotOut) {
