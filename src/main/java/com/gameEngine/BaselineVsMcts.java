@@ -2,10 +2,8 @@ package com.gameEngine;
 
 import com.example.GUI.StartScreensApplication;
 import javafx.scene.image.Image;
-
 import java.io.FileWriter;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringJoiner;
@@ -303,25 +301,21 @@ public class BaselineVsMcts {
         System.out.println("MCTS Move:");
     }
 
-    private boolean checkThirtyRule(){
-
+    private boolean checkThirtyRule(Board incomingBoard, ArrayList<Tile> playerDeckCopy){
         int valueOfTurn = 0;
         for (Set set : incomingBoard.getSetList())
             if (!board.getSetList().contains(set))
                 valueOfTurn += set.getValue();
-        boolean gotOut = true;
         for (Set set : board.getSetList()) {
             if (!incomingBoard.getSetList().contains(set)) {
-                gotOut = false;
                 System.out.println("You can't use the tiles in the board!");
-                break;
+                return false;
             }
         }
         if (valueOfTurn >= 30 && gotOut) {
             getCurrentPlayer().setIsOut(true);
             board = incomingBoard;
-            System.out.println("VALID BOARD");
-            gameTurn();
+            return true;
         } else {
             if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                 getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
