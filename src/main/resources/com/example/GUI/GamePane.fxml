@@ -14,6 +14,7 @@
            visible="true"/>
 
     <Button layoutX="138.0" layoutY="40.0" mnemonicParsing="false" onAction="#handleNextTurn" text="Next Turn"/>
+<Button layoutX="138.0" layoutY="80.0" mnemonicParsing="false" onAction="#handleResetBoard" text="Reset Board"/>
     <GridPane gridLinesVisible="true" layoutX="449.0" layoutY="34.0" prefHeight="550.0" prefWidth="850.0">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>

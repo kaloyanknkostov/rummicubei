@@ -23,7 +23,8 @@ public class ActionSpaceGenerator {
 
     public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
         System.out.println("IN Action");
-        //allPossibleSets= AllSetGenerator.generateAllSets();
+        AllSetGenerator generator = AllSetGenerator.getInstance();
+        allPossibleSets = AllSetGenerator.getAllSets();
         // get all possible sets here
         this.resultingBoards = new ArrayList<>();
         this.resultingRacks = new ArrayList<>();
@@ -62,16 +63,11 @@ public class ActionSpaceGenerator {
             ArrayList<Integer> currentAvailableTiles = new ArrayList<>(availableTiles);
             customRemove(currentAvailableTiles, this.possibleSets.get(i));
 
-            // Remove tiles in the set in our rack and available tiles list
-            customRemove(currentRack, this.possibleSets.get(i));
             //now check if the board is valid
             if(validBoard(currentBoardCopy)){
-                // TODO: Check results of resulting racks
-                ArrayList<Integer> currentValidRack = new ArrayList<>(currentRack);
 
                 // Add board and racks to the results as board is valid
                 resultingBoards.add(currentBoardCopy);
-                resultingRacks.add(currentValidRack);
 
             }
             createAllMoves(currentBoardCopy, currentAvailableTiles,currentRack, i);
@@ -79,8 +75,9 @@ public class ActionSpaceGenerator {
     }
 
     public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
+        if (resultingBoards.isEmpty())return new ArrayList<ArrayList<ArrayList<Integer>>>();
         //checks if the only element in resultingboard is the startingboard, thus that it could not play any move
-        if(this.getResultingBoards().size() == 1 || decompose(this.resultingBoards.get(0)).equals(decompose(this.startingBoard))){
+        if(this.resultingBoards.size() == 1 || decompose(this.resultingBoards.get(0)).equals(decompose(this.startingBoard))){
             // when it couldnt play anything add a set containing only -1 at the front of the only resulting board
             this.resultingBoards.get(0).add(0, new ArrayList<>(Arrays.asList(-1)));
         }
@@ -138,15 +135,27 @@ public class ActionSpaceGenerator {
     * @return      {@code true} if the set can be created from the array,
     *              {@code false} otherwise.
     */
-    private static boolean canCreateSet(ArrayList<Integer> array, ArrayList<Integer> set) {
-        if(array.isEmpty()){
+
+    public static boolean canCreateSet(ArrayList<Integer> array, ArrayList<Integer> set) {
+        if (array.isEmpty() || set.isEmpty()) {
             return false;
         }
-        Set<Integer> arraySet = new HashSet<>(array);
-        Set<Integer> setAsSet = new HashSet<>(set);
-        return arraySet.containsAll(setAsSet);
-    }
+        ArrayList<Integer> tiles = new ArrayList<Integer>();
+        for (Integer integer : array) {
+            tiles.add(integer);
+        }
+        for (Integer integer : set) { // checks if the array contains each elemnt to creaate the set
+            if (!tiles.contains(integer)) {
+                return false;
+            } else {
+                ArrayList<Integer> tileToRemove = new ArrayList<Integer>(List.of(integer)); // a but clunk but for now its fine
+                customRemove(tiles,tileToRemove); // essentially removing it from available tiles after its checked but only removes first instance
 
+            }
+        }
+
+        return true;
+    }
 
 
     //function to check if the board is valid. thus if all tiles that are in startingBoard are also present in new board

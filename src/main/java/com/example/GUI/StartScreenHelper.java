@@ -1,7 +1,6 @@
 package com.example.GUI;
 
 
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TextField;
 
 public class StartScreenHelper {
@@ -16,7 +15,14 @@ public class StartScreenHelper {
     }
 
     public boolean checkNames(TextField firstPlayerName, TextField secondPlayerName, TextField thirdPlayerName, TextField fourthPlayerName) {
+        System.out.println("There should be: " + gameModel.getNumberOfPlayers() + " players");
         switch (gameModel.getNumberOfPlayers()) {
+            case 1->{
+                if (!firstPlayerName.getCharacters().isEmpty()) {
+                    gameModel.playerNames.add(firstPlayerName.getCharacters().toString());
+                    return true;
+                }
+            }
             case 2 -> {
                 if (!(firstPlayerName.getCharacters().isEmpty() || secondPlayerName.getCharacters().isEmpty())) {
                     gameModel.playerNames.add(firstPlayerName.getCharacters().toString());

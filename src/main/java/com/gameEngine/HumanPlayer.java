@@ -2,6 +2,8 @@ package com.gameEngine;
 
 
 
+import com.MCTS.ActionSpaceGenerator;
+
 import java.util.ArrayList;
 
 public class HumanPlayer implements Player
@@ -23,10 +25,8 @@ public class HumanPlayer implements Player
         deckOfTiles.add(tile);
     }
     @Override
-    public Board getNewBoard()
+    public Board getNewBoard(Board board)
     {
-        // get Board from GUI
-        Board board=new Board();
         return board;
     }
 

@@ -10,7 +10,6 @@ import java.util.Set;
 
 public class RandomMove {
     private ArrayList<ArrayList<ArrayList<Integer>>> resultingBoards;
-    private ArrayList<ArrayList<Integer>> resultingRacks;
     private ArrayList<ArrayList<Integer>> startingBoard;
     private ArrayList<Integer> startingRack;
     private ArrayList<ArrayList<Integer>> allPossibleSets;
@@ -25,10 +24,12 @@ public class RandomMove {
     public RandomMove(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
         System.out.println("IN Action");
         //get all possible sets
+        //Here we are getting all the sets
+        AllSetGenerator generator = AllSetGenerator.getInstance();
+        allPossibleSets = generator.getAllSets();
         hasFinished = false;
         rand = new Random();
         this.resultingBoards = new ArrayList<>();
-        this.resultingRacks = new ArrayList<>();
         this.startingBoard = board;
         this.startingRack = rack;
         this.possibleSets = possibleSets(this.startingRack,decompose(board));
@@ -43,7 +44,7 @@ public class RandomMove {
             availableTilesStart.add(tile);
         }
         ArrayList<ArrayList<Integer>> beginningBoard = new ArrayList<>();
-        createRandomPlayouts(beginningBoard, availableTilesStart, rack, 0);
+        createRandomPlayouts(beginningBoard, availableTilesStart, 0);
         calculateRandomMove();
         //now the resulting random move can just be accessed from the getMethod
     }
@@ -65,7 +66,7 @@ public class RandomMove {
 
     }
 
-    private void createRandomPlayouts(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){
+    private void createRandomPlayouts(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles, int lastCheckedSet){
         // if all sets have been checked return
         if(lastCheckedSet == this.possibleSets.size() && validBoard(currentBoard)){
             hasFinished = true;
@@ -88,18 +89,13 @@ public class RandomMove {
             customRemove(currentAvailableTiles, this.possibleSets.get(i));
 
             // Remove tiles in the set in our rack and available tiles list
-            customRemove(currentRack, this.possibleSets.get(i));
             //now check if the board is valid
             if(validBoard(currentBoardCopy)){
-                // TODO: Check results of resulting racks
-                ArrayList<Integer> currentValidRack = new ArrayList<>(currentRack);
-
                 // Add board and racks to the results as board is valid
                 resultingBoards.add(currentBoardCopy);
-                resultingRacks.add(currentValidRack);
 
             }
-            createRandomPlayouts(currentBoardCopy, currentAvailableTiles,currentRack,i);
+            createRandomPlayouts(currentBoardCopy, currentAvailableTiles,i);
             
         }
     }
@@ -149,15 +145,25 @@ public class RandomMove {
     *              {@code false} otherwise.
     */
     private static boolean canCreateSet(ArrayList<Integer> array, ArrayList<Integer> set) {
-        if(array.isEmpty()){
-            return false;
+        if (array.isEmpty() || set.isEmpty()) {
+           return false;
+       }
+        ArrayList<Integer> tiles = new ArrayList<Integer>(); 
+        for (Integer integer : array) {
+           tiles.add(integer); 
         }
-        Set<Integer> arraySet = new HashSet<>(array);
-        Set<Integer> setAsSet = new HashSet<>(set);
-        return arraySet.containsAll(setAsSet);
-    }
-
-
+        for (Integer integer : set) { // checks if the array contains each elemnt to creaate the set
+           if (!tiles.contains(integer)) { 
+               return false; 
+           } else {
+               ArrayList<Integer> tileToRemove = new ArrayList<Integer>(List.of(integer)); // a but clunk but for now its fine 
+               customRemove(tiles,tileToRemove); // essentially removing it from available tiles after its checked but only removes first instance 
+               
+           }
+        }
+      
+       return true;
+   }
 
     //function to check if the board is valid. thus if all tiles that are in startingBoard are also present in new board
     //cant use sets cause there can be duplicates in our board like 2 green 4's and a set would remove one of them
