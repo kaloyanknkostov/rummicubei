@@ -21,6 +21,7 @@ public class BaselineVsMcts {
     private int currentPlayerIndex = 0;
     private int gameId = 0;
     private int moveNumber  = 0;
+    private int valueOfPrevTurn = 0;
 
     public static void main(String[] args) {
         BaselineVsMcts engine = new BaselineVsMcts();
@@ -303,32 +304,48 @@ public class BaselineVsMcts {
     }
 
     private boolean checkThirtyRule(Board incomingBoard, ArrayList<Tile> playerDeckCopy){
+        ArrayList<Set> newSets = new ArrayList<>();
         int valueOfTurn = 0;
         for (Set set : incomingBoard.getSetList())
             if (!board.getSetList().contains(set))
-                valueOfTurn += set.getValue();
+                newSets.add(set);
         boolean gotOut = true;
         for (Set set : board.getSetList()) {
             if (!incomingBoard.getSetList().contains(set)) {
-                gotOut = false;
-                System.out.println("You can't use the tiles in the board!");
+                StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
+                System.out.println("You can't the tiles in the board!");
                 break;
+                return false;
             }
         }
-        if (valueOfTurn >= 30 && gotOut) {
+        int totalForTheRound=0;
+        for(Set set: newSets) {
+            System.out.println(set.toString());
+            totalForTheRound+=set.getValue();
+        }
+        if (totalForTheRound - valueOfPrevTurn >= 30 && gotOut) {
             getCurrentPlayer().setIsOut(true);
             board = incomingBoard;
+            System.out.println("VALID BOARD");
+            gameTurn();
+            newSets.clear();
+            valueOfPrevTurn = totalForTheRound;
+            System.out.println("value of turn: "+totalForTheRound);
+            totalForTheRound-=totalForTheRound;
             return true;
         } else {
             if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
-                getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
+                getCurrentPlayer().setDeckOfTiles(copy);
                 getCurrentPlayer().getDeckOfTiles().add(currentDraw);
                 System.out.println(currentDraw.getPicture());
                 getThisDrawnTile();
                 System.out.println("VALID BOARD");
                 gameTurn();
+                return true;
             } else {
-                return  false;
+                System.out.println("Get more then 30");
+                StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You need to get more then 30 points!");
+                return false;
             }
         }
         return true;
