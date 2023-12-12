@@ -150,7 +150,7 @@ public class CustomUtility {
     * @param startingBoard  The initial set of tiles on the game board.
     * @return A list of possible sets that can be created using tiles from the starting rack and starting board.
     */
-    public static ArrayList<ArrayList<Integer>> possibleSets(ArrayList<Integer> startingRack, ArrayList<Integer> startingBoard,ArrayList<ArrayList<Integer>> allPossibleSets){
+    public static ArrayList<ArrayList<Integer>> possibleSets(ArrayList<Integer> startingRack, ArrayList<Integer> startingBoard, ArrayList<ArrayList<Integer>> allPossibleSets){
         ArrayList<Integer> allTiles = new ArrayList<>();
         for(Integer tile: startingRack){
             allTiles.add(tile);
@@ -164,7 +164,6 @@ public class CustomUtility {
                 possibleSets.add(set);
             }
         }
-
         return possibleSets;
     }
 
@@ -185,5 +184,5 @@ public class CustomUtility {
 
         return copy;
     }
-    
+
 }

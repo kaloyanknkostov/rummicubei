@@ -111,8 +111,6 @@ public class Node {
         ArrayList<ArrayList<Integer>> newBoard = newMove.getRandomMove();
         int res = stateForPlayout.updateGameState(newBoard,playoutMaxer);
         while(res == 0){
-            System.out.println("the current rack is: " + stateForPlayout.getRacks()[playoutMaxer] + " for player " + playoutMaxer);
-            System.out.println("the current board is: " + stateForPlayout.getBoard());
             //update so its the next players turn
             //TODO this is constrained for 2 players
             playoutMaxer = (playoutMaxer + 1) % 2;

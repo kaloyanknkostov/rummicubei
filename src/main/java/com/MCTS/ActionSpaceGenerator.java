@@ -20,7 +20,7 @@ public class ActionSpaceGenerator {
     public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
         // System.out.println("IN Action");
         ArrayList<ArrayList<Integer>> boardForActionSpace = CustomUtility.deepCopy(board);
-        allPossibleSets= AllSetGenerator.generateAllSets();
+        allPossibleSets = AllSetGenerator.generateAllSets();
         this.resultingBoards = new ArrayList<>();
         this.resultingRacks = new ArrayList<>();
         this.startingBoard = CustomUtility.decompose(boardForActionSpace);

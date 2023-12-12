@@ -22,19 +22,17 @@ public class RandomMove {
     //TODO randomMove doesn't handel not being able to play yet
 
     public RandomMove(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
-        System.out.println("this is the board random move got called with: "+board);
         ArrayList<ArrayList<Integer>> boardForRandomMove = CustomUtility.deepCopy(board);
         // System.out.println("IN Action");
         //get all possible sets
         //Here we are getting all the sets
-        AllSetGenerator generator = AllSetGenerator.getInstance();
-        this.allPossibleSets = generator.getAllSets();
+        allPossibleSets = AllSetGenerator.generateAllSets();
         this.hasFinished = false;
         this.rand = new Random();
         this.resultingBoards = new ArrayList<>();
         this.startingBoard = boardForRandomMove;
         this.startingRack = new ArrayList<>(rack);
-        this.possibleSets = CustomUtility.possibleSets(rack,CustomUtility.decompose(this.startingBoard),this.allPossibleSets);
+        this.possibleSets = CustomUtility.possibleSets(this.startingRack,CustomUtility.decompose(this.startingBoard),this.allPossibleSets);
         // now the possiblesets are shuffled so it tries to add sets in a random order
         Collections.shuffle(this.possibleSets);
         //probably put this somewhere else
@@ -74,15 +72,20 @@ public class RandomMove {
 
     private void createRandomPlayouts(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles, int lastCheckedSet){
         // if all sets have been checked return
-        if(lastCheckedSet == this.possibleSets.size() && CustomUtility.validBoard(currentBoard, CustomUtility.decompose(this.startingBoard))){
+        if(lastCheckedSet == this.possibleSets.size() || CustomUtility.validBoard(currentBoard, CustomUtility.decompose(this.startingBoard))){
             this.hasFinished = true;
             return;
-        } else if(lastCheckedSet == this.possibleSets.size()){
+            
+        }
+        if(lastCheckedSet == this.possibleSets.size()){
             return;
         }
         for(int i = lastCheckedSet ; i < this.possibleSets.size();i++){
+            if(this.hasFinished){
+                return;
+            }
             // If cannot create set with tiles go to next one or if it has finsihed
-            if(this.hasFinished ||!CustomUtility.canCreateSet(availableTiles, this.possibleSets.get(i))){
+            if(!CustomUtility.canCreateSet(availableTiles, this.possibleSets.get(i))){
                 //cause then it wil not run the for loop and reach the return of all the active calls without doing anything
                 continue;
             }
