@@ -22,7 +22,7 @@ public class MCTS {
         this.deck = deck;
         // Get predictions of other players decks
         // We can decide here if we want to create multiple trees by sampling the tiles based on the predictions/ probabilities we got (advanced stuff)
-        this.guessedOppononetDeck = guessPlayer2Deck(getDeckProbabilities(), numberTilesOpponent);
+        this.guessedOppononetDeck = guessPlayer2Deck(getDeckProbabilities(null), numberTilesOpponent);
         this.gameState = new GameState(this.deck, guessedOppononetDeck, this.board ,getPile());
 
         this.root = new Node(gameState, null, 0, false);
@@ -43,7 +43,7 @@ public class MCTS {
                 cumulativeProbability += probabilities.get(i);
                 if (randomValue <= cumulativeProbability){
                     guessedDeck.add(i);
-                    getDeckProbabilities();
+                    getDeckProbabilities(guessedDeck);
                     break;
                 }
             }
@@ -59,12 +59,17 @@ public class MCTS {
         ArrayList<Integer> arrayNumber = new ArrayList<>(Collections.nCopies(53, 2));
         ArrayList<Double> arrayProb = new ArrayList<Double>();
         int numberOfUnkownTiles = 106;
+        if(additionalKnownTiles!=null){
+            for (int i = 0; i < additionalKnownTiles.size(); i++) {
+                arrayNumber.set( additionalKnownTiles.get(i), arrayNumber.get(i) -1);
+                numberOfUnkownTiles--;
+        }}
         for (int i = 0; i < tilesHand.size(); i++) {
-            arrayNumber.set( tilesHand.get(i)-1, arrayNumber.get(tilesHand.get(i)) -1);
+            arrayNumber.set( tilesHand.get(i), arrayNumber.get(i) -1);
             numberOfUnkownTiles--;
         }
         for (int i = 0; i < tilesBoard.size(); i++) {
-            arrayNumber.set( tilesBoard.get(i)-1, arrayNumber.get(tilesBoard.get(i)) -1);
+            arrayNumber.set( tilesBoard.get(i)-1, arrayNumber.get(arrayNumber.get(i)) -1);
             numberOfUnkownTiles--;
         }
         for (int i = 0; i < arrayNumber.size(); i++) {
