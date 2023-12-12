@@ -41,6 +41,7 @@ public class BaselineVsMcts {
             ArrayList<Tile> tileList = currentSet.getTilesList();
             for (Tile currentTile : tileList) {
                 if (deck.contains(currentTile)) {
+                    System.out.println("REMOVING " + currentTile);
                     deck.remove(currentTile);
                 }
             }
@@ -78,14 +79,14 @@ public class BaselineVsMcts {
                     } else {
                         System.out.println("Player did a move!!");
                         board = incomingBoard.copy();
+                        System.out.println("OLD DECK:");
+                        System.out.println(playerDeckCopy);
+                        System.out.println("NEW DECK");
+                        System.out.println(getCurrentPlayer().getDeckOfTiles());
                         getCurrentPlayer().setDeckOfTiles(removeUsedTiles(incomingBoard, playerDeckCopy));
+                        System.out.println("printing the board");
+                        board.printBoard();
                     }
-                    System.out.println("Player did a move!!");
-                    board = incomingBoard;
-                    System.out.println("OLD DECK");
-                    System.out.println(playerDeckCopy);
-                    System.out.println("NEW DECK");
-                    System.out.println(getCurrentPlayer().getDeckOfTiles());
                 } else {
                     System.out.println("Player did not play 30 points or used tile from the board, drawing a tile");
                     board = oryginalBoard;
@@ -105,8 +106,7 @@ public class BaselineVsMcts {
                 break;
             }
             System.out.println("its turn: " + turn);
-            System.out.println("printing the board");
-            board.printBoard();
+
             turn++;
         }
         writeGameStateLogToFile();
