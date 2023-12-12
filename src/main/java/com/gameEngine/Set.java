@@ -1,6 +1,7 @@
 package com.gameEngine;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Set {
 
@@ -125,5 +126,38 @@ public class Set {
            list.add(tile.turnToInt());
         }
         return list;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        boolean equals = true;
+        if(!(o instanceof Set))return false;
+        if(!(tilesList.size()==((Set) o).getSizes()))return false;
+        else {
+           //run
+            if (isRun()) {
+                for (int i = 0; i < tilesList.size() ; i++) {
+                    if (!(tilesList.get(i).turnToInt() == ((Set) o).getTilesList().get(i).turnToInt())) return false;
+                }
+            }
+            //group
+            else{
+                for (Tile firstTile : tilesList) {
+                    boolean present =false;
+                    for (Tile tile : ((Set) o).getTilesList()) {
+
+                        if (firstTile.turnToInt() == tile.turnToInt()) present = true;
+                    }
+                    if(!present) return present;
+                }
+
+            }
+        }
+        return equals;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tilesList, group, run);
     }
 }

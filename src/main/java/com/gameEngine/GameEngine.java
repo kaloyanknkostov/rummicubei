@@ -69,11 +69,8 @@ public class GameEngine {
                 System.out.println("DONE");
             }
             if (gameModel.isNextTurn()|| getCurrentPlayer() instanceof ComputerPlayer) {
-                //System.out.println("the last board was:");
                 gameModel.setNextTurn(false);
-                //System.out.println("Image board:");
-                //printBoard(gameModel.getTransferBoardViaImages());
-                //System.out.println("---------------------------------------------------------------------------------");
+                Board copyBoard= board;
                 ArrayList<Tile> copy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
                 Board incomingBoard;
                 if(getCurrentPlayer() instanceof HumanPlayer) {
@@ -83,13 +80,10 @@ public class GameEngine {
                     System.out.println("Computer is playing");
                     incomingBoard = getCurrentPlayer().getNewBoard(board);
                 }
-                //System.out.println("Incoming board (tiles)");
-                //incomingBoard.printBoard();
 
                 if (incomingBoard.checkBoardValidity()) {
 
-                   // if (getCurrentPlayer().getIsOut()) {
-                    if (true) {
+                    if (getCurrentPlayer().getIsOut()) {
                         if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                             getCurrentPlayer().setDeckOfTiles(copy);
                             getCurrentPlayer().getDeckOfTiles().add(currentDraw);
@@ -99,20 +93,39 @@ public class GameEngine {
                         board = incomingBoard;
                         System.out.println("VALID BOARD");
                         gameTurn();
-                    } else {
-                        int valueOfTurn = 0;
-                        for (Set set : incomingBoard.getSetList())
-                            if (!board.getSetList().contains(set))
-                                valueOfTurn += set.getValue();
+                    }
+                    else {
+                        int valueOfTurn = getValueOfTurn(incomingBoard);
                         boolean gotOut = true;
                         for (Set set : board.getSetList()) {
-                            if (!incomingBoard.getSetList().contains(set)) {
+                            boolean contained=false;
+                            for (Set newSet : incomingBoard.getSetList()) {
+                                if (set.equals(newSet)) {
+                                    contained = true;
+                                    break;
+                                }
+                            }
+                            if(!contained){
                                 gotOut = false;
-                                StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
+                                //StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
                                 System.out.println("You can't the tiles in the board!");
                                 break;
                             }
+
                         }
+//                        for (Set set : board.getSetList()) {
+//                            // checking if you used tiles from the board
+//                            if (!incomingBoard.getSetList().contains(set)) {
+//
+//                                    gotOut = false;
+//                                    //StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
+//                                    System.out.println("You can't the tiles in the board!");
+//                                    break;
+//                            }
+//                        }
+                        
+                        
+                        
                         if (valueOfTurn >= 30 && gotOut) {
                             getCurrentPlayer().setIsOut(true);
                             board = incomingBoard;
@@ -127,8 +140,19 @@ public class GameEngine {
                                 System.out.println("VALID BOARD");
                                 gameTurn();
                             } else {
-                                System.out.println("Get more then 30");
-                                StartScreensApplication.getInstance().setMessageLabel("1", "You need to get more then 30 points!");
+
+                                if(getCurrentPlayer() instanceof ComputerPlayer) {
+                                    getCurrentPlayer().setDeckOfTiles(copy);
+                                    getCurrentPlayer().getDeckOfTiles().add(currentDraw);
+                                    System.out.println(currentDraw.getPicture());
+                                    getThisDrawnTile();
+                                    gameTurn();
+                                }
+
+                                else {
+                                    System.out.println("Get more then 30");
+                                    StartScreensApplication.getInstance().setMessageLabel("1", "You need to get more then 30 points!");
+                                }
                             }
                         }
                     }
@@ -146,6 +170,21 @@ public class GameEngine {
             }
         }
         System.out.println("GAME FINISHED");
+    }
+
+    private int getValueOfTurn(Board incomingBoard) {
+        int valueOfTurn = 0;
+        for (Set set : incomingBoard.getSetList()) {
+            boolean present = false;
+            for (Set boardSet : board.getSetList()) {
+                if (set.equals(boardSet)) {
+                    present = true;
+                    break;
+                }
+            }
+            if (!present) valueOfTurn += set.getValue();
+        }
+        return valueOfTurn;
     }
 
     private Tile getThisDrawnTile() {

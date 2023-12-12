@@ -35,8 +35,15 @@ public class ComputerPlayer implements Player
         for (Tile tile: deckOfTiles){
             deckOfIntTiles.add(tile.turnToInt());
         }
+
         System.out.println("Gave the bot this deck: "+deckOfIntTiles);
-        BaselineAgent baselineAgent =new BaselineAgent(oldBoard.turnToIntBoard(),deckOfIntTiles);
+        BaselineAgent baselineAgent;
+        if(!isOut){
+            baselineAgent =new BaselineAgent(oldBoard.turnToIntBoard(),deckOfIntTiles);
+        }
+        else {
+            baselineAgent =new BaselineAgent(new ArrayList<ArrayList<Integer>>(),deckOfIntTiles);
+        }
         ArrayList<ArrayList<Integer>> newBoard =baselineAgent.getBestMove();
         System.out.println("NEW BOARD WITH INTS: "+newBoard);
         ArrayList<Tile> oldBoardTilesInBoard =oldBoard.getTilesInBoard();

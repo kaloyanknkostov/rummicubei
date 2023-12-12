@@ -150,10 +150,8 @@ public class ActionSpaceGenerator {
             } else {
                 ArrayList<Integer> tileToRemove = new ArrayList<Integer>(List.of(integer)); // a but clunk but for now its fine
                 customRemove(tiles,tileToRemove); // essentially removing it from available tiles after its checked but only removes first instance
-
             }
         }
-
         return true;
     }
 
