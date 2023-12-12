@@ -92,7 +92,7 @@ public class MCTS {
              arrayProb.add((arrayNumber.get(i)).doubleValue()/numberOfUnkownTiles);
          }
          return arrayProb;
-
+    }
 
     private ArrayList<Integer> getPile(){
         ArrayList<Integer> allTilesNotPile = CustomUtility.decompose(this.board);
