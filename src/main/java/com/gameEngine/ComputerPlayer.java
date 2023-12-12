@@ -88,7 +88,7 @@ public class ComputerPlayer implements Player
             }
             board.addSet(newSet);
         }
-        board.printBoard();
+        //board.printBoard();
 
 
         return  board;
