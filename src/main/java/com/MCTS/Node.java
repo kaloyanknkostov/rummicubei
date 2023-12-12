@@ -56,16 +56,20 @@ public class Node {
         // BIAS towards the first child all have the same uct value
         // if this Node has no children then we return this node (to execute play-out)
         this.visitCount += 1;
-        if(childList.isEmpty()){
+        if(this.childList.isEmpty()){
             return this;
         }
 
         // Search for the highest UCT value in the list of children nodes
         // ARGMAX
-        float highestUCT = 0;
+        double highestUCT = Double.NEGATIVE_INFINITY;
         Node nextNode = null;
-        for (Node child: childList){
+        System.err.println("STARTING UCT: "+ highestUCT);
+        System.err.println("CHILD LIST:" + this.childList);
+        for (Node child: this.childList){
+            System.err.println(child.getUCT());
             if(child.getUCT()>highestUCT && !child.getLeaf()){
+                highestUCT = child.getUCT();
                 nextNode = child;
             }
         }
@@ -78,7 +82,7 @@ public class Node {
 
 
     public void expand(){
-        ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(CustomUtility.decompose(this.gameState.getBoard()), this.gameState.getRacks()[currentPlayer]);
+        ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[currentPlayer]);
         for(ArrayList<ArrayList<Integer>> board: actionSpace.getResultingBoards()){
             //for every action move it could make it copies the current gamestate and updates it based on the action
             GameState newState = this.gameState.copy();
@@ -124,6 +128,9 @@ public class Node {
     }
 
     public void backpropagate(float winner){
+        if (this.parent == null){
+            return;
+        }
         // propagate the result of the play-out back to the root of the tree
         if(winner == 0.5){
             //propagate the same result to everyone since its a draw

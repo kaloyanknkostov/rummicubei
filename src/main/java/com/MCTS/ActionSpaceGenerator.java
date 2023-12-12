@@ -16,25 +16,26 @@ public class ActionSpaceGenerator {
 
 
 
-    public ActionSpaceGenerator(ArrayList<Integer> board, ArrayList<Integer> rack){
-        System.out.println("IN Action");
+    public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
+        // System.out.println("IN Action");
         allPossibleSets= AllSetGenerator.generateAllSets();
 
         this.resultingBoards = new ArrayList<>();
         this.resultingRacks = new ArrayList<>();
-        this.startingBoard = board;
+        this.startingBoard = CustomUtility.decompose(board);
         this.startingRack = rack;
         this.possibleSets = CustomUtility.possibleSets(this.startingRack,this.startingBoard, this.allPossibleSets);
         //probably put this somewhere else
-        availableTilesStart = new ArrayList<>();
+        this.availableTilesStart = new ArrayList<Integer>();
         for(Integer tile: startingRack){
-            availableTilesStart.add(tile);
+            this.availableTilesStart.add(tile);
         }
         for(Integer tile: startingBoard){
-            availableTilesStart.add(tile);
+            this.availableTilesStart.add(tile);
         }
+        createAllMoves(board, this.availableTilesStart, this.startingRack, 0);
     }
-    
+
     public void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){
         // if all sets have been checked return
         if(lastCheckedSet == this.possibleSets.size()){

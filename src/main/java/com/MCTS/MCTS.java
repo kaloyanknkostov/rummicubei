@@ -38,7 +38,6 @@ public class MCTS {
             selected_node = selected_node.selectNode();
             selected_node.playOut();
         }
-        System.err.println("SELECTED BOARD" + this.root.selectNode().getGameState().getBoard());
     }
 
     public  ArrayList<Integer> guessPlayer2Deck(ArrayList<Double> probabilities, int opponentDeckSize){
