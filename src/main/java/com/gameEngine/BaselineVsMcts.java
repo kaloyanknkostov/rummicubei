@@ -64,6 +64,7 @@ public class BaselineVsMcts {
                     }
                     System.out.println("Player did a move!!");
                     board = incomingBoard;
+                    System.out.println(getCurrentPlayer().getDeckOfTiles());
                 } else {
                     System.out.println("Player did not play 30 points or used tile from the board, drawing a tile");
                     getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
@@ -80,6 +81,7 @@ public class BaselineVsMcts {
                 System.out.println("Player " + currentPlayerIndex + " won!");
                 break;
             }
+            board.printBoard();
             System.out.println("its turn: " + turn);
             turn++;
         }
@@ -220,7 +222,7 @@ public class BaselineVsMcts {
             System.out.println(set.toString());
             totalForTheRound+=set.getValue(); // We count the total amount a player put on the board this round
         }
-        if (totalForTheRound - valueOfPrevTurn >= 30 && getCurrentPlayer().getIsOut()) { // Checks if the player put at least 30 points on the board
+        if (totalForTheRound - valueOfPrevTurn >= 30 ) { // Checks if the player put at least 30 points on the board
             board = incomingBoard;
             newSets.clear(); // Reset before next turn
             valueOfPrevTurn = totalForTheRound;

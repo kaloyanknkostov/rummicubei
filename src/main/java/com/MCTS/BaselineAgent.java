@@ -12,7 +12,7 @@ public class BaselineAgent {
         this.board = board;
         this.rack = rack;
     }
-    public ArrayList<ArrayList<Integer>> getBestMove(){
+    public ArrayList<ArrayList<Integer>> getBestMove(boolean isout){
         ActionSpaceGenerator actionSpaceGenerator = new ActionSpaceGenerator(this.board,rack);
         ArrayList<ArrayList<ArrayList<Integer>>> actionspace = actionSpaceGenerator.getResultingBoards();
         int maxSize = 0; // the biggest set of tiles we have found.
@@ -23,7 +23,18 @@ public class BaselineAgent {
         ArrayList<ArrayList<Integer>> maxArrayList = null; // the best move as the array list of array lists of integers
         for (ArrayList<ArrayList<Integer>> move : actionspace) { // loop through each moves
             currentSize = 0;
-            for (ArrayList<Integer> set : move) {  // check each set of the move and add the size of that set to the current size
+            int sum=0;
+        for (ArrayList<Integer> x : move) {
+            for (Integer y : x) {
+                if(y%13==0){
+                    sum=sum+13;
+                }else{sum=sum+(y%13);}
+                
+            //System.out.println(sum);    
+            }
+        }
+        if(isout|| sum>29){
+                        for (ArrayList<Integer> set : move) {  // check each set of the move and add the size of that set to the current size
                 currentSize += set.size();
             }
 
@@ -52,6 +63,8 @@ public class BaselineAgent {
             }
             keepingTrack++;
         }
+    }
+        
         return maxArrayList;
 
     }
