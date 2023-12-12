@@ -3,6 +3,8 @@ package com.MCTS;
 import java.util.ArrayList;
 
 import java.lang.Math;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Node {
     private GameState gameState;
@@ -14,6 +16,7 @@ public class Node {
     private boolean isLeaf; // if its an endstate
     private double c = 0.6; // factor for uct (see lecture 4 slide 20)
     private int currentPlayer;
+    private String time;
 
     public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf){
         this.results = new ArrayList<Float>();
@@ -110,12 +113,19 @@ public class Node {
         RandomMove newMove = new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[playoutMaxer]);
         ArrayList<ArrayList<Integer>> newBoard = newMove.getRandomMove();
         int res = stateForPlayout.updateGameState(newBoard,playoutMaxer);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        int count = 0;
         while(res == 0){
             //update so its the next players turn
             //TODO this is constrained for 2 players
+            time = LocalTime.now().format(formatter);
+            System.out.println(time + " || IN PLAYOUT --> || PLAYER MOVES: "+ count);
+
             playoutMaxer = (playoutMaxer + 1) % 2;
             res = stateForPlayout.updateGameState((new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[playoutMaxer])).getRandomMove(),playoutMaxer);
+            System.out.println(stateForPlayout.getBoard());
             //if this loop terminates it means an endstate was reached, since startingstate is a reference it works in function before
+            count++;
         }
         if(res == 2){
             //its a draw
