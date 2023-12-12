@@ -4,16 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import com.gameEngine.Board;
-import com.gameEngine.ComputerPlayer;
-import com.gameEngine.Tile;
 
 
 
 
 public class MCTS {
     private GameState gameState;
-    private ComputerPlayer computerPlayer; // needs to probably been got from the gameState.
     private Node root;
     private ArrayList<ArrayList<Integer>> board;
     private ArrayList<Integer> deck;
@@ -26,7 +22,7 @@ public class MCTS {
         this.deck = deck;
         // Get predictions of other players decks
         // We can decide here if we want to create multiple trees by sampling the tiles based on the predictions/ probabilities we got (advanced stuff)
-        this.guessedOppononetDeck = guessPlayer2Deck(getDeckProbabilities(), numberTilesOpponent);
+        this.guessedOppononetDeck = guessPlayer2Deck(getDeckProbabilities(null), numberTilesOpponent);
         this.gameState = new GameState(this.deck, guessedOppononetDeck, this.board ,getPile());
 
         this.root = new Node(gameState, null, 0, false);
@@ -56,7 +52,8 @@ public class MCTS {
                     guessedDeck.add(i+1);
                     //System.out.println(guessedDeck);
                     //ArrayList<Double>temp=probabilities;
-                    probabilities=getDeckProbabilities(guessedDeck);
+
+                    probabilities= getDeckProbabilities(guessedDeck);
                     /*ArrayList<Double> a= new ArrayList<>();
                     for(int k=0;k<probabilities.size();k++){
                         a.add(temp.get(k)-probabilities.get(k));
@@ -68,11 +65,9 @@ public class MCTS {
         }
         return guessedDeck;
     }
-
     //output has size 53
     private  ArrayList<Double> getDeckProbabilities(ArrayList<Integer> additionalKnownTiles){
-        ArrayList<Integer> tilesBoard = decompose(this.board);
-
+        ArrayList<Integer> tilesBoard = CustomUtility.decompose(this.board);
          ArrayList<Integer> tilesHand = this.deck;
          ArrayList<Integer> arrayNumber = new ArrayList<>(Collections.nCopies(53, 2));
          ArrayList<Double> arrayProb = new ArrayList<Double>();
@@ -97,38 +92,10 @@ public class MCTS {
              arrayProb.add((arrayNumber.get(i)).doubleValue()/numberOfUnkownTiles);
          }
          return arrayProb;
-    }
 
-    public int colorToNumber(String color){
-        switch (color.toLowerCase()) {
-            case "red":
-                return 1;
-            case "black":
-                return 2;
-            case "blue":
-                return 3;
-            case "yellow":
-                return 0;}
-        return -1; //represnting a joker
-
-    }
-
-    private ArrayList<Integer> decompose(ArrayList<ArrayList<Integer>> board){
-        ArrayList<Integer> result = new ArrayList<>();
-        for(ArrayList<Integer> row: board){
-            for(Integer tile: row){
-                result.add(tile);
-            }
-        }
-        return result;
-    }
-
-    public void getDeckPredictions(){
-        // combine probabilities with ML output for each tile
-    }
 
     private ArrayList<Integer> getPile(){
-        ArrayList<Integer> allTilesNotPile = decompose(this.board);
+        ArrayList<Integer> allTilesNotPile = CustomUtility.decompose(this.board);
         allTilesNotPile.addAll(this.deck);
         allTilesNotPile.addAll(this.guessedOppononetDeck);
         ArrayList<Integer> allTiles = new ArrayList<>(Arrays.asList(

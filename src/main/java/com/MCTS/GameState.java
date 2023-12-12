@@ -34,7 +34,7 @@ public class GameState {
     // if output is 2 the game ended in a draw
     public int updateGameState(ArrayList<ArrayList<Integer>> newBoard, int playerIndex){
 
-        customRemove(this.racks[playerIndex], getDifference(newBoard));
+        CustomUtility.customRemove(this.racks[playerIndex], CustomUtility.getDifference(newBoard, this.board));
         //check if the player whos move it was now has an empty rack
         if(racks[playerIndex].isEmpty()){
             this.winner = playerIndex;
@@ -70,7 +70,7 @@ public class GameState {
     }
 
     public GameState copy(){
-        return new GameState(new ArrayList<>(this.racks[0]), new ArrayList<>(this.racks[1]), deepCopy(this.board), new ArrayList<>(this.pile));
+        return new GameState(new ArrayList<>(this.racks[0]), new ArrayList<>(this.racks[1]), CustomUtility.deepCopy(this.board), new ArrayList<>(this.pile));
     }
 
     public ArrayList<Integer>[] getRacks(){
@@ -91,56 +91,6 @@ public class GameState {
         Integer tile = Integer.valueOf(this.pile.get(x));
         this.pile.remove(tile);
         this.racks[playerIndex].add(tile);
-    }
-
-
-    //this function takes in a board and gets the difference in tiles from the old one
-    //check for empty
-    private ArrayList<Integer> getDifference(ArrayList<ArrayList<Integer>> newBoard){
-        ArrayList<Integer> result = new ArrayList<>();
-        ArrayList<Integer> decomposedOld = decompose(this.board);
-        ArrayList<Integer> decomposedNew = decompose(newBoard);
-        for(Integer tile: decomposedNew){
-            if(decomposedOld.contains(tile)){
-                result.add(tile);
-            }
-        }
-        return result;
-    }
-
-    private ArrayList<Integer> decompose(ArrayList<ArrayList<Integer>> board){
-        ArrayList<Integer> result = new ArrayList<>();
-        for(ArrayList<Integer> row: board){
-            for(Integer tile: row){
-                result.add(tile);
-            }
-        }
-        return result;
-    }
-
-    //check if this handles empty as well
-    private static void customRemove(List<Integer> list, ArrayList<Integer> elementsToRemove) {
-        for (Integer element : elementsToRemove) {
-            list.remove(element);
-        }
-    }
-
-    /**
-     * Creates a deep copy of a 2D ArrayList of integers.
-     *
-     * @param original The 2D ArrayList to be copied.
-     * @return A deep copy of the input 2D ArrayList.
-     */
-    private ArrayList<ArrayList<Integer>> deepCopy(ArrayList<ArrayList<Integer>> original) {
-        ArrayList<ArrayList<Integer>> copy = new ArrayList<>();
-
-        for (ArrayList<Integer> innerList : original) {
-            // Create a new ArrayList for each inner list
-            ArrayList<Integer> innerCopy = new ArrayList<>(innerList);
-            copy.add(innerCopy);
-        }
-
-        return copy;
     }
 
 }
