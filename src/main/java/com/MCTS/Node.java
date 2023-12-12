@@ -47,6 +47,7 @@ public class Node {
      * This is an recursive method that searches for the highest UCT value in the children nodes.
      */
     public Node selectNode(){
+        // BIAS towards the first child all have the same uct value
         // if this Node has no children then we return this node (to execute play-out)
         this.visitCount += 1;
         if(childList.isEmpty()){
@@ -90,7 +91,7 @@ public class Node {
                 Node child = new Node(newState, this, (currentPlayer +1) %2, false);
                 this.childList.add(child);
             }
-            //only works for two players 
+            //only works for two players
         }
     }
 
@@ -138,5 +139,9 @@ public class Node {
 
     public int getVisitCount(){
         return this.visitCount;
+    }
+
+    public GameState getGameState(){
+        return this.gameState;
     }
 }

@@ -13,9 +13,12 @@ public class ComputerPlayer implements Player
     String username;
     Boolean isOut;
     private ArrayList<Tile> deckOfTiles;
+    private ArrayList<Integer> deckLengths;
+    private String type;
 
-    public ComputerPlayer(String username)
+    public ComputerPlayer(String username, String type)
     {
+        this.type = type;
         this.username = username;
         this.deckOfTiles = new ArrayList<>();
         isOut=false;
@@ -27,6 +30,10 @@ public class ComputerPlayer implements Player
         deckOfTiles.add(tile);
     }
 
+    public void setDeckLengths(ArrayList<Integer> deckLengths){
+        this.deckLengths = deckLengths;
+    }
+
     @Override
     public Board getNewBoard(Board oldBoard)
     {
@@ -36,8 +43,16 @@ public class ComputerPlayer implements Player
             deckOfIntTiles.add(tile.turnToInt());
         }
         System.out.println("Gave the bot this deck: "+deckOfIntTiles);
-        BaselineAgent baselineAgent =new BaselineAgent(oldBoard.turnToIntBoard(),deckOfIntTiles);
-        ArrayList<ArrayList<Integer>> newBoard =baselineAgent.getBestMove();
+        ArrayList<ArrayList<Integer>> newBoard = null;
+        if (type == "baseline"){
+            BaselineAgent baselineAgent =new BaselineAgent(oldBoard.turnToIntBoard(),deckOfIntTiles);
+            newBoard =baselineAgent.getBestMove();
+        } else if (type == "mcts"){
+            MCTS mctsAgent = new MCTS(oldBoard.turnToIntBoard(), deckOfIntTiles, deckLengths.get(0));
+            mctsAgent.loopMCTS(5);
+            newBoard = mctsAgent.getRoot().selectNode().getGameState().getBoard();
+        }
+
         System.out.println("NEW BOARD WITH INTS: "+newBoard);
         ArrayList<Tile> oldBoardTilesInBoard =oldBoard.getTilesInBoard();
         Board board=new Board();

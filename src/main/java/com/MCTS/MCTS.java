@@ -33,8 +33,14 @@ public class MCTS {
     }
 
     public void loopMCTS(int loops){
-        for (int i = 0; i < loops; i++){
-            this.root.selectNode().playOut();
+        // Should loop n* player count times
+        for (int i = 0; i < loops*2; i++){ // TODO only works for 2 players
+            System.err.println("loop: " + i);
+            Node selected_node = this.root.selectNode();
+            selected_node.expand();
+            // Get a child from the selected node to start Play-Out (first child node)
+            selected_node = selected_node.selectNode();
+            selected_node.playOut();
         }
     }
 
@@ -146,5 +152,9 @@ public class MCTS {
         for (Integer element : elementsToRemove) {
             list.remove(element);
         }
+    }
+
+    public Node getRoot(){
+        return this.root;
     }
 }
