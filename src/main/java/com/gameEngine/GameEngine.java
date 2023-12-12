@@ -62,17 +62,12 @@ public class GameEngine {
                 logCurrentGameState();
                 moveNumber++;
                 logged = true;
-                System.out.println("LOGGING");
                 System.out.println(gameStateLog);
                 String fileName = "Game" + Integer.toString(gameId);
                 writeGameStateLogToFile(fileName);
-                System.out.println("DONE");
             }
             if (gameModel.isNextTurn()|| getCurrentPlayer() instanceof ComputerPlayer) {
-                //System.out.println("the last board was:");
                 gameModel.setNextTurn(false);
-                //System.out.println("Image board:");
-                //printBoard(gameModel.getTransferBoardViaImages());
                 //System.out.println("---------------------------------------------------------------------------------");
                 ArrayList<Tile> copy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
                 Board incomingBoard;
@@ -83,7 +78,6 @@ public class GameEngine {
                     System.out.println("Computer is playing");
                     incomingBoard = getCurrentPlayer().getNewBoard(board);
                 }
-                //System.out.println("Incoming board (tiles)");
                 //incomingBoard.printBoard();
 
                 if (incomingBoard.checkBoardValidity()) {
@@ -165,17 +159,12 @@ public class GameEngine {
         //move to end maybe
         gameModel.setCurrentPlayer(getCurrentPlayer());
         StartScreensApplication.activeController.playerTurn();
-        for (String s : gameModel.playerNames) {
-            System.out.println(s);
-        }
-        System.out.println("changing that to the player index: " + currentPlayerIndex);
         if (getCurrentPlayer() instanceof HumanPlayer) {
             StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
         }
         else {
             StartScreensApplication.getInstance().setMessageLabel("Bot", "");
         }
-        System.out.println(board);
         StartScreensApplication.activeController.updateBoard(board);
     }
 
@@ -303,8 +292,6 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
         }
         for (int i = 0; i < numberOfBots; i++) {
             listOfPlayers.add(new ComputerPlayer("test"));
-            System.out.println("Added one");
-
             for (int k = 0; k < 15; k++) {
                 listOfPlayers.get(listOfPlayers.size() - 1).drawTile(drawTile());
             }
