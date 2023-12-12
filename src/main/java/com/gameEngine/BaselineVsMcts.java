@@ -304,17 +304,16 @@ public class BaselineVsMcts {
     }
 
     private boolean checkThirtyRule(Board incomingBoard, ArrayList<Tile> playerDeckCopy){
+        ArrayList<Tile> copy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
         ArrayList<Set> newSets = new ArrayList<>();
-        int valueOfTurn = 0;
         for (Set set : incomingBoard.getSetList())
-            if (!board.getSetList().contains(set))
+            if (!board.getSetList().contains(set)){
                 newSets.add(set);
+            }
         boolean gotOut = true;
         for (Set set : board.getSetList()) {
             if (!incomingBoard.getSetList().contains(set)) {
-                StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
                 System.out.println("You can't the tiles in the board!");
-                break;
                 return false;
             }
         }
@@ -342,13 +341,10 @@ public class BaselineVsMcts {
                 System.out.println("VALID BOARD");
                 gameTurn();
                 return true;
-            } else {
-                System.out.println("Get more then 30");
-                StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You need to get more then 30 points!");
-                return false;
             }
         }
-        return true;
+        System.out.println("Get more then 30");
+        return false;
     }
 
 }
