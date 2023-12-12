@@ -272,10 +272,7 @@ public class StartScreensApplication extends Application {
         for (int setIndex = 0; setIndex < setArrayList.size(); setIndex++) {
             //go thought the tiles in the set
             Set currentTileSet = setArrayList.get(setIndex);
-            System.out.println("THERE ARE" + Integer.toString(SlotsInCurrentRow) + " emoty slots");
             if(currentTileSet.getSize() > SlotsInCurrentRow){
-                System.out.println(currentTileSet.getSize() +  " < " + SlotsInCurrentRow);
-                System.out.println("moving the row");
                usedRows++;
                lastEmptySlot = 17*usedRows;
                SlotsInCurrentRow = 17;
