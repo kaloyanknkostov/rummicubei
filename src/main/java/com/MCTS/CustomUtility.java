@@ -60,7 +60,7 @@ public class CustomUtility {
         }
     }
 
-     //function to check if the board is valid. thus if all tiles that are in startingBoard are also present in new board
+    //function to check if the board is valid. thus if all tiles that are in startingBoard are also present in new board
     //cant use sets cause there can be duplicates in our board like 2 green 4's and a set would remove one of them
     //for optimization this can maybe be done in a faster way
     public static boolean validBoard(ArrayList<ArrayList<Integer>> newBoard,ArrayList<Integer> startingBoard) {
@@ -101,25 +101,24 @@ public class CustomUtility {
     * @return      {@code true} if the set can be created from the array,
     *              {@code false} otherwise.
     **/
-    public static boolean canCreateSet(ArrayList<Integer> array, ArrayList<Integer> set) {
-        if (array.isEmpty() || set.isEmpty()) {
+    public static boolean canCreateSet(ArrayList<Integer> tilesAvailable, ArrayList<Integer> set) {
+        if (tilesAvailable.isEmpty() || set.isEmpty()) {
            return false;
-       }
+        }
         ArrayList<Integer> tiles = new ArrayList<Integer>(); 
-        for (Integer integer : array) {
-           tiles.add(integer); 
+        for (Integer integer : tilesAvailable) {
+            tiles.add(integer); 
         }
         for (Integer integer : set) { // checks if the array contains each elemnt to creaate the set
-           if (!tiles.contains(integer)) { 
-               return false; 
-           } else {
-               ArrayList<Integer> tileToRemove = new ArrayList<Integer>(List.of(integer)); // a but clunky but for now its fine 
-               customRemove(tiles,tileToRemove); // essentially removing it from available tiles after its checked but only removes first instance 
-           }
+            if (!tiles.contains(integer)) { 
+                return false; 
+            } else {
+                ArrayList<Integer> tileToRemove = new ArrayList<Integer>(List.of(integer)); // a but clunky but for now its fine 
+                customRemove(tiles,tileToRemove); // essentially removing it from available tiles after its checked but only removes first instance 
+            }
         }
-      
        return true;
-   }
+    }
 
    //this function takes in a board and gets the difference in tiles from the old one
     //check for empty
@@ -151,8 +150,11 @@ public class CustomUtility {
         for(Integer tile: startingRack){
             allTiles.add(tile);
         }
-        for(Integer tile: startingBoard){
-            allTiles.add(tile);
+        if(!startingBoard.isEmpty()){
+            System.out.println("this ran");
+            for(Integer tile: startingBoard){
+                allTiles.add(tile);
+            }
         }
         ArrayList<ArrayList<Integer>> possibleSets = new ArrayList<>();
         for(ArrayList<Integer> set: allPossibleSets){
@@ -160,7 +162,6 @@ public class CustomUtility {
                 possibleSets.add(set);
             }
         }
-
         return possibleSets;
     }
 
@@ -181,10 +182,4 @@ public class CustomUtility {
 
         return copy;
     }
-
-
-    
-
-
-    
 }
