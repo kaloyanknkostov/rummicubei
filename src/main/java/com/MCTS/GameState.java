@@ -1,7 +1,10 @@
 package com.MCTS;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class GameState {
@@ -11,10 +14,10 @@ public class GameState {
     // includes the board and all the hands of the players (predicted)
     // and tiles currently in the pile
     // includes current active player (who can do the next move)
-    private ArrayList<Integer>[] racks;
+    private ArrayList<Integer>[] racks = new ArrayList[2];
     private ArrayList<Integer> pile;
     private ArrayList<ArrayList<Integer>> board;
-    private boolean[] couldntPlay;
+    private boolean[] couldntPlay = new boolean[2];
     private int winner;
     private Random random;
 
@@ -33,8 +36,7 @@ public class GameState {
     // if output is 1 someone won the game
     // if output is 2 the game ended in a draw
     public int updateGameState(ArrayList<ArrayList<Integer>> newBoard, int playerIndex){
-
-        customRemove(this.racks[playerIndex], getDifference(newBoard));
+        CustomUtility.customRemove(this.racks[playerIndex], CustomUtility.getDifference(newBoard, this.board));
         //check if the player whos move it was now has an empty rack
         if(racks[playerIndex].isEmpty()){
             this.winner = playerIndex;
@@ -57,7 +59,7 @@ public class GameState {
                 }
             }
         }
-        else if (newBoard.equals(this.board)){
+        else if (equals(CustomUtility.decompose(newBoard),CustomUtility.decompose(this.board))){
             drawCard(playerIndex);
             this.couldntPlay[playerIndex] = false;
             //if the game did not finish or one player did not just draw, then one player played a move and we have to update his
@@ -70,14 +72,14 @@ public class GameState {
     }
 
     public GameState copy(){
-        return new GameState(new ArrayList<>(this.racks[0]), new ArrayList<>(this.racks[1]), deepCopy(this.board), new ArrayList<>(this.pile));
+        return new GameState(new ArrayList<>(this.racks[0]), new ArrayList<>(this.racks[1]), CustomUtility.deepCopy(this.board), new ArrayList<>(this.pile));
     }
 
     public ArrayList<Integer>[] getRacks(){
         return this.racks;
     }
-
     public ArrayList<ArrayList<Integer>> getBoard(){
+
         return this.board;
     }
 
@@ -93,54 +95,18 @@ public class GameState {
         this.racks[playerIndex].add(tile);
     }
 
+    public static boolean equals(ArrayList<Integer> one, ArrayList<Integer> two){
+        if(one.size()!= two.size())return false;
 
-    //this function takes in a board and gets the difference in tiles from the old one
-    //check for empty
-    private ArrayList<Integer> getDifference(ArrayList<ArrayList<Integer>> newBoard){
-        ArrayList<Integer> result = new ArrayList<>();
-        ArrayList<Integer> decomposedOld = decompose(this.board);
-        ArrayList<Integer> decomposedNew = decompose(newBoard);
-        for(Integer tile: decomposedNew){
-            if(decomposedOld.contains(tile)){
-                result.add(tile);
+
+        Collections.sort(one);
+        Collections.sort(two);
+        for (int i = 0; i <one.size() ; i++) {
+            if(!Objects.equals(one.get(i), two.get(i))){
+                return false;
             }
         }
-        return result;
-    }
-
-    private ArrayList<Integer> decompose(ArrayList<ArrayList<Integer>> board){
-        ArrayList<Integer> result = new ArrayList<>();
-        for(ArrayList<Integer> row: board){
-            for(Integer tile: row){
-                result.add(tile);
-            }
-        }
-        return result;
-    }
-
-    //check if this handles empty as well
-    private static void customRemove(List<Integer> list, ArrayList<Integer> elementsToRemove) {
-        for (Integer element : elementsToRemove) {
-            list.remove(element);
-        }
-    }
-
-    /**
-     * Creates a deep copy of a 2D ArrayList of integers.
-     *
-     * @param original The 2D ArrayList to be copied.
-     * @return A deep copy of the input 2D ArrayList.
-     */
-    private ArrayList<ArrayList<Integer>> deepCopy(ArrayList<ArrayList<Integer>> original) {
-        ArrayList<ArrayList<Integer>> copy = new ArrayList<>();
-
-        for (ArrayList<Integer> innerList : original) {
-            // Create a new ArrayList for each inner list
-            ArrayList<Integer> innerCopy = new ArrayList<>(innerList);
-            copy.add(innerCopy);
-        }
-
-        return copy;
+        return true;
     }
 
 }

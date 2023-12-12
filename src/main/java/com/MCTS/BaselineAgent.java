@@ -1,7 +1,7 @@
 package com.MCTS;
 
 import java.util.ArrayList;
-
+import java.util.Collections;
 
 public class BaselineAgent {
 
@@ -13,7 +13,7 @@ public class BaselineAgent {
         this.rack = rack;
     }
     public ArrayList<ArrayList<Integer>> getBestMove(){
-        ActionSpaceGenerator actionSpaceGenerator = new ActionSpaceGenerator(board,rack);
+        ActionSpaceGenerator actionSpaceGenerator = new ActionSpaceGenerator(CustomUtility.decompose(this.board),rack);
         ArrayList<ArrayList<ArrayList<Integer>>> actionspace = actionSpaceGenerator.getResultingBoards();
         int maxSize = 0; // the biggest set of tiles we have found.
         int currentSize = 0; // the total size of the current arraylist that we are checking

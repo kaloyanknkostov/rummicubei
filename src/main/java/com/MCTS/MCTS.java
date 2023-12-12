@@ -3,21 +3,25 @@ package com.MCTS;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-
-import com.gameEngine.Board;
-import com.gameEngine.ComputerPlayer;
-import com.gameEngine.Tile;
-
-
-
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class MCTS {
     private GameState gameState;
-    private ComputerPlayer computerPlayer; // needs to probably been got from the gameState.
     private Node root;
     private ArrayList<ArrayList<Integer>> board;
     private ArrayList<Integer> deck;
     ArrayList<Integer> guessedOppononetDeck;
+    private String time;
+    public static void main(String[] args) {
+        ArrayList<ArrayList<Integer>> board = new ArrayList<>();
+        board.add(new ArrayList<>(Arrays.asList(1,2,3)));
+        //board.add(new ArrayList<>(Arrays.asList(5,6,7)));
+        ArrayList<Integer> deck =  new ArrayList<>(Arrays.asList(9,10,11));
+
+        MCTS mcts = new MCTS(board, deck, 3);
+        mcts.loopMCTS(1);
+    }
 
 
     public MCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent){
@@ -26,87 +30,87 @@ public class MCTS {
         this.deck = deck;
         // Get predictions of other players decks
         // We can decide here if we want to create multiple trees by sampling the tiles based on the predictions/ probabilities we got (advanced stuff)
-        this.guessedOppononetDeck = guessPlayer2Deck(getDeckProbabilities(), numberTilesOpponent);
+        this.guessedOppononetDeck = guessPlayer2Deck(getDeckProbabilities(null), numberTilesOpponent);
         this.gameState = new GameState(this.deck, guessedOppononetDeck, this.board ,getPile());
-
-        this.root = new Node(gameState, null, 0, false);
+        this.root = new Node(this.gameState, null, 0, false);
     }
 
     public void loopMCTS(int loops){
-        for (int i = 0; i < loops; i++){
-            this.root.selectNode().playOut();
+        // Should loop n* player count times
+        for (int i = 0; i < loops*2; i++){//TODO only works for 2 players
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            time = LocalTime.now().format(formatter);
+            System.err.println(time + " || Loop: " + i + " || SELECTION");
+            Node selected_node = this.root.selectNode();
+            time = LocalTime.now().format(formatter);
+            System.err.println(time + " || Loop: " + i + " || EXPANSION");
+            selected_node.expand();
+            // Get a child from the selected node to start Play-Out (first child node)
+            time = LocalTime.now().format(formatter);
+            System.err.println(time + " || Loop: " + i + " || SELECTION FOR PLAYOUT");
+            selected_node = selected_node.selectNode();
+            time = LocalTime.now().format(formatter);
+            System.err.println(time + " || Loop: " + i + " || PLAYOUT");
+            selected_node.playOut();
         }
     }
 
-    public ArrayList<Integer> guessPlayer2Deck(ArrayList<Double> probabilities, int opponentDeckSize){
-        double cumulativeProbability = 0;
+    public  ArrayList<Integer> guessPlayer2Deck(ArrayList<Double> probabilities, int opponentDeckSize){
         ArrayList<Integer> guessedDeck = new ArrayList<>();
         while(guessedDeck.size() < opponentDeckSize){
+            double cumulativeProbability = 0;
+
             double randomValue = Math.random();
             for (int i = 0; i < probabilities.size(); i++) {
                 cumulativeProbability += probabilities.get(i);
                 if (randomValue <= cumulativeProbability){
-                    guessedDeck.add(i);
-                    getDeckProbabilities();
+                    guessedDeck.add(i+1);
+                    //System.out.println(guessedDeck);
+                    //ArrayList<Double>temp=probabilities;
+
+                    probabilities= getDeckProbabilities(guessedDeck);
+                    /*ArrayList<Double> a= new ArrayList<>();
+                    for(int k=0;k<probabilities.size();k++){
+                        a.add(temp.get(k)-probabilities.get(k));
+                    }
+                    System.out.println(a);*/
                     break;
                 }
             }
         }
         return guessedDeck;
     }
-
     //output has size 53
-    private ArrayList<Double> getDeckProbabilities(){
-        ArrayList<Integer> tilesBoard = decompose(this.board);
+    private  ArrayList<Double> getDeckProbabilities(ArrayList<Integer> additionalKnownTiles){
+        ArrayList<Integer> tilesBoard = CustomUtility.decompose(this.board);
+         ArrayList<Integer> tilesHand = this.deck;
+         ArrayList<Integer> arrayNumber = new ArrayList<>(Collections.nCopies(53, 2));
+         ArrayList<Double> arrayProb = new ArrayList<Double>();
+         int numberOfUnkownTiles = 106;
+         if(additionalKnownTiles!=null){
+             for (int i = 0; i < additionalKnownTiles.size(); i++) {
 
-        ArrayList<Integer> tilesHand = this.deck;
-        ArrayList<Integer> arrayNumber = new ArrayList<>(Collections.nCopies(53, 2));
-        ArrayList<Double> arrayProb = new ArrayList<Double>();
-        int numberOfUnkownTiles = 106;
-        for (int i = 0; i < tilesHand.size(); i++) {
-            arrayNumber.set( arrayNumber.get(i), arrayNumber.get(i) -1);
-            numberOfUnkownTiles--;
-        }
-        for (int i = 0; i < tilesBoard.size(); i++) {
-            arrayNumber.set(tilesBoard.get(i), tilesBoard.get(i) -1);
-            numberOfUnkownTiles--;
-        }
-        for (int i = 0; i < arrayNumber.size(); i++) {
-            arrayProb.add((arrayNumber.get(i)).doubleValue()/numberOfUnkownTiles);
-        }
-        return arrayProb;
-    }
+                 arrayNumber.set( additionalKnownTiles.get(i)-1, arrayNumber.get(additionalKnownTiles.get(i)-1) -1);
+                 numberOfUnkownTiles--;
+         }}
+         for (int i = 0; i < tilesHand.size(); i++) {
 
-    public int colorToNumber(String color){
-        switch (color.toLowerCase()) {
-            case "red":
-                return 1;
-            case "black":
-                return 2;
-            case "blue":
-                return 3;
-            case "yellow":
-                return 0;}
-        return -1; //represnting a joker
+             arrayNumber.set( tilesHand.get(i)-1  , arrayNumber.get(tilesHand.get(i)-1) -1);
+             numberOfUnkownTiles--;
+         }
+         for (int i = 0; i < tilesBoard.size(); i++) {
 
-    }
-
-    private ArrayList<Integer> decompose(ArrayList<ArrayList<Integer>> board){
-        ArrayList<Integer> result = new ArrayList<>();
-        for(ArrayList<Integer> row: board){
-            for(Integer tile: row){
-                result.add(tile);
-            }
-        }
-        return result;
-    }
-
-    public void getDeckPredictions(){
-        // combine probabilities with ML output for each tile
+             arrayNumber.set(tilesBoard.get(i)-1, arrayNumber.get(tilesBoard.get(i)-1) -1);
+             numberOfUnkownTiles--;
+         }
+         for (int i = 0; i < arrayNumber.size(); i++) {
+             arrayProb.add((arrayNumber.get(i)).doubleValue()/numberOfUnkownTiles);
+         }
+         return arrayProb;
     }
 
     private ArrayList<Integer> getPile(){
-        ArrayList<Integer> allTilesNotPile = decompose(this.board);
+        ArrayList<Integer> allTilesNotPile = CustomUtility.decompose(this.board);
         allTilesNotPile.addAll(this.deck);
         allTilesNotPile.addAll(this.guessedOppononetDeck);
         ArrayList<Integer> allTiles = new ArrayList<>(Arrays.asList(
@@ -130,5 +134,9 @@ public class MCTS {
         for (Integer element : elementsToRemove) {
             list.remove(element);
         }
+    }
+
+    public Node getRoot(){
+        return this.root;
     }
 }

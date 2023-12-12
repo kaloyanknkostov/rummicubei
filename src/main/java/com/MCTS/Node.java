@@ -16,11 +16,14 @@ public class Node {
     private int currentPlayer;
 
     public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf){
+        this.results = new ArrayList<Float>();
+        this.childList = new ArrayList<Node>();
         this.gameState = gameState;
         this.parent = parent;
         this.visitCount = 1; // visit count at generation is 1 (otherwise uct will not work)
         this.currentPlayer = currentPlayer;
         this.isLeaf = isleaf;
+        this.uct = 0.0;
     }
 
     public double getUCT(){
@@ -29,6 +32,9 @@ public class Node {
     }
 
     public void calculateUCT(){
+        if (this.parent == null){
+            return;
+        }
         // calculates the current UCT and stores it in a variable to save computing time
         if(visitCount== 0){
             this.uct = Float.NEGATIVE_INFINITY;
@@ -47,18 +53,21 @@ public class Node {
      * This is an recursive method that searches for the highest UCT value in the children nodes.
      */
     public Node selectNode(){
+        // BIAS towards the first child all have the same uct value
         // if this Node has no children then we return this node (to execute play-out)
         this.visitCount += 1;
-        if(childList.isEmpty()){
+        if(this.childList.isEmpty()){
             return this;
         }
-
         // Search for the highest UCT value in the list of children nodes
         // ARGMAX
-        float highestUCT = 0;
+        double highestUCT = Double.NEGATIVE_INFINITY;
         Node nextNode = null;
-        for (Node child: childList){
+        //System.err.println("STARTING UCT: "+ highestUCT);
+        ///System.err.println("CHILD LIST:" + this.childList);
+        for (Node child: this.childList){
             if(child.getUCT()>highestUCT && !child.getLeaf()){
+                highestUCT = child.getUCT();
                 nextNode = child;
             }
         }
@@ -68,7 +77,6 @@ public class Node {
     private boolean getLeaf(){
         return this.isLeaf;
     }
-
 
     public void expand(){
         ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[currentPlayer]);
@@ -90,16 +98,18 @@ public class Node {
                 Node child = new Node(newState, this, (currentPlayer +1) %2, false);
                 this.childList.add(child);
             }
-            //only works for two players 
+            //only works for two players
         }
+
     }
 
 
     public void playOut(){
         GameState stateForPlayout = this.gameState.copy();
         int playoutMaxer = this.currentPlayer;
-
-        int res = stateForPlayout.updateGameState((new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[playoutMaxer])).getRandomMove(),playoutMaxer);
+        RandomMove newMove = new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[playoutMaxer]);
+        ArrayList<ArrayList<Integer>> newBoard = newMove.getRandomMove();
+        int res = stateForPlayout.updateGameState(newBoard,playoutMaxer);
         while(res == 0){
             //update so its the next players turn
             //TODO this is constrained for 2 players
@@ -117,6 +127,9 @@ public class Node {
     }
 
     public void backpropagate(float winner){
+        if (this.parent == null){
+            return;
+        }
         // propagate the result of the play-out back to the root of the tree
         if(winner == 0.5){
             //propagate the same result to everyone since its a draw
@@ -138,5 +151,13 @@ public class Node {
 
     public int getVisitCount(){
         return this.visitCount;
+    }
+
+    public GameState getGameState(){
+        return this.gameState;
+    }
+
+    public ArrayList<Node> getChildList(){
+        return this.childList;
     }
 }

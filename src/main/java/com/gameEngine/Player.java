@@ -14,4 +14,5 @@ public interface Player
      void setUsername(String username);
     void setIsOut(Boolean isOut);
     void setDeckOfTiles(ArrayList<Tile> list);
+    public void setDeckLengths(ArrayList<Integer> deckLengths);
 }

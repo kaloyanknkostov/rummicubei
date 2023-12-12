@@ -2,9 +2,6 @@ package com.MCTS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 
 
@@ -20,74 +17,61 @@ public class ActionSpaceGenerator {
 
 
 
-
     public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
-        System.out.println("IN Action");
-        AllSetGenerator generator = AllSetGenerator.getInstance();
-        allPossibleSets = AllSetGenerator.getAllSets();
-        // get all possible sets here
+        // System.out.println("IN Action");
+        ArrayList<ArrayList<Integer>> boardForActionSpace = CustomUtility.deepCopy(board);
+        allPossibleSets = AllSetGenerator.generateAllSets();
         this.resultingBoards = new ArrayList<>();
         this.resultingRacks = new ArrayList<>();
-        this.startingBoard = board;
-        this.startingRack = rack;
-        this.possibleSets = possibleSets(this.startingRack,decompose(board));
+        this.startingBoard = CustomUtility.decompose(boardForActionSpace);
+        this.startingRack = new ArrayList<>(rack);
+        this.possibleSets = CustomUtility.possibleSets(this.startingRack,this.startingBoard, this.allPossibleSets);
         //probably put this somewhere else
-        availableTilesStart = new ArrayList<>();
+        this.availableTilesStart = new ArrayList<Integer>();
         for(Integer tile: startingRack){
-            availableTilesStart.add(tile);
+            this.availableTilesStart.add(tile);
         }
-        for(Integer tile: decompose(startingBoard)){
-            availableTilesStart.add(tile);
+        for(Integer tile: startingBoard){
+            this.availableTilesStart.add(tile);
         }
-        ArrayList<ArrayList<Integer>> beginningBoard = new ArrayList<>();
-        createAllMoves(beginningBoard, availableTilesStart, rack, 0);
-        //now all moves are generated and the result can just be accesed through the get functions
+        createAllMoves(new ArrayList<>(), this.availableTilesStart, this.startingRack, 0);
     }
 
-    
-    private void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){
+    public void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){
         // if all sets have been checked return
+
         if(lastCheckedSet == this.possibleSets.size()){
             return;
         }
-
-        for(int i = lastCheckedSet ; i < this.possibleSets.size();i++){
+        for(int i = lastCheckedSet ; i < this.possibleSets.size(); i++){
             // If cannot create set with tiles go to next one
-            if(!canCreateSet(availableTiles, possibleSets.get(i))){
+            if(!CustomUtility.canCreateSet(availableTiles, possibleSets.get(i))){
                 continue;
             }
             // Create copy of board so changes in this iteration of the loop are unique to the next iteration
             // Pass this copy as a reference in the recursion
-            ArrayList<ArrayList<Integer>> currentBoardCopy = deepCopy(currentBoard);
+            ArrayList<ArrayList<Integer>> currentBoardCopy = CustomUtility.deepCopy(currentBoard);
             currentBoardCopy.add(this.possibleSets.get(i));
             ArrayList<Integer> currentAvailableTiles = new ArrayList<>(availableTiles);
-            customRemove(currentAvailableTiles, this.possibleSets.get(i));
+            CustomUtility.customRemove(currentAvailableTiles, this.possibleSets.get(i));
 
+            // Remove tiles in the set in our rack and available tiles list
+            CustomUtility.customRemove(currentRack, this.possibleSets.get(i));
             //now check if the board is valid
-            if(validBoard(currentBoardCopy)){
-
+            if(CustomUtility.validBoard(currentBoardCopy,this.startingBoard)){
                 // Add board and racks to the results as board is valid
                 resultingBoards.add(currentBoardCopy);
-
             }
             createAllMoves(currentBoardCopy, currentAvailableTiles,currentRack, i);
         }
     }
-
-    public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
-        if (resultingBoards.isEmpty())return new ArrayList<ArrayList<ArrayList<Integer>>>();
-        //checks if the only element in resultingboard is the startingboard, thus that it could not play any move
-        if(this.resultingBoards.size() == 1 || decompose(this.resultingBoards.get(0)).equals(decompose(this.startingBoard))){
-            // when it couldnt play anything add a set containing only -1 at the front of the only resulting board
-            this.resultingBoards.get(0).add(0, new ArrayList<>(Arrays.asList(-1)));
-        }
-        return this.resultingBoards;
-    }
-
     public ArrayList<ArrayList<Integer>> getPossibleSets(){
         return this.possibleSets;
     }
 
+    public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
+        return resultingBoards;
+    }
     // this method keeps track of the available tiles by removing all the tiles in the board from the tiles available at the start.
     private ArrayList<Integer> getAvailableTiles(ArrayList<ArrayList<Integer>> board){
         ArrayList<Integer> result = new ArrayList<>(this.availableTilesStart);

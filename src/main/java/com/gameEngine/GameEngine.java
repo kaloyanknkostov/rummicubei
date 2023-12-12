@@ -49,6 +49,7 @@ public class GameEngine {
     private Tile currentDraw;
 
     public void gameLoop() {
+        // Game initialization
         addPlayers();
         startLog();
         StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
@@ -57,6 +58,8 @@ public class GameEngine {
         gameModel.setCurrentBoard(board);
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
         currentDraw = getThisDrawnTile();
+
+        // Game Loop starting
         while (!isGameEnding()) {
             if(!logged){
                 logCurrentGameState();
@@ -79,6 +82,16 @@ public class GameEngine {
                 }
                 else {
                     System.out.println("Computer is playing");
+                    // Get length of other players decks:
+                    ArrayList<Integer> deck_lengths = new ArrayList<Integer>();
+                    for (Player player : listOfPlayers) {
+                        // Check if the current object is not the one to be excluded
+                        if (!player.equals(getCurrentPlayer())) {
+                            // Add the object to the result list
+                            deck_lengths.add(player.getDeckOfTiles().size());
+                        }
+                    }
+                    getCurrentPlayer().setDeckLengths(deck_lengths);
                     incomingBoard = getCurrentPlayer().getNewBoard(board);
                 }
 
