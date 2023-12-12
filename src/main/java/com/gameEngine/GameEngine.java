@@ -51,6 +51,8 @@ public class GameEngine {
     private Tile currentDraw;
 
     public void gameLoop() {
+        generateTiles();
+       // currentDraw = getDrawnTile();
         addPlayers();
         startLog();
         StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
@@ -59,7 +61,75 @@ public class GameEngine {
         gameModel.setCurrentBoard(board);
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
         currentDraw = getThisDrawnTile();
-        while (!isGameEnding()) {
+
+        int turn = 0;
+        Board incomingBoard; 
+        while (turn < 10000) {
+            System.out.println(turn); 
+           
+            while (!gameModel.isNextTurn()) {
+                if (gameModel.isNextTurn()){
+                System.out.println("working");
+                }else {
+                    try{
+                     System.out.println("waiting");
+                     Thread.sleep(200);
+                  }catch(InterruptedException e){
+                         e.printStackTrace();
+                     }
+   }}
+            
+            System.out.println(gameModel.isNextTurn());
+            gameModel.setNextTurn(false);
+            ArrayList<Tile> playerDeckCopy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
+            if(getCurrentPlayer() instanceof HumanPlayer) {
+                    incomingBoard = createBoardFromTiles(transformImagesToTiles());
+                }
+                else {
+                    System.out.println("Computer is playing");
+                    incomingBoard = getCurrentPlayer().getNewBoard(board);
+                }
+
+            //Check if the board is valid
+            if (incomingBoard.checkBoardValidity()) {
+                //If it's valid check if the player already got out, if not check if he put 30 points on the board
+                if (getCurrentPlayer().getIsOut() || checkThirtyRule(incomingBoard, playerDeckCopy)) {
+                    //if the board didn't change, then we set the hand to the copy of it draw a tile
+                    if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
+                        System.out.println("Player did nothing, drawing a tile");
+                        getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
+                        drawTile();
+                        gameTurn();
+                    }
+                    System.out.println("Player did a move!!");
+                    board = incomingBoard;
+                    gameTurn();
+                } else {
+                    System.out.println("Player did not play 30 points or used tile from the board, drawing a tile");
+                    getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
+                    drawTile();
+                    gameTurn();
+                }
+            // If the board is not valid print an error and set the tiles in the players hand to the copy of them before the move
+            } else {
+                getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
+                drawTile();
+                gameTurn();
+                System.out.println("Not a valid board, drawing a tile");
+            }
+            //here a player won
+            if(getCurrentPlayer().getDeckOfTiles().isEmpty()){
+                System.out.println("Player " + currentPlayerIndex + " won!");
+                break;
+            }
+            turn++;
+        }
+        System.out.println("GAME WITH ID "+ gameId + " ENDED");
+    }
+
+
+       
+    /*    while (!isGameEnding()) {
             if(!logged){
                 logCurrentGameState();
                 moveNumber++;
@@ -159,7 +229,9 @@ public class GameEngine {
             }
         }
         System.out.println("GAME FINISHED");
-    }
+        */
+    
+    
 
     private Tile getThisDrawnTile() {
         Tile draw = drawTile();
@@ -366,5 +438,41 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
             e.printStackTrace();
         }
     }
+    private boolean checkThirtyRule(Board incomingBoard, ArrayList<Tile> playerDeckCopy) {
+        ArrayList<Tile> copy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
+        ArrayList<Set> newSets = new ArrayList<>(); // Stores sets that have been added to the board in the current round
+        for (Set set : incomingBoard.getSetList())
+            if (!board.getSetList().contains(set)){ // If the new board contains a set and the old one doesn't, we add it to newSets
+                newSets.add(set);
+            }
+        boolean gotOut = true;
+        for (Set set : board.getSetList()) {
+            if (!incomingBoard.getSetList().contains(set)) {
+                System.out.println("You can't the tiles in the board!");
+                return false;
+            }
+        }
+        int totalForTheRound = 0;
+        for (Set set : newSets) {
+            System.out.println(set.toString());
+            totalForTheRound+=set.getValue(); // We count the total amount a player put on the board this round
+        }
+        if (totalForTheRound - valueOfPrevTurn >= 30 && gotOut) { // Checks if the player put at least 30 points on the board
+            getCurrentPlayer().setIsOut(true);
+            board = incomingBoard;
+            newSets.clear(); // Reset before next turn
+            valueOfPrevTurn = totalForTheRound;
+            //System.out.println("value of turn: " + totalForTheRound);
+            totalForTheRound -= totalForTheRound;
+            return true;
+            // Here we check if the player just didnt do anything
+            // TODO: we also check that in the main loop, it should be just checked once (we also draw a card there)
+        } else if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
+            return true;
+        }
+        System.out.println("Get more then 30");
+        return false;
+    }
+
 
 }
