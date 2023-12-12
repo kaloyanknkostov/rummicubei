@@ -35,17 +35,17 @@ public class ComputerPlayer implements Player
         for (Tile tile: deckOfTiles){
             deckOfIntTiles.add(tile.turnToInt());
         }
-        System.out.println("Gave the bot this deck: "+deckOfIntTiles);
+        //System.out.println("Gave the bot this deck: "+deckOfIntTiles);
         BaselineAgent baselineAgent =new BaselineAgent(oldBoard.turnToIntBoard(),deckOfIntTiles);
         ArrayList<ArrayList<Integer>> newBoard =baselineAgent.getBestMove();
-        System.out.println("NEW BOARD WITH INTS: "+newBoard);
+        //System.out.println("NEW BOARD WITH INTS: "+newBoard);
         ArrayList<Tile> oldBoardTilesInBoard =oldBoard.getTilesInBoard();
         Board board=new Board();
-        if (newBoard.isEmpty())return oldBoard;
+        if (newBoard==null)return oldBoard;
         for (ArrayList<Integer> sets:newBoard){
             Set newSet = new Set();
             for(Integer tileId:sets){
-                System.out.println("Tile id being checked "+tileId);
+                //System.out.println("Tile id being checked "+tileId);
                 //check if taken from board
                 boolean found=false;
                 ArrayList<Tile> removed =new ArrayList<>();
@@ -53,7 +53,7 @@ public class ComputerPlayer implements Player
                     if(tile.turnToInt()==tileId){
                         newSet.addTile(tile);
                         found =true;
-                        System.out.println("Matched with tile from board "+tile.turnToInt());
+                        //System.out.println("Matched with tile from board "+tile.turnToInt());
                         removed.add(tile);
                         break;
                     }
@@ -62,7 +62,7 @@ public class ComputerPlayer implements Player
                     oldBoardTilesInBoard.remove(tile);
                 }
                 if(found) {
-                    System.out.println("Skipped");
+                    //System.out.println("Skipped");
                     continue;
                 }
                 //check if taken from player tile
@@ -70,7 +70,7 @@ public class ComputerPlayer implements Player
                 for(Tile tile:deckOfTiles){
                     if(tile.turnToInt()==tileId){
                         newSet.addTile(tile);
-                        System.out.println("Matched with tile from player "+tile.turnToInt());
+                        //System.out.println("Matched with tile from player "+tile.turnToInt());
                         removed.add(tile);
                         found=true;
                         break;
@@ -80,7 +80,7 @@ public class ComputerPlayer implements Player
                     deckOfTiles.remove(tile);
                 }
                 if (!found){
-                    System.out.println("bot draw card");
+                    //System.out.println("bot draw card");
                     return oldBoard;
                 }
 
