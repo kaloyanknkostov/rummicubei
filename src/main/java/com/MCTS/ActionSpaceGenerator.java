@@ -1,8 +1,6 @@
 package com.MCTS;
 
 import java.util.ArrayList;
-import java.util.List;
-
 
 
 
@@ -16,13 +14,6 @@ public class ActionSpaceGenerator {
     private ArrayList<ArrayList<Integer>> possibleSets;
     private  ArrayList<Integer> availableTilesStart;
 
-    public static void main(String[] args) {
-        // Example usage
-        ArrayList<Integer> array = new ArrayList<>(List.of(40, 42, 53, 44));
-        ArrayList<Integer> set = new ArrayList<>(List.of(40, 53, 42));
-        System.out.println(CustomUtility.canCreateSet(array, set));
-       // CustomUtility.canCreateSet(array, set)
-    }
 
 
     public ActionSpaceGenerator(ArrayList<Integer> board, ArrayList<Integer> rack){

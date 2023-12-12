@@ -71,7 +71,7 @@ public class Node {
 
 
     public void expand(){
-        ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[currentPlayer]);
+        ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(CustomUtility.decompose(this.gameState.getBoard()), this.gameState.getRacks()[currentPlayer]);
         for(ArrayList<ArrayList<Integer>> board: actionSpace.getResultingBoards()){
             //for every action move it could make it copies the current gamestate and updates it based on the action
             GameState newState = this.gameState.copy();
