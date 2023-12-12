@@ -27,6 +27,7 @@ public class AllSetGenerator {
     public static ArrayList<ArrayList<Integer>> generateAllSets() {
         ArrayList<ArrayList<Integer>> runs=generateRunsWithoutJokers();
         ArrayList<ArrayList<Integer>> group=generateGroupsWithoutJokers();
+        ArrayList<ArrayList<Integer>> allSets = new ArrayList<ArrayList<Integer>>();
         allSets.addAll(runs);
         allSets.addAll(group);
         allSets.addAll(generateRunsWithOneJoker(runs));

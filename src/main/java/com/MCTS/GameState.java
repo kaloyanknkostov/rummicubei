@@ -11,10 +11,10 @@ public class GameState {
     // includes the board and all the hands of the players (predicted)
     // and tiles currently in the pile
     // includes current active player (who can do the next move)
-    private ArrayList<Integer>[] racks;
+    private ArrayList<Integer>[] racks = new ArrayList[2];
     private ArrayList<Integer> pile;
     private ArrayList<ArrayList<Integer>> board;
-    private boolean[] couldntPlay;
+    private boolean[] couldntPlay = new boolean[2];
     private int winner;
     private Random random;
 

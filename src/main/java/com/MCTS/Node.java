@@ -16,6 +16,7 @@ public class Node {
     private int currentPlayer;
 
     public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf){
+        this.childList = new ArrayList<Node>();
         this.gameState = gameState;
         this.parent = parent;
         this.visitCount = 1; // visit count at generation is 1 (otherwise uct will not work)
