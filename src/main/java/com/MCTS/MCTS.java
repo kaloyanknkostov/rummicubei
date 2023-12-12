@@ -29,8 +29,14 @@ public class MCTS {
     }
 
     public void loopMCTS(int loops){
-        for (int i = 0; i < loops; i++){
-            this.root.selectNode().playOut();
+        // Should loop n* player count times
+        for (int i = 0; i < loops*2; i++){ // TODO only works for 2 players
+            System.err.println("loop: " + i);
+            Node selected_node = this.root.selectNode();
+            selected_node.expand();
+            // Get a child from the selected node to start Play-Out (first child node)
+            selected_node = selected_node.selectNode();
+            selected_node.playOut();
         }
     }
 
@@ -46,6 +52,7 @@ public class MCTS {
                     guessedDeck.add(i+1);
                     //System.out.println(guessedDeck);
                     //ArrayList<Double>temp=probabilities;
+
                     probabilities= getDeckProbabilities(guessedDeck);
                     /*ArrayList<Double> a= new ArrayList<>();
                     for(int k=0;k<probabilities.size();k++){
@@ -61,24 +68,23 @@ public class MCTS {
     //output has size 53
     private  ArrayList<Double> getDeckProbabilities(ArrayList<Integer> additionalKnownTiles){
         ArrayList<Integer> tilesBoard = CustomUtility.decompose(this.board);
-         
          ArrayList<Integer> tilesHand = this.deck;
          ArrayList<Integer> arrayNumber = new ArrayList<>(Collections.nCopies(53, 2));
          ArrayList<Double> arrayProb = new ArrayList<Double>();
          int numberOfUnkownTiles = 106;
          if(additionalKnownTiles!=null){
              for (int i = 0; i < additionalKnownTiles.size(); i++) {
-                 
+
                  arrayNumber.set( additionalKnownTiles.get(i)-1, arrayNumber.get(additionalKnownTiles.get(i)-1) -1);
                  numberOfUnkownTiles--;
          }}
          for (int i = 0; i < tilesHand.size(); i++) {
-             
+
              arrayNumber.set( tilesHand.get(i)-1  , arrayNumber.get(tilesHand.get(i)-1) -1);
              numberOfUnkownTiles--;
          }
          for (int i = 0; i < tilesBoard.size(); i++) {
-             
+
              arrayNumber.set(tilesBoard.get(i)-1, arrayNumber.get(tilesBoard.get(i)-1) -1);
              numberOfUnkownTiles--;
          }
@@ -86,7 +92,7 @@ public class MCTS {
              arrayProb.add((arrayNumber.get(i)).doubleValue()/numberOfUnkownTiles);
          }
          return arrayProb;
-     }
+
 
     private ArrayList<Integer> getPile(){
         ArrayList<Integer> allTilesNotPile = CustomUtility.decompose(this.board);
@@ -113,5 +119,9 @@ public class MCTS {
         for (Integer element : elementsToRemove) {
             list.remove(element);
         }
+    }
+
+    public Node getRoot(){
+        return this.root;
     }
 }

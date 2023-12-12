@@ -74,5 +74,6 @@ public class ActionSpaceGenerator {
 
     public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
         return resultingBoards;
+
     }
 }
