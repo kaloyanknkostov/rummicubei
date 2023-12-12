@@ -34,8 +34,7 @@ public class MCTS {
         // We can decide here if we want to create multiple trees by sampling the tiles based on the predictions/ probabilities we got (advanced stuff)
         this.guessedOppononetDeck = guessPlayer2Deck(getDeckProbabilities(null), numberTilesOpponent);
         this.gameState = new GameState(this.deck, guessedOppononetDeck, this.board ,getPile());
-
-        this.root = new Node(gameState, null, 0, false);
+        this.root = new Node(this.gameState, null, 0, false);
     }
 
     public void loopMCTS(int loops){
@@ -47,6 +46,7 @@ public class MCTS {
             // Get a child from the selected node to start Play-Out (first child node)
             selected_node = selected_node.selectNode();
             selected_node.playOut();
+            return;
         }
     }
 

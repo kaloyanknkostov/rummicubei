@@ -82,7 +82,11 @@ public class Node {
 
 
     public void expand(){
+        System.out.println("yessssss");
+        System.out.println(this.gameState.getRacks()[0]);
         ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[currentPlayer]);
+        System.out.println("yessssss");
+        System.out.println(this.gameState.getRacks()[0]);
         for(ArrayList<ArrayList<Integer>> board: actionSpace.getResultingBoards()){
             //for every action move it could make it copies the current gamestate and updates it based on the action
             GameState newState = this.gameState.copy();
@@ -103,6 +107,7 @@ public class Node {
             }
             //only works for two players
         }
+        
     }
 
 

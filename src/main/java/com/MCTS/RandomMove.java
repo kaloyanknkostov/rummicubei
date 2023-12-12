@@ -60,7 +60,7 @@ public class RandomMove {
         } else {
             int x = this.resultingBoards.size();
             //include the prob of not playing anything at all
-            int y = this.rand.nextInt(x)-1; //because of zero based indexing
+            int y = this.rand.nextInt(x); //because of zero based indexing
             this.randomMove = CustomUtility.deepCopy(this.resultingBoards.get(y));
             if(CustomUtility.decompose(this.resultingBoards.get(y)).equals(CustomUtility.decompose(this.startingBoard)) && this.resultingBoards.size() == 1){
                 //meaning the only possible move was not doing anything
@@ -98,7 +98,6 @@ public class RandomMove {
             if(CustomUtility.validBoard(currentBoardCopy, CustomUtility.decompose(this.startingBoard))){
                 // Add board and racks to the results as board is valid
                 this.resultingBoards.add(currentBoardCopy);
-
             }
             createRandomPlayouts(currentBoardCopy, currentAvailableTiles,i);
         }

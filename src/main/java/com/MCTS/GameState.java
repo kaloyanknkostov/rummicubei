@@ -41,6 +41,7 @@ public class GameState {
         CustomUtility.customRemove(this.racks[playerIndex], CustomUtility.getDifference(newBoard, this.board));
         System.out.println("difference between old and new board is");
         System.out.println(CustomUtility.getDifference(newBoard, this.board));
+        System.out.println("the rack for the current player is" + this.racks[0]);
         //check if the player whos move it was now has an empty rack
         if(racks[playerIndex].isEmpty()){
             this.winner = playerIndex;
@@ -83,8 +84,8 @@ public class GameState {
     public ArrayList<Integer>[] getRacks(){
         return this.racks;
     }
-
     public ArrayList<ArrayList<Integer>> getBoard(){
+
         return this.board;
     }
 

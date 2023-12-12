@@ -19,12 +19,12 @@ public class ActionSpaceGenerator {
 
     public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
         // System.out.println("IN Action");
+        ArrayList<ArrayList<Integer>> boardForActionSpace = CustomUtility.deepCopy(board);
         allPossibleSets= AllSetGenerator.generateAllSets();
-
         this.resultingBoards = new ArrayList<>();
         this.resultingRacks = new ArrayList<>();
-        this.startingBoard = CustomUtility.decompose(board);
-        this.startingRack = rack;
+        this.startingBoard = CustomUtility.decompose(boardForActionSpace);
+        this.startingRack = new ArrayList<>(rack);
         this.possibleSets = CustomUtility.possibleSets(this.startingRack,this.startingBoard, this.allPossibleSets);
         //probably put this somewhere else
         this.availableTilesStart = new ArrayList<Integer>();
@@ -59,12 +59,8 @@ public class ActionSpaceGenerator {
             CustomUtility.customRemove(currentRack, this.possibleSets.get(i));
             //now check if the board is valid
             if(CustomUtility.validBoard(currentBoardCopy,this.startingBoard)){
-                // TODO: Check results of resulting racks
-                ArrayList<Integer> currentValidRack = new ArrayList<>(currentRack);
-
                 // Add board and racks to the results as board is valid
                 resultingBoards.add(currentBoardCopy);
-                resultingRacks.add(currentValidRack);
 
             }
             createAllMoves(currentBoardCopy, currentAvailableTiles,currentRack, i);

@@ -1,6 +1,7 @@
 package com.MCTS;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CustomUtility {
@@ -132,7 +133,7 @@ public class CustomUtility {
             if(!decomposedOld.contains(tile)){
                 result.add(tile);
             } else {
-                customRemove(decomposedOld, new ArrayList<>(tile));
+                customRemove(decomposedOld, new ArrayList<>(Arrays.asList(tile)));
             }
         }
         return result;
@@ -184,10 +185,5 @@ public class CustomUtility {
 
         return copy;
     }
-
-
-
-
-
-
+    
 }
