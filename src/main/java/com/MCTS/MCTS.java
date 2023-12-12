@@ -38,16 +38,24 @@ public class MCTS {
         }
     }
 
-    public ArrayList<Integer> guessPlayer2Deck(ArrayList<Double> probabilities, int opponentDeckSize){
-        double cumulativeProbability = 0;
+    public  ArrayList<Integer> guessPlayer2Deck(ArrayList<Double> probabilities, int opponentDeckSize){
         ArrayList<Integer> guessedDeck = new ArrayList<>();
         while(guessedDeck.size() < opponentDeckSize){
+            double cumulativeProbability = 0;
+
             double randomValue = Math.random();
             for (int i = 0; i < probabilities.size(); i++) {
                 cumulativeProbability += probabilities.get(i);
                 if (randomValue <= cumulativeProbability){
-                    guessedDeck.add(i);
-                    getDeckProbabilities();
+                    guessedDeck.add(i+1);
+                    //System.out.println(guessedDeck);
+                    //ArrayList<Double>temp=probabilities;
+                    probabilities=getDeckProbabilities(guessedDeck);
+                    /*ArrayList<Double> a= new ArrayList<>();
+                    for(int k=0;k<probabilities.size();k++){
+                        a.add(temp.get(k)-probabilities.get(k));
+                    }
+                    System.out.println(a);*/
                     break;
                 }
             }
@@ -56,25 +64,33 @@ public class MCTS {
     }
 
     //output has size 53
-    private ArrayList<Double> getDeckProbabilities(){
+    private  ArrayList<Double> getDeckProbabilities(ArrayList<Integer> additionalKnownTiles){
         ArrayList<Integer> tilesBoard = decompose(this.board);
 
-        ArrayList<Integer> tilesHand = this.deck;
-        ArrayList<Integer> arrayNumber = new ArrayList<>(Collections.nCopies(53, 2));
-        ArrayList<Double> arrayProb = new ArrayList<Double>();
-        int numberOfUnkownTiles = 106;
-        for (int i = 0; i < tilesHand.size(); i++) {
-            arrayNumber.set( arrayNumber.get(i), arrayNumber.get(i) -1);
-            numberOfUnkownTiles--;
-        }
-        for (int i = 0; i < tilesBoard.size(); i++) {
-            arrayNumber.set(tilesBoard.get(i), tilesBoard.get(i) -1);
-            numberOfUnkownTiles--;
-        }
-        for (int i = 0; i < arrayNumber.size(); i++) {
-            arrayProb.add((arrayNumber.get(i)).doubleValue()/numberOfUnkownTiles);
-        }
-        return arrayProb;
+         ArrayList<Integer> tilesHand = this.deck;
+         ArrayList<Integer> arrayNumber = new ArrayList<>(Collections.nCopies(53, 2));
+         ArrayList<Double> arrayProb = new ArrayList<Double>();
+         int numberOfUnkownTiles = 106;
+         if(additionalKnownTiles!=null){
+             for (int i = 0; i < additionalKnownTiles.size(); i++) {
+
+                 arrayNumber.set( additionalKnownTiles.get(i)-1, arrayNumber.get(additionalKnownTiles.get(i)-1) -1);
+                 numberOfUnkownTiles--;
+         }}
+         for (int i = 0; i < tilesHand.size(); i++) {
+
+             arrayNumber.set( tilesHand.get(i)-1  , arrayNumber.get(tilesHand.get(i)-1) -1);
+             numberOfUnkownTiles--;
+         }
+         for (int i = 0; i < tilesBoard.size(); i++) {
+
+             arrayNumber.set(tilesBoard.get(i)-1, arrayNumber.get(tilesBoard.get(i)-1) -1);
+             numberOfUnkownTiles--;
+         }
+         for (int i = 0; i < arrayNumber.size(); i++) {
+             arrayProb.add((arrayNumber.get(i)).doubleValue()/numberOfUnkownTiles);
+         }
+         return arrayProb;
     }
 
     public int colorToNumber(String color){
