@@ -41,6 +41,7 @@ public class ComputerPlayer implements Player
         System.out.println("NEW BOARD WITH INTS: "+newBoard);
         ArrayList<Tile> oldBoardTilesInBoard =oldBoard.getTilesInBoard();
         Board board=new Board();
+        if (newBoard.isEmpty())return oldBoard;
         for (ArrayList<Integer> sets:newBoard){
             Set newSet = new Set();
             for(Integer tileId:sets){
