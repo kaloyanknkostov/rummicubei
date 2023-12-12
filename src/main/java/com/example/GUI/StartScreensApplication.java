@@ -258,7 +258,6 @@ public class StartScreensApplication extends Application {
         initializeDragAndDrop();
     }
 
-
     public void updateBoard(Board newBoard) {
         ImageView[] GuiBoard = getBoard();
         // clean the board

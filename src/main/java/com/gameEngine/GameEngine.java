@@ -114,19 +114,7 @@ public class GameEngine {
                             }
 
                         }
-//                        for (Set set : board.getSetList()) {
-//                            // checking if you used tiles from the board
-//                            if (!incomingBoard.getSetList().contains(set)) {
-//
-//                                    gotOut = false;
-//                                    //StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
-//                                    System.out.println("You can't the tiles in the board!");
-//                                    break;
-//                            }
-//                        }
-                        
-                        
-                        
+
                         if (valueOfTurn >= 30 && gotOut) {
                             getCurrentPlayer().setIsOut(true);
                             board = incomingBoard;
@@ -215,7 +203,6 @@ public class GameEngine {
         else {
             StartScreensApplication.getInstance().setMessageLabel("Bot", "");
         }
-        System.out.println(board);
         StartScreensApplication.activeController.updateBoard(board);
     }
 
@@ -343,8 +330,6 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
         }
         for (int i = 0; i < numberOfBots; i++) {
             listOfPlayers.add(new ComputerPlayer("test"));
-            System.out.println("Added one");
-
             for (int k = 0; k < 15; k++) {
                 listOfPlayers.get(listOfPlayers.size() - 1).drawTile(drawTile());
             }
