@@ -38,16 +38,20 @@ public class ComputerPlayer implements Player
 
         System.out.println("Gave the bot this deck: "+deckOfIntTiles);
         BaselineAgent baselineAgent;
-        if(!isOut){
+        System.out.println(isOut);
+        if(isOut){
             baselineAgent =new BaselineAgent(oldBoard.turnToIntBoard(),deckOfIntTiles);
         }
         else {
+
             baselineAgent =new BaselineAgent(new ArrayList<ArrayList<Integer>>(),deckOfIntTiles);
         }
         ArrayList<ArrayList<Integer>> newBoard =baselineAgent.getBestMove();
         System.out.println("NEW BOARD WITH INTS: "+newBoard);
         ArrayList<Tile> oldBoardTilesInBoard =oldBoard.getTilesInBoard();
         Board board=new Board();
+        if(newBoard == null)
+            return oldBoard;
         for (ArrayList<Integer> sets:newBoard){
             Set newSet = new Set();
             for(Integer tileId:sets){
@@ -96,7 +100,11 @@ public class ComputerPlayer implements Player
         }
         board.printBoard();
 
-
+        if(!isOut){
+            for(Set set:oldBoard.getSetList()){
+                board.addSet(set);
+            }
+        }
         return  board;
     }
 

@@ -68,7 +68,8 @@ public class GameEngine {
                 writeGameStateLogToFile(fileName);
                 System.out.println("DONE");
             }
-            if (gameModel.isNextTurn()|| getCurrentPlayer() instanceof ComputerPlayer) {
+
+            if (gameModel.isNextTurn() || getCurrentPlayer() instanceof ComputerPlayer) {
                 gameModel.setNextTurn(false);
                 Board copyBoard= board;
                 ArrayList<Tile> copy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
