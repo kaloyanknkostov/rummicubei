@@ -27,23 +27,27 @@ public class BaselineVsMcts {
         engine.botLoop();
     }
 
-    public BaselineVsMcts(){
+
+    public BaselineVsMcts() {
         generateTiles();
         currentDraw = getDrawnTile();
     }
 
     private Tile currentDraw;
-    public ArrayList<Tile> removeUsedTiles(ArrayList<ArrayList<Tile>> board, ArrayList<Tile> deck){
-        //ArrayList<Tile> updated=new ArrayList<>();
-        for (ArrayList<Tile> currentSet : board) {
-        for (Tile currentTile : currentSet) {
-            if(deck.contains(currentTile)){
-                deck.remove(currentTile);
-            }
-        }}
-        return deck;
 
+    public ArrayList<Tile> removeUsedTiles(Board board, ArrayList<Tile> deck) {
+        ArrayList<Set> setList = board.getSetList();
+        for (Set currentSet : setList) {
+            ArrayList<Tile> tileList = currentSet.getTilesList();
+            for (Tile currentTile : tileList) {
+                if (deck.contains(currentTile)) {
+                    deck.remove(currentTile);
+                }
+            }
+        }
+        return deck;
     }
+
     public void botLoop() {
         // Setting the random gameId
         Random random = new Random();
@@ -64,20 +68,23 @@ public class BaselineVsMcts {
             //Check if the board is valid
             if (incomingBoard.checkBoardValidity()) {
                 //If it's valid check if the player already got out, if not check, if he put 30 points on the board
-                if (getCurrentPlayer().getIsOut() || checkThirtyRule(incomingBoard) ) {
+                if (getCurrentPlayer().getIsOut() || checkThirtyRule(incomingBoard)) {
                     //if the board didn't change, then we set the hand to the copy of it draw a tile
                     if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                         System.out.println("Player did nothing, drawing a tile");
                         getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
                         drawTile();
                         board = oryginalBoard;
-                    }else{
+                    } else {
                         System.out.println("Player did a move!!");
                         board = incomingBoard.copy();
-                        getCurrentPlayer().setDeckOfTiles(removeUsedTiles(incomingBoard.getSetList(), playerDeckCopy));
+                        getCurrentPlayer().setDeckOfTiles(removeUsedTiles(incomingBoard, playerDeckCopy));
                     }
                     System.out.println("Player did a move!!");
                     board = incomingBoard;
+                    System.out.println("OLD DECK");
+                    System.out.println(playerDeckCopy);
+                    System.out.println("NEW DECK");
                     System.out.println(getCurrentPlayer().getDeckOfTiles());
                 } else {
                     System.out.println("Player did not play 30 points or used tile from the board, drawing a tile");
@@ -85,7 +92,7 @@ public class BaselineVsMcts {
                     getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
                     drawTile();
                 }
-            // If the board is not valid print an error and set the tiles in the players hand to the copy of them before the move
+                // If the board is not valid print an error and set the tiles in the players hand to the copy of them before the move
             } else {
                 getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
                 drawTile();
@@ -93,25 +100,24 @@ public class BaselineVsMcts {
                 System.out.println("Not a valid board, drawing a tile");
             }
             //here a player won
-            if(getCurrentPlayer().getDeckOfTiles().isEmpty()){
+            if (getCurrentPlayer().getDeckOfTiles().isEmpty()) {
                 System.out.println("Player " + currentPlayerIndex + " won!");
                 break;
             }
-            board.printBoard();
             System.out.println("its turn: " + turn);
             System.out.println("printing the board");
             board.printBoard();
             turn++;
         }
         writeGameStateLogToFile();
-        System.out.println("GAME WITH ID "+ gameId + " ENDED");
+        System.out.println("GAME WITH ID " + gameId + " ENDED");
     }
 
     private Board gameTurn() {
-        if (currentPlayerIndex == 0){
-            currentPlayerIndex =1;
-        }else {
-            currentPlayerIndex =0;
+        if (currentPlayerIndex == 0) {
+            currentPlayerIndex = 1;
+        } else {
+            currentPlayerIndex = 0;
         }
         logCurrentGameState();
         return baselineMove();
@@ -125,17 +131,16 @@ public class BaselineVsMcts {
     }
 
 
-
     private Tile getDrawnTile() {
         System.out.println("There are " + potOfTiles.size() + " tiles");
         int index = (int) Math.floor(Math.random() * potOfTiles.size());
-        if (index >= potOfTiles.size()){
+        if (index >= potOfTiles.size()) {
             System.out.println("cant draw tiles");
             index--;
             Tile a = potOfTiles.get(index);
             potOfTiles.remove(index);
             return a;
-        }else {
+        } else {
             Tile a = potOfTiles.get(index);
             potOfTiles.remove(index);
             return a;
@@ -171,9 +176,9 @@ public class BaselineVsMcts {
 
         for (int k = 0; k < 15; k++) {
             drawTile();
-            currentPlayerIndex =1;
+            currentPlayerIndex = 1;
             drawTile();
-            currentPlayerIndex =0;
+            currentPlayerIndex = 0;
         }
     }
 
@@ -204,6 +209,7 @@ public class BaselineVsMcts {
         String title = "game" + gameId;
         writeGameStateLogToFile(title);
     }
+
     private void writeGameStateLogToFile(String fileName) {
         try (FileWriter writer = new FileWriter("data/raw_data/" + fileName + ".csv")) {
             writer.write(gameStateLog.toString());
@@ -219,14 +225,14 @@ public class BaselineVsMcts {
     }
 
     private Board baselineMove() {
-        System.out.println("Player " + currentPlayerIndex +" Baseline Move:");
+        System.out.println("Player " + currentPlayerIndex + " Baseline Move:");
         return getCurrentPlayer().getNewBoard(board.copy());
     }
 
     private boolean checkThirtyRule(Board incomingBoard) {
         ArrayList<Set> newSets = new ArrayList<>(); // Stores sets that have been added to the board in the current round
         for (Set set : incomingBoard.getSetList())
-            if (!board.getSetList().contains(set)){ // If the new board contains a set and the old one doesn't, we add it to newSets
+            if (!board.getSetList().contains(set)) { // If the new board contains a set and the old one doesn't, we add it to newSets
                 newSets.add(set);
             }
         for (Set set : board.getSetList()) {
@@ -237,9 +243,9 @@ public class BaselineVsMcts {
         }
         int totalForTheRound = 0;
         for (Set set : newSets) {
-            totalForTheRound+=set.getValue(); // We count the total amount a player put on the board this round
+            totalForTheRound += set.getValue(); // We count the total amount a player put on the board this round
         }
-        if (totalForTheRound - valueOfPrevTurn >= 30 ) { // Checks if the player put at least 30 points on the board
+        if (totalForTheRound - valueOfPrevTurn >= 30) { // Checks if the player put at least 30 points on the board
             board = incomingBoard;
             newSets.clear(); // Reset before next turn
             valueOfPrevTurn = totalForTheRound;
