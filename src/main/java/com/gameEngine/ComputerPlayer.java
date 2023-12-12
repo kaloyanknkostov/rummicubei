@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class ComputerPlayer implements Player
 {
     String username;
-    private Boolean isOut;
+    private Boolean isOut = true;
     public ArrayList<Tile> deckOfTiles;
 
     public ComputerPlayer(String username)

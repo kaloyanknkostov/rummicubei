@@ -17,6 +17,7 @@ public class BaselineVsMcts {
     private int gameId = 0;
     private int moveNumber = 0;
     private int valueOfPrevTurn = 0;
+    private ComputerPlayer previousPlayer;
 
     public static void main(String[] args) {
         System.out.println("Player 0 is a baseline agent, player 1 is a random agent");
@@ -35,6 +36,52 @@ public class BaselineVsMcts {
     }
 
     private Tile currentDraw;
+
+    public Board runTimeComparition(Board startingBoard, int itterations){
+        // Refresh the tile set
+        potOfTiles.removeAll(potOfTiles);
+        generateTiles();
+        currentPlayerIndex = 0;
+        //setup the board for testing
+        ArrayList<Tile> hand = new ArrayList<>();
+        for (int i =0; i<14 - itterations; i++){
+            Tile drawnTile = getDrawnTile();
+            hand.add(getDrawnTile());
+        }
+        Set setOne = new Set();
+        ComputerPlayer gameSetter = new ComputerPlayer("Game Setter");
+        gameSetter.deckOfTiles = hand;
+        Board testBoard = gameSetter.getRandomNewBoard(startingBoard);
+        //setup players
+        ComputerPlayer randomPlayer = new ComputerPlayer("random player");
+        ComputerPlayer baselinePlayer = new ComputerPlayer("baseline player");
+        // Set up the hand for both players
+        ArrayList<Tile> testHand = new ArrayList<>();
+        for (int i =0; i<14; i++){
+            Tile drawnTile = getDrawnTile();
+            testHand.add(getDrawnTile());
+        }
+
+        // Start the agents and record their times
+            // Baseline agent
+        long startTime = System.currentTimeMillis();
+        baselinePlayer.getBestNewBoard(testBoard);
+        long endtime = System.currentTimeMillis();
+        long baselineTime = endtime - startTime;
+            // Random agent
+        startTime = System.currentTimeMillis();
+        baselinePlayer.getBestNewBoard(testBoard);
+        endtime = System.currentTimeMillis();
+        long randomTime = endtime - startTime;
+        // Results:
+        System.out.println("With " +(testBoard.getTilesInBoard().size() + hand.size()) + " tiles, it took the  baseline agent: " + baselineTime +"ms, and random agent: "  + randomTime + "ms");
+        if(itterations > 10){
+            System.out.println("FINISHED");
+            return testBoard;
+        }else {
+            return runTimeComparition(testBoard, itterations+1);
+        }
+    }
 
     public ArrayList<Tile> removeUsedTiles(Board board, ArrayList<Tile> deck) {
         ArrayList<Set> setList = board.getSetList();
@@ -70,7 +117,7 @@ public class BaselineVsMcts {
         while (turn < 10000) {
             long startTime = System.currentTimeMillis();
             Board oryginalBoard = board.copy();
-            ArrayList<Tile> playerDeckCopy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
+            ArrayList<Tile> playerDeckCopy = new ArrayList<>(getCurrentPlayer().deckOfTiles);
             Board incomingBoard = gameTurn();
             //Check if the board is valid
             if (incomingBoard.checkBoardValidity()) {
@@ -79,7 +126,7 @@ public class BaselineVsMcts {
                     //if the board didn't change, then we set the hand to the copy of it draw a tile
                     if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                         System.out.println("Player did nothing, drawing a tile");
-                        getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
+                        previousPlayer.setDeckOfTiles(playerDeckCopy);
                         drawTile();
                         board = oryginalBoard;
                         System.out.println("OLD DECK:");
@@ -90,7 +137,7 @@ public class BaselineVsMcts {
                         System.out.println("OLD DECK:");
                         System.out.println(playerDeckCopy);
                         System.out.println("NEW DECK");
-                        System.out.println(getCurrentPlayer().getDeckOfTiles());
+                        System.out.println(getCurrentPlayer().deckOfTiles);
                         getCurrentPlayer().setDeckOfTiles(removeUsedTiles(incomingBoard, playerDeckCopy));
                         System.out.println("printing the board");
                         board.printBoard();
@@ -103,7 +150,7 @@ public class BaselineVsMcts {
                 //}
                 // If the board is not valid print an error and set the tiles in the players hand to the copy of them before the move
             } else {
-                getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
+                //getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
                 drawTile();
                 board = oryginalBoard;
                 System.out.println("Not a valid board, drawing a tile");
@@ -125,6 +172,7 @@ public class BaselineVsMcts {
     }
 
     private Board gameTurn() {
+        previousPlayer = getCurrentPlayer();
         if (currentPlayerIndex == 0) {
             currentPlayerIndex = 1;
         } else {
@@ -157,7 +205,7 @@ public class BaselineVsMcts {
 
 
     private void generateTiles() {
-        System.out.println("creating tiles");
+        //System.out.println("creating tiles");
         String[] colors = {"red", "blue", "black", "yellow"};
         for (String color : colors) {
             for (int i = 1; i < 14; i++) {
