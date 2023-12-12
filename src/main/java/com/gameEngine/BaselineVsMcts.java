@@ -24,7 +24,6 @@ public class BaselineVsMcts {
         System.out.println("created the engine");
         //engine.generateTiles();
         engine.board = new Board();
-        System.out.println("there are " + engine.potOfTiles.size() + "tiles");
         engine.botLoop();
     }
 
@@ -55,8 +54,8 @@ public class BaselineVsMcts {
             Board incomingBoard = gameTurn();
             //Check if the board is valid
             if (incomingBoard.checkBoardValidity()) {
-                //If it's valid check if the player already got out, if not check if he put 30 points on the board
-                if (getCurrentPlayer().getIsOut() || checkThirtyRule(incomingBoard, playerDeckCopy)) {
+                //If it's valid check if the player already got out, if not check, if he put 30 points on the board
+                if (getCurrentPlayer().getIsOut() || checkThirtyRule(incomingBoard) ) {
                     //if the board didn't change, then we set the hand to the copy of it draw a tile
                     if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                         System.out.println("Player did nothing, drawing a tile");
@@ -81,6 +80,7 @@ public class BaselineVsMcts {
                 System.out.println("Player " + currentPlayerIndex + " won!");
                 break;
             }
+            System.out.println("its turn: " + turn);
             turn++;
         }
         writeGameStateLogToFile();
@@ -105,32 +105,6 @@ public class BaselineVsMcts {
     }
 
 
-    private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
-        Board newBoard = new Board();
-        for (ArrayList<Tile> row : map) {
-            Set set = new Set();
-            for (Tile tile : row) {
-                if (tile != null) {
-                    set.addTile(tile);
-                } else {
-                    if (!set.isEmpty()) {
-                        newBoard.addSet(set);
-                        set = new Set();
-                    }
-                }
-            }
-            if (!set.isEmpty()) newBoard.addSet(set);
-        }
-        return newBoard;
-    }
-
-    private boolean isGameEnding() { // check game ending conditions
-        if (listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().isEmpty()) {
-            return true;
-        }
-        return potOfTiles.isEmpty();
-    }
-
 
     private Tile getDrawnTile() {
         System.out.println("There are " + potOfTiles.size() + " tiles");
@@ -151,7 +125,6 @@ public class BaselineVsMcts {
 
     private void generateTiles() {
         System.out.println("creating tiles");
-        boolean isJoker = false;
         String[] colors = {"red", "blue", "black", "yellow"};
         for (String color : colors) {
             for (int i = 1; i < 14; i++) {
@@ -200,7 +173,7 @@ public class BaselineVsMcts {
                 .collect(Collectors.joining(";"))); // Logging player's hands
         sj.add(String.valueOf(moveNumber)); // Logging moveNumber
         sj.add(Integer.toString(currentPlayerIndex)); // Logging the current player
-        gameStateLog.append(sj.toString()).append("\n");
+        gameStateLog.append(sj).append("\n");
     }
 
     private void startLog() {
@@ -230,14 +203,12 @@ public class BaselineVsMcts {
         return getCurrentPlayer().getNewBoard(board);
     }
 
-    private boolean checkThirtyRule(Board incomingBoard, ArrayList<Tile> playerDeckCopy) {
-        ArrayList<Tile> copy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
+    private boolean checkThirtyRule(Board incomingBoard) {
         ArrayList<Set> newSets = new ArrayList<>(); // Stores sets that have been added to the board in the current round
         for (Set set : incomingBoard.getSetList())
             if (!board.getSetList().contains(set)){ // If the new board contains a set and the old one doesn't, we add it to newSets
                 newSets.add(set);
             }
-        boolean gotOut = true;
         for (Set set : board.getSetList()) {
             if (!incomingBoard.getSetList().contains(set)) {
                 System.out.println("You can't the tiles in the board!");
@@ -249,17 +220,20 @@ public class BaselineVsMcts {
             System.out.println(set.toString());
             totalForTheRound+=set.getValue(); // We count the total amount a player put on the board this round
         }
-        if (totalForTheRound - valueOfPrevTurn >= 30 && gotOut) { // Checks if the player put at least 30 points on the board
-            getCurrentPlayer().setIsOut(true);
+        if (totalForTheRound - valueOfPrevTurn >= 30 && getCurrentPlayer().getIsOut()) { // Checks if the player put at least 30 points on the board
             board = incomingBoard;
             newSets.clear(); // Reset before next turn
             valueOfPrevTurn = totalForTheRound;
             //System.out.println("value of turn: " + totalForTheRound);
             totalForTheRound -= totalForTheRound;
+            System.out.println("Player " + getCurrentPlayer() + " got out");
+            getCurrentPlayer().setIsOut(true);
             return true;
             // Here we check if the player just didnt do anything
             // TODO: we also check that in the main loop, it should be just checked once (we also draw a card there)
         } else if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
+            System.out.println("Player " + getCurrentPlayer() + " got out");
+            getCurrentPlayer().setIsOut(true);
             return true;
         }
         System.out.println("Get more then 30");
