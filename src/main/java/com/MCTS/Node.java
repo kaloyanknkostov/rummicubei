@@ -64,8 +64,8 @@ public class Node {
         // ARGMAX
         double highestUCT = Double.NEGATIVE_INFINITY;
         Node nextNode = null;
-        System.err.println("STARTING UCT: "+ highestUCT);
-        System.err.println("CHILD LIST:" + this.childList);
+        //System.err.println("STARTING UCT: "+ highestUCT);
+        ///System.err.println("CHILD LIST:" + this.childList);
         for (Node child: this.childList){
             System.err.println(child.getUCT());
             if(child.getUCT()>highestUCT && !child.getLeaf()){
@@ -94,8 +94,6 @@ public class Node {
                 this.childList.add(child);
             } else if(res == 1){
                 //one of the players won, we have to check which one
-                System.out.println(newState.getBoard());
-                System.out.println("someone won");
                 backpropagate(newState.getWinner());
                 Node child = new Node(newState, this, (currentPlayer +1) %2, true);
                 this.childList.add(child);

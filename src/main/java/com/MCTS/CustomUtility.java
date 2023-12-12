@@ -129,8 +129,10 @@ public class CustomUtility {
         ArrayList<Integer> decomposedOld = decompose(oldBoard);
         ArrayList<Integer> decomposedNew = decompose(newBoard);
         for(Integer tile: decomposedNew){
-            if(decomposedOld.contains(tile)){
+            if(!decomposedOld.contains(tile)){
                 result.add(tile);
+            } else {
+                customRemove(decomposedOld, new ArrayList<>(tile));
             }
         }
         return result;
