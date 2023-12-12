@@ -46,12 +46,14 @@ public class BaselineAgent {
                 }
                 if(newPossibility> currentNumerical){
                     bestMove = keepingTrack;
+                    maxArrayList = actionspace.get(bestMove); 
                     currentNumerical = newPossibility;
                 }
             }
             keepingTrack++;
         }
-        return actionspace.get(bestMove);
+        return maxArrayList; 
+        
 
     }
 }

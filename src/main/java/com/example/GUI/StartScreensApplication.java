@@ -102,42 +102,27 @@ public class StartScreensApplication extends Application {
     }
 
     public void handleResetBoard(ActionEvent event) {
-        ImageView[] entireBoard = getBoard();
-        ArrayList<ArrayList<Image>> newBoardImages = curr;
-
-        int currentIndex = 0;
-        ArrayList<Tile> tilesToRemoveFromBoard = new ArrayList<>();
-
-        for (ArrayList<Image> row : newBoardImages) {
-            for (Image image : row) {
-                ImageView currentImageView = entireBoard[currentIndex];
-                if (currentImageView.getImage() != null) {
-                    Tile correspondingTile = findTileByImage(image, gameModel.getCurrentPlayer());
-                    if (correspondingTile != null) {
-                        tilesToRemoveFromBoard.add(correspondingTile);
-                    }
+        
+       try {
+            gameModel.getCurrentPlayer().setDeckOfTiles(gameModel.getDeckOfTiles());
+            gameModel.getCurrentBoard();
+            int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
+            ImageView[] playerBoard = getPlayerBoard();
+            for (int i = 0; i < playerBoard.length; i++) {
+                if (i < numOfTiles) {
+                    Image image = gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getImage();
+                    playerBoard[i].setImage(image);
+                    playerBoard[i].setVisible(true);
+                } else {
+                    playerBoard[i].setVisible(false);
                 }
-                currentImageView.setImage(image);
-                currentIndex++;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        Player currentPlayer = gameModel.getCurrentPlayer();
-        if (currentPlayer != null) {
-            Platform.runLater(() -> currentPlayer.getDeckOfTiles().addAll(tilesToRemoveFromBoard));
-        }
-        int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
-        ImageView[] playerBoard = getPlayerBoard();
-        for (int i = 0; i < playerBoard.length; i++) {
-            if (i < numOfTiles) {
-                Image image = gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getImage();
-                playerBoard[i].setImage(image);
-                playerBoard[i].setVisible(true);
-            } else {
-                playerBoard[i].setVisible(false);
-            }
-        }
+        //updateBoard(null);
         initializeDragAndDrop();
+        
     }
 
     private Tile findTileByImage(Image image, Player player) {
@@ -230,6 +215,7 @@ public class StartScreensApplication extends Application {
     }
 
     public void playerTurn() {
+        gameModel.setdeckOfTiles( gameModel.getCurrentPlayer().getDeckOfTiles());
         if (drewATile) {
             try {
                 Thread.sleep(1000);

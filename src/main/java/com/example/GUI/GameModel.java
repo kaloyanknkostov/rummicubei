@@ -14,11 +14,18 @@ public class GameModel {
     private Player currentPlayer;
     private boolean nextTurn = false;
     private int numberOfBots = 0;
+    private Board originalBoard ;
     private ArrayList<ArrayList<Image>> transferBoardViaImages;
     public ArrayList<String> playerNames = new ArrayList();
     public void setCurrentBoard(Board currentBoard) {
+    this.originalBoard = currentBoard; 
     }
-
+        
+    public void getCurrentBoard(){
+       StartScreensApplication.activeController.updateBoard(originalBoard);
+    }
+    
+    public ArrayList<Tile> tilesAtStart; 
     public Tile drawTile;
 
     public void setNumberOfBots(int bots){
@@ -76,6 +83,14 @@ public class GameModel {
     public int getNumberOfPlayers() {
         return numberOfPlayers;
     }
+    public void setdeckOfTiles(ArrayList<Tile> deck){
+        tilesAtStart = deck; 
+    }
+
+    public ArrayList<Tile> getDeckOfTiles(){
+        return tilesAtStart; 
+    }
+
 
     public void setNumberOfPlayers(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
