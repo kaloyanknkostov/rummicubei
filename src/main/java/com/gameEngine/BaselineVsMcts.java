@@ -76,6 +76,11 @@ public class BaselineVsMcts {
                 drawTile();
                 System.out.println("Not a valid board, drawing a tile");
             }
+            //here a player won
+            if(getCurrentPlayer().getDeckOfTiles().isEmpty()){
+                System.out.println("Player " + currentPlayerIndex + " won!");
+                break;
+            }
             turn++;
         }
         writeGameStateLogToFile();
