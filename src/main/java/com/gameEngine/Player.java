@@ -7,7 +7,7 @@ public interface Player
 
 
     public void drawTile(Tile tile);
-    public Board getNewBoard(Board oldBoard);
+    public Board getBestNewBoard(Board oldBoard);
      String getUsername();
      Boolean getIsOut();
      ArrayList<Tile> getDeckOfTiles();

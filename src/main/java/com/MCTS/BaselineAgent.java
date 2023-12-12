@@ -2,6 +2,7 @@ package com.MCTS;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 public class BaselineAgent {
 
@@ -12,6 +13,12 @@ public class BaselineAgent {
         this.board = board;
         this.rack = rack;
     }
+    public ArrayList<ArrayList<Integer>> getRandomMove(boolean isout) {
+        RandomMove randomMove = new RandomMove(board, rack);
+        return randomMove.getRandomMove();
+    }
+
+
     public ArrayList<ArrayList<Integer>> getBestMove(boolean isout){
         ActionSpaceGenerator actionSpaceGenerator = new ActionSpaceGenerator(this.board,rack);
         ArrayList<ArrayList<ArrayList<Integer>>> actionspace = actionSpaceGenerator.getResultingBoards();
@@ -68,5 +75,6 @@ public class BaselineAgent {
         return maxArrayList;
 
     }
+
 
 }

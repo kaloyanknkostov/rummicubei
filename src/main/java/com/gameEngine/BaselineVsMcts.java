@@ -234,7 +234,7 @@ public class BaselineVsMcts {
 
     private Board baselineMove() {
         System.out.println("Player " + currentPlayerIndex + " Baseline Move:");
-        return getCurrentPlayer().getNewBoard(board.copy());
+        return getCurrentPlayer().getRandomNewBoard(board.copy());
     }
 
     private boolean checkThirtyRule(Board incomingBoard) {

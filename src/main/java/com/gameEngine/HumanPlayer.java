@@ -25,7 +25,7 @@ public class HumanPlayer implements Player
         deckOfTiles.add(tile);
     }
     @Override
-    public Board getNewBoard(Board board)
+    public Board getBestNewBoard(Board board)
     {
         return board;
     }

@@ -54,18 +54,21 @@ public class RandomMove {
     }
 
     private void calculateRandomMove(){
-        int x = this.resultingBoards.size()-1;
-        //include the prob of not playing anything at all
-        int y = this.rand.nextInt(x);
-        this.randomMove = deepCopy(this.resultingBoards.get(y));
-        if(decompose(this.resultingBoards.get(y)).equals(decompose(this.startingBoard)) && this.resultingBoards.size() == 1){
-            //meaning the only possible move was not doing anything
+        if(this.resultingBoards.isEmpty()){ //this can only happen if we cant play on the first turn of the game
+            this.randomMove = new ArrayList<>();
             this.randomMove.add(0,new ArrayList<>(Arrays.asList(-1)));
-            //add a -1 as the first set of the resulting board
+        } else {
+            int x = this.resultingBoards.size();
+            //include the prob of not playing anything at all
+            int y = this.rand.nextInt(x)-1; //because of zero based indexing
+            this.randomMove = CustomUtility.deepCopy(this.resultingBoards.get(y));
+            if(CustomUtility.decompose(this.resultingBoards.get(y)).equals(CustomUtility.decompose(this.startingBoard)) && this.resultingBoards.size() == 1){
+                //meaning the only possible move was not doing anything
+                this.randomMove.add(0,new ArrayList<>(Arrays.asList(-1)));
+                //add a -1 as the first set of the resulting board
+            }
         }
-
     }
-
     private void createRandomPlayouts(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles, int lastCheckedSet){
         // if all sets have been checked return
         if(lastCheckedSet == this.possibleSets.size() && validBoard(currentBoard)){
