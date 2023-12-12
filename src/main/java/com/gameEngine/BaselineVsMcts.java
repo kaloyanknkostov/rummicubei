@@ -59,18 +59,22 @@ public class BaselineVsMcts {
                 if (getCurrentPlayer().getIsOut() || checkThirtyRule(incomingBoard, playerDeckCopy)) {
                     //if the board didn't change, then we set the hand to the copy of it draw a tile
                     if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
+                        System.out.println("Player did nothing, drawing a tile");
                         getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
                         drawTile();
                     }
+                    System.out.println("Player did a move!!");
                     board = incomingBoard;
-                    System.out.println("VALID BOARD");
                 } else {
+                    System.out.println("Player did not play 30 points or used tile from the board, drawing a tile");
                     getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
+                    drawTile();
                 }
-                // If the board is not valid print an error and set the tiles in the players hand to the copy of them before the move
+            // If the board is not valid print an error and set the tiles in the players hand to the copy of them before the move
             } else {
                 getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
-                System.out.println("Not a valid board");
+                drawTile();
+                System.out.println("Not a valid board, drawing a tile");
             }
             turn++;
         }
