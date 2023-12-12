@@ -3,7 +3,7 @@ package com.MCTS;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomUtility { 
+public class CustomUtility {
 
 
      /**
@@ -103,21 +103,21 @@ public class CustomUtility {
     **/
     public static boolean canCreateSet(ArrayList<Integer> array, ArrayList<Integer> set) {
         if (array.isEmpty() || set.isEmpty()) {
-           return false;
-       }
-        ArrayList<Integer> tiles = new ArrayList<Integer>(); 
+            return false;
+        }
+        ArrayList<Integer> tiles = new ArrayList<Integer>();
         for (Integer integer : array) {
-           tiles.add(integer); 
+            tiles.add(integer);
         }
         for (Integer integer : set) { // checks if the array contains each elemnt to creaate the set
-           if (!tiles.contains(integer)) { 
-               return false; 
+            if (!tiles.contains(integer)) {
+               return false;
            } else {
-               ArrayList<Integer> tileToRemove = new ArrayList<Integer>(List.of(integer)); // a but clunky but for now its fine 
-               customRemove(tiles,tileToRemove); // essentially removing it from available tiles after its checked but only removes first instance 
+               ArrayList<Integer> tileToRemove = new ArrayList<Integer>(List.of(integer)); // a but clunky but for now its fine
+               customRemove(tiles,tileToRemove); // essentially removing it from available tiles after its checked but only removes first instance
            }
         }
-      
+
        return true;
    }
 
@@ -183,8 +183,8 @@ public class CustomUtility {
     }
 
 
-    
 
 
-    
+
+
 }

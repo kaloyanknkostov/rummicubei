@@ -22,17 +22,17 @@ public class RandomMove {
     //TODO randomMove doesn't handel not being able to play yet
 
     public RandomMove(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
-        System.out.println("IN Action");
+        // System.out.println("IN Action");
         //get all possible sets
         //Here we are getting all the sets
         AllSetGenerator generator = AllSetGenerator.getInstance();
-        allPossibleSets = generator.getAllSets();
+        this.allPossibleSets = generator.getAllSets();
         hasFinished = false;
         rand = new Random();
         this.resultingBoards = new ArrayList<>();
         this.startingBoard = board;
         this.startingRack = rack;
-        this.possibleSets = CustomUtility.possibleSets(this.startingRack,CustomUtility.decompose(board),this.allPossibleSets);
+        this.possibleSets = CustomUtility.possibleSets(rack,CustomUtility.decompose(board),this.allPossibleSets);
         // now the possiblesets are shuffled so it tries to add sets in a random order
         Collections.shuffle(this.possibleSets);
         //probably put this somewhere else
@@ -54,16 +54,20 @@ public class RandomMove {
     }
 
     private void calculateRandomMove(){
-        int x = this.resultingBoards.size()-1;
-        //include the prob of not playing anything at all
-        int y = this.rand.nextInt(x);
-        this.randomMove = CustomUtility.deepCopy(this.resultingBoards.get(y));
-        if(CustomUtility.decompose(this.resultingBoards.get(y)).equals(CustomUtility.decompose(this.startingBoard)) && this.resultingBoards.size() == 1){
-            //meaning the only possible move was not doing anything
+        if(this.resultingBoards.isEmpty()){ //this can only happen if we cant play on the first turn of the game
+            this.randomMove = new ArrayList<>();
             this.randomMove.add(0,new ArrayList<>(Arrays.asList(-1)));
-            //add a -1 as the first set of the resulting board
+        } else {
+            int x = this.resultingBoards.size();
+            //include the prob of not playing anything at all
+            int y = this.rand.nextInt(x)-1; //because of zero based indexing
+            this.randomMove = CustomUtility.deepCopy(this.resultingBoards.get(y));
+            if(CustomUtility.decompose(this.resultingBoards.get(y)).equals(CustomUtility.decompose(this.startingBoard)) && this.resultingBoards.size() == 1){
+                //meaning the only possible move was not doing anything
+                this.randomMove.add(0,new ArrayList<>(Arrays.asList(-1)));
+                //add a -1 as the first set of the resulting board
+            }
         }
-
     }
 
     private void createRandomPlayouts(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles, int lastCheckedSet){
@@ -77,9 +81,10 @@ public class RandomMove {
 
         for(int i = lastCheckedSet ; i < this.possibleSets.size();i++){
             // If cannot create set with tiles go to next one or if it has finsihed
-            if(hasFinished ||!CustomUtility.canCreateSet(availableTiles, possibleSets.get(i))){
+            if(hasFinished ||!CustomUtility.canCreateSet(availableTiles, this.possibleSets.get(i))){
                 //cause then it wil not run the for loop and reach the return of all the active calls without doing anything
                 continue;
+
             }
             // Create copy of board so changes in this iteration of the loop are unique to the next iteration
             // Pass this copy as a reference in the recursion
@@ -92,10 +97,10 @@ public class RandomMove {
             //now check if the board is valid
             if(CustomUtility.validBoard(currentBoardCopy, CustomUtility.decompose(this.startingBoard))){
                 // Add board and racks to the results as board is valid
-                resultingBoards.add(currentBoardCopy);
+                this.resultingBoards.add(currentBoardCopy);
 
             }
-            createRandomPlayouts(currentBoardCopy, currentAvailableTiles,i);       
+            createRandomPlayouts(currentBoardCopy, currentAvailableTiles,i);
         }
     }
 }

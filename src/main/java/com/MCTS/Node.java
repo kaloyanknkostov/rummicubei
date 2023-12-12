@@ -16,12 +16,14 @@ public class Node {
     private int currentPlayer;
 
     public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf){
+        this.results = new ArrayList<Float>();
         this.childList = new ArrayList<Node>();
         this.gameState = gameState;
         this.parent = parent;
         this.visitCount = 1; // visit count at generation is 1 (otherwise uct will not work)
         this.currentPlayer = currentPlayer;
         this.isLeaf = isleaf;
+        this.uct = 0.0;
     }
 
     public double getUCT(){
@@ -30,6 +32,9 @@ public class Node {
     }
 
     public void calculateUCT(){
+        if (this.parent == null){
+            return;
+        }
         // calculates the current UCT and stores it in a variable to save computing time
         if(visitCount== 0){
             this.uct = Float.NEGATIVE_INFINITY;
