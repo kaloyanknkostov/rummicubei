@@ -258,6 +258,7 @@ public class StartScreensApplication extends Application {
         initializeDragAndDrop();
     }
 
+
     public void updateBoard(Board newBoard) {
         ImageView[] GuiBoard = getBoard();
         // clean the board
@@ -266,16 +267,25 @@ public class StartScreensApplication extends Application {
         }
         ArrayList<Set> setArrayList = newBoard.getSetList();
         int lastEmptySlot = 0;
+        int SlotsInCurrentRow = 17;
+        int usedRows =0;
         //go thought the sets
         for (int setIndex = 0; setIndex < setArrayList.size(); setIndex++) {
             //go thought the tiles in the set
             Set currentTileSet = setArrayList.get(setIndex);
+            if(currentTileSet.getSize() > SlotsInCurrentRow){
+                usedRows++;
+                lastEmptySlot = 17*usedRows;
+                SlotsInCurrentRow = 17;
+            }
             for (int tileIndex = 0; tileIndex < currentTileSet.getSizes(); tileIndex++) {
                 Tile currentTile = currentTileSet.getTileAtIndex(tileIndex);
                 GuiBoard[lastEmptySlot].setImage(currentTile.getImage());
-                lastEmptySlot+=1;
+                lastEmptySlot++;
+                SlotsInCurrentRow--;
             }
-            lastEmptySlot += 1;
+            lastEmptySlot ++;
+            SlotsInCurrentRow--;
         }
     }
 

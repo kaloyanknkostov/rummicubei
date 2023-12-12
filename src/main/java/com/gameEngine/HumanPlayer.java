@@ -57,4 +57,6 @@ public class HumanPlayer implements Player
     public void setDeckOfTiles(ArrayList<Tile> deckOfTiles) {
         this.deckOfTiles = deckOfTiles;
     }
+
+
 }
