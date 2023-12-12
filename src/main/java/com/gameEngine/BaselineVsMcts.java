@@ -237,7 +237,6 @@ public class BaselineVsMcts {
         }
         potOfTiles.add(new Tile(0, "", true, "painted_tile_1.png"));
         potOfTiles.add(new Tile(0, "", true, "painted_tile_3.png"));
-
     }
 
     public Player getCurrentPlayer() {
@@ -294,10 +293,12 @@ public class BaselineVsMcts {
     }
 
     private void mctsMove(){
+        // TODO: add moves
         System.out.println("MCTS Move:");
     }
 
     private void baselineMove(){
+        // TODO: add moves
         System.out.println("MCTS Move:");
     }
 
