@@ -92,7 +92,7 @@ public class MCTS {
              arrayProb.add((arrayNumber.get(i)).doubleValue()/numberOfUnkownTiles);
          }
          return arrayProb;
-
+        }
 
     private ArrayList<Integer> getPile(){
         ArrayList<Integer> allTilesNotPile = CustomUtility.decompose(this.board);
@@ -111,15 +111,11 @@ public class MCTS {
             31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
             41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
             51, 52, 53));
-            customRemove(allTiles, allTilesNotPile);
+            CustomUtility.customRemove(allTiles, allTilesNotPile);
             return allTiles;
     }
 
-    private static void customRemove(ArrayList<Integer> list, ArrayList<Integer> elementsToRemove) {
-        for (Integer element : elementsToRemove) {
-            list.remove(element);
-        }
-    }
+  
 
     public Node getRoot(){
         return this.root;
