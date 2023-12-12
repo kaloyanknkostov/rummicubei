@@ -41,15 +41,14 @@ public class BaselineVsMcts {
         // Setup for the gameplay
         addPlayers();
         startLog();
-        gameModel.setCurrentBoard(board);
         // Start logging for this game
-        logCurrentGameState();
         moveNumber++;
         String fileName = "Game" + gameId;
         writeGameStateLogToFile(fileName);
         // Main loop
         int turn = 0;
         while (turn < 10000) {
+            Board oryginalBoard = board.copy();
             ArrayList<Tile> playerDeckCopy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
             Board incomingBoard = gameTurn();
             //Check if the board is valid
@@ -61,11 +60,15 @@ public class BaselineVsMcts {
                         System.out.println("Player did nothing, drawing a tile");
                         getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
                         drawTile();
+                        board = oryginalBoard;
+                    }else{
+                        System.out.println("Using a new board");
+                        System.out.println("Player did a move!!");
+                        board = incomingBoard.copy();
                     }
-                    System.out.println("Player did a move!!");
-                    board = incomingBoard;
                 } else {
                     System.out.println("Player did not play 30 points or used tile from the board, drawing a tile");
+                    board = oryginalBoard;
                     getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
                     drawTile();
                 }
@@ -73,6 +76,7 @@ public class BaselineVsMcts {
             } else {
                 getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
                 drawTile();
+                board = oryginalBoard;
                 System.out.println("Not a valid board, drawing a tile");
             }
             //here a player won
@@ -81,6 +85,8 @@ public class BaselineVsMcts {
                 break;
             }
             System.out.println("its turn: " + turn);
+            System.out.println("printing the board");
+            board.printBoard();
             turn++;
         }
         writeGameStateLogToFile();
@@ -88,12 +94,12 @@ public class BaselineVsMcts {
     }
 
     private Board gameTurn() {
-        logCurrentGameState();
         if (currentPlayerIndex == 0){
             currentPlayerIndex =1;
         }else {
             currentPlayerIndex =0;
         }
+        logCurrentGameState();
         return baselineMove();
 // commented out code switches the bots, right not its baseline vs baseline
 //        if (currentPlayerIndex == 0) {
@@ -200,7 +206,7 @@ public class BaselineVsMcts {
 
     private Board baselineMove() {
         System.out.println("Player " + currentPlayerIndex +" Baseline Move:");
-        return getCurrentPlayer().getNewBoard(board);
+        return getCurrentPlayer().getNewBoard(board.copy());
     }
 
     private boolean checkThirtyRule(Board incomingBoard) {
@@ -221,7 +227,6 @@ public class BaselineVsMcts {
             totalForTheRound+=set.getValue(); // We count the total amount a player put on the board this round
         }
         if (totalForTheRound - valueOfPrevTurn >= 30 && getCurrentPlayer().getIsOut()) { // Checks if the player put at least 30 points on the board
-            board = incomingBoard;
             newSets.clear(); // Reset before next turn
             valueOfPrevTurn = totalForTheRound;
             //System.out.println("value of turn: " + totalForTheRound);
@@ -232,8 +237,6 @@ public class BaselineVsMcts {
             // Here we check if the player just didnt do anything
             // TODO: we also check that in the main loop, it should be just checked once (we also draw a card there)
         } else if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
-            System.out.println("Player " + getCurrentPlayer() + " got out");
-            getCurrentPlayer().setIsOut(true);
             return true;
         }
         System.out.println("Get more then 30");
