@@ -19,6 +19,7 @@ public class BaselineVsMcts {
     private int valueOfPrevTurn = 0;
 
     public static void main(String[] args) {
+        System.out.println("Player 0 is a baseline agent, player 1 is a random agent");
         System.out.println("start");
         BaselineVsMcts engine = new BaselineVsMcts();
         System.out.println("created the engine");
@@ -67,9 +68,10 @@ public class BaselineVsMcts {
         System.out.println("DECK OF PLAYER TWO: ");
         System.out.println(listOfPlayers.get(1).getDeckOfTiles());
         while (turn < 10000) {
+            long startTime = System.currentTimeMillis();
             Board oryginalBoard = board.copy();
-            Board incomingBoard = gameTurn();
             ArrayList<Tile> playerDeckCopy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
+            Board incomingBoard = gameTurn();
             //Check if the board is valid
             if (incomingBoard.checkBoardValidity()) {
                 //If it's valid check if the player already got out, if not check, if he put 30 points on the board
@@ -109,10 +111,13 @@ public class BaselineVsMcts {
             //here a player won
             if (getCurrentPlayer().deckOfTiles.isEmpty()) {
                 System.out.println("Player " + currentPlayerIndex + " won!");
+                long endTime = System.currentTimeMillis();
                 break;
             }
-            System.out.println("its turn: " + turn);
+            long endTime = System.currentTimeMillis();
 
+            System.out.println("its turn: " + turn);
+            System.out.println("turn took: " + (endTime - startTime) + "ms");
             turn++;
         }
         writeGameStateLogToFile();
@@ -126,14 +131,11 @@ public class BaselineVsMcts {
             currentPlayerIndex = 0;
         }
         logCurrentGameState();
-        return baselineMove();
-// commented out code switches the bots, right not its baseline vs baseline
-//        if (currentPlayerIndex == 0) {
-//            currentPlayerIndex++;
-//            return baselineMove();
-//        }
-//        currentPlayerIndex++;
-//        return mctsMove();
+        if (currentPlayerIndex == 0) {
+            return baselineMove();
+        }else {
+            return randomMove();
+        }
     }
 
 
@@ -176,15 +178,13 @@ public class BaselineVsMcts {
 
     public void addPlayers() {
         // TODO: Adding the baseline bot
-        listOfPlayers.add(new ComputerPlayer("one"));
+        listOfPlayers.add(new ComputerPlayer("baseline"));
         // TODO: Adding the MCTS bot
-        listOfPlayers.add(new ComputerPlayer("two"));
+        listOfPlayers.add(new ComputerPlayer("random agent"));
 
         for (int k = 0; k < 15; k++) {
-            System.out.println("drawing a tile " + getDrawnTile() +" for player " + currentPlayerIndex);
             drawTile();
             currentPlayerIndex = 1;
-            System.out.println("drawing a tile" + getDrawnTile() +" for player " + currentPlayerIndex);
             drawTile();
             currentPlayerIndex = 0;
         }
@@ -231,10 +231,13 @@ public class BaselineVsMcts {
         System.out.println("MCTS Move:");
         return null;
     }
-
+    private Board randomMove() {
+        System.out.println("Player " + currentPlayerIndex + " random Move:");
+        return getCurrentPlayer().getRandomNewBoard(board.copy());
+    }
     private Board baselineMove() {
         System.out.println("Player " + currentPlayerIndex + " Baseline Move:");
-        return getCurrentPlayer().getRandomNewBoard(board.copy());
+        return getCurrentPlayer().getBestNewBoard(board.copy());
     }
 
     private boolean checkThirtyRule(Board incomingBoard) {
