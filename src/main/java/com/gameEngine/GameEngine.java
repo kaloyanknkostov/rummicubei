@@ -342,7 +342,7 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
 
         }
         for (int i = 0; i < numberOfBots; i++) {
-            listOfPlayers.add(new ComputerPlayer("test"));
+            listOfPlayers.add(new ComputerPlayer("test","baseline"));
             for (int k = 0; k < 15; k++) {
                 listOfPlayers.get(listOfPlayers.size() - 1).drawTile(drawTile());
             }

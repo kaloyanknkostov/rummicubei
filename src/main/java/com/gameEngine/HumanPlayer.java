@@ -58,5 +58,10 @@ public class HumanPlayer implements Player
         this.deckOfTiles = deckOfTiles;
     }
 
+    @Override
+    public void setDeckLengths(ArrayList<Integer> deckLengths) {
+
+    }
+
 
 }
