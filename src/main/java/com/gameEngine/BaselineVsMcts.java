@@ -72,8 +72,11 @@ public class BaselineVsMcts {
             ArrayList<Tile> playerDeckCopy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
             //Check if the board is valid
             if (incomingBoard.checkBoardValidity()) {
+                if (getCurrentPlayer().getIsOut() || checkThirtyRule(incomingBoard)) {
+                    System.out.println("a");
+                }
                 //If it's valid check if the player already got out, if not check, if he put 30 points on the board
-                //if (getCurrentPlayer().getIsOut() || checkThirtyRule(incomingBoard)) {
+                if (getCurrentPlayer().getIsOut() || checkThirtyRule(incomingBoard)) {
                     //if the board didn't change, then we set the hand to the copy of it draw a tile
                     if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
                         System.out.println("Player did nothing, drawing a tile");
@@ -92,13 +95,12 @@ public class BaselineVsMcts {
                         getCurrentPlayer().setDeckOfTiles(removeUsedTiles(incomingBoard, playerDeckCopy));
                         System.out.println("printing the board");
                         board.printBoard();
-                    }
-               // } else {            System.out.println("Player did not play 30 points or used tile from the board, drawing a tile");
-                    ////                    board = oryginalBoard;
-                    ////                    getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
-                    ////                    drawTile();
+                        }} else {            System.out.println("Player did not play 30 points or used tile from the board, drawing a tile");
+                                        board = oryginalBoard;
+                                        getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
+                                        drawTile();
 //
-                //}
+                }
                 // If the board is not valid print an error and set the tiles in the players hand to the copy of them before the move
             } else {
                 getCurrentPlayer().setDeckOfTiles(playerDeckCopy);
@@ -253,11 +255,11 @@ public class BaselineVsMcts {
         for (Set set : newSets) {
             totalForTheRound += set.getValue(); // We count the total amount a player put on the board this round
         }
-        if (totalForTheRound - valueOfPrevTurn >= 30) { // Checks if the player put at least 30 points on the board
-            board = incomingBoard;
+        if (totalForTheRound  >= 30) { // Checks if the player put at least 30 points on the board
+            //board = incomingBoard;
             newSets.clear(); // Reset before next turn
-            valueOfPrevTurn = totalForTheRound;
-            totalForTheRound -= totalForTheRound;
+            //valueOfPrevTurn = totalForTheRound;
+            //totalForTheRound -= totalForTheRound;
             System.out.println("Player " + currentPlayerIndex + " got out");
             getCurrentPlayer().setIsOut(true);
             return true;
