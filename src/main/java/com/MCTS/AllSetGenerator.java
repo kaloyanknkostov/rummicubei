@@ -3,7 +3,7 @@ package com.MCTS;
 import java.util.ArrayList;
 import java.util.Collections;
 
-
+//this file is the exact same as normal allsetgenerator but it does not include with 2 jokers
 
 public class AllSetGenerator {
     private static AllSetGenerator instance;
@@ -33,8 +33,6 @@ public class AllSetGenerator {
         allSets.addAll(generateRunsWithOneJoker(runs));
         allSets.addAll(generateGroupsOf4WithOneJoker(group));
         allSets.addAll(generateGroupsOf3WithOneJoker(group));
-        allSets.addAll(generateRunsWithTwoJokers(runs));
-        allSets.addAll(generateGroupsWithTwoJokers(group));
         return allSets;
     }
     // this is one is tested and returns the correct amount of runs
@@ -164,8 +162,6 @@ public class AllSetGenerator {
         return allGroupsWithOneJoker;
     }
 
-
-
     private static boolean checkIfExists(ArrayList<ArrayList<Integer>> list, ArrayList<Integer> set) {
         // Create sorted copies of the sets for comparison
         ArrayList<Integer> sortedSet = new ArrayList<>(set);
@@ -182,54 +178,6 @@ public class AllSetGenerator {
             }
         }
         return false; // Set not found in the list
-    }
-
-    //creates runs of 3 correctly
-    //creates runs of 4 correctly
-    //there is one missing of 5 idk which one but for the rest it works
-
-    private static ArrayList<ArrayList<Integer>> generateRunsWithTwoJokers(ArrayList<ArrayList<Integer>> baseList) {
-        ArrayList<ArrayList<Integer>> allRunsWithTwoJokers = new ArrayList<>();
-
-        for (ArrayList<Integer> baseSet : baseList) {
-            for (int jokerPos1 = 0; jokerPos1 < baseSet.size()-1; jokerPos1++) {
-                for (int jokerPos2 = jokerPos1 + 1; jokerPos2 < baseSet.size(); jokerPos2++) {
-                    ArrayList<Integer> setWithTwoJokers = new ArrayList<>(baseSet);
-                    setWithTwoJokers.set(jokerPos1, 53); // First Joker
-                    setWithTwoJokers.set(jokerPos2, 53); // Second Joker
-
-                    if (!checkIfExists(allRunsWithTwoJokers, setWithTwoJokers)) {
-                        allRunsWithTwoJokers.add(setWithTwoJokers);
-                        // System.out.println(setWithTwoJokers);
-                    }
-                }
-            }
-        }
-        return allRunsWithTwoJokers;
-    }
-
-    //creates groups of 4 with 2 jokers
-    private static ArrayList<ArrayList<Integer>> generateGroupsWithTwoJokers(ArrayList<ArrayList<Integer>> baseList) {
-        ArrayList<ArrayList<Integer>> allGroupsWithTwoJokers = new ArrayList<>();
-
-        for (ArrayList<Integer> baseSet : baseList) {
-            if(baseSet.size() == 3){
-                continue;
-            }
-            for (int jokerPos1 = 0; jokerPos1 < baseSet.size()-1; jokerPos1++) {
-                for (int jokerPos2 = jokerPos1 + 1; jokerPos2 < baseSet.size(); jokerPos2++) {
-                    ArrayList<Integer> setWithTwoJokers = new ArrayList<>(baseSet);
-                    setWithTwoJokers.set(jokerPos1, 53); // First Joker
-                    setWithTwoJokers.set(jokerPos2, 53); // Second Joker
-
-                    if (!checkIfExists(allGroupsWithTwoJokers, setWithTwoJokers)) {
-                        allGroupsWithTwoJokers.add(setWithTwoJokers);
-                        // System.out.println(setWithTwoJokers);
-                    }
-                }
-            }
-        }
-        return allGroupsWithTwoJokers;
     }
 
 }
