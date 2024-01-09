@@ -34,12 +34,11 @@ public class ActionSpaceGenerator {
         for(Integer tile: startingBoard){
             this.availableTilesStart.add(tile);
         }
-        createAllMoves(new ArrayList<>(), this.availableTilesStart, this.startingRack, 0);
+        createAllMoves(new ArrayList<>(), this.startingRack, 0);
     }
 
-    public void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles ,ArrayList<Integer> currentRack, int lastCheckedSet){
+    public void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles, int lastCheckedSet){
         // if all sets have been checked return
-
         if(lastCheckedSet == this.possibleSets.size()){
             return;
         }
@@ -53,16 +52,17 @@ public class ActionSpaceGenerator {
             ArrayList<ArrayList<Integer>> currentBoardCopy = CustomUtility.deepCopy(currentBoard);
             currentBoardCopy.add(this.possibleSets.get(i));
             ArrayList<Integer> currentAvailableTiles = new ArrayList<>(availableTiles);
-            CustomUtility.customRemove(currentAvailableTiles, this.possibleSets.get(i));
+            currentAvailableTiles.removeAll(this.possibleSets.get(i));
 
             // Remove tiles in the set in our rack and available tiles list
-            CustomUtility.customRemove(currentRack, this.possibleSets.get(i));
             //now check if the board is valid
             if(CustomUtility.validBoard(currentBoardCopy,this.startingBoard)){
                 // Add board and racks to the results as board is valid
                 resultingBoards.add(currentBoardCopy);
             }
-            createAllMoves(currentBoardCopy, currentAvailableTiles,currentRack, i);
+            createAllMoves(currentBoardCopy, currentAvailableTiles, i+1);
+            //this can be i+1 since there is only 1 instance we can never check the same board twice
+            //TODO, THE MOVING EVERYTHING TO SETS IS DONE, NOW CHECK HOW TO RECALCULATE POSSIBLESETS AT EVERY TURN!!!!!!!
         }
     }
     public ArrayList<ArrayList<Integer>> getPossibleSets(){
