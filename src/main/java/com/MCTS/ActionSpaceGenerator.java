@@ -3,38 +3,45 @@ package com.MCTS;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javafx.css.SimpleStyleableDoubleProperty;
+
 
 
 public class ActionSpaceGenerator {
 
     private ArrayList<ArrayList<ArrayList<Integer>>> resultingBoards;
-    private ArrayList<ArrayList<Integer>> resultingRacks;
     private ArrayList<Integer> startingBoard;
     private ArrayList<Integer> startingRack;
     private ArrayList<ArrayList<Integer>> allPossibleSets;
     private ArrayList<ArrayList<Integer>> possibleSets;
     private  ArrayList<Integer> availableTilesStart;
 
-
+    public static void main(String[] args) {
+        ArrayList<ArrayList<Integer>> board = new ArrayList<>();
+        board.add(new ArrayList<>(Arrays.asList(1,2,3)));
+        board.add(new ArrayList<>(Arrays.asList(7,8,9)));
+        ArrayList<Integer> rack = new ArrayList<>(Arrays.asList(14,15,16));
+        ActionSpaceGenerator myGenerator = new ActionSpaceGenerator(board, rack);
+        System.out.println(myGenerator.getResultingBoards());
+    }
 
     public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
         // System.out.println("IN Action");
         ArrayList<ArrayList<Integer>> boardForActionSpace = CustomUtility.deepCopy(board);
         allPossibleSets = AllSetGenerator.generateAllSets();
         this.resultingBoards = new ArrayList<>();
-        this.resultingRacks = new ArrayList<>();
         this.startingBoard = CustomUtility.decompose(boardForActionSpace);
         this.startingRack = new ArrayList<>(rack);
         this.possibleSets = CustomUtility.possibleSets(this.startingRack,this.startingBoard, this.allPossibleSets);
         //probably put this somewhere else
-        this.availableTilesStart = new ArrayList<Integer>();
+        this.availableTilesStart = new ArrayList<>();
         for(Integer tile: startingRack){
             this.availableTilesStart.add(tile);
         }
         for(Integer tile: startingBoard){
             this.availableTilesStart.add(tile);
         }
-        createAllMoves(new ArrayList<>(), this.startingRack, 0);
+        createAllMoves(new ArrayList<>(), this.availableTilesStart, 0);
     }
 
     public void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles, int lastCheckedSet){
