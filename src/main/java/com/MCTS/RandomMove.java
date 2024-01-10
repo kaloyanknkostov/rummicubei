@@ -94,7 +94,7 @@ public class RandomMove {
             ArrayList<ArrayList<Integer>> currentBoardCopy = CustomUtility.deepCopy(currentBoard);
             currentBoardCopy.add(this.possibleSets.get(i));
             ArrayList<Integer> currentAvailableTiles = new ArrayList<>(availableTiles);
-            CustomUtility.customRemove(currentAvailableTiles, this.possibleSets.get(i));
+            currentAvailableTiles.removeAll(possibleSets.get(i));
 
             // Remove tiles in the set in our rack and available tiles list
             //now check if the board is valid

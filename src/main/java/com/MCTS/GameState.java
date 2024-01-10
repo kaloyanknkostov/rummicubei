@@ -36,7 +36,7 @@ public class GameState {
     // if output is 1 someone won the game
     // if output is 2 the game ended in a draw
     public int updateGameState(ArrayList<ArrayList<Integer>> newBoard, int playerIndex){
-        CustomUtility.customRemove(this.racks[playerIndex], CustomUtility.getDifference(newBoard, this.board));
+        this.racks[playerIndex].removeAll(CustomUtility.getDifference(newBoard, this.board));
         //check if the player whos move it was now has an empty rack
         if(racks[playerIndex].isEmpty()){
             this.winner = playerIndex;
