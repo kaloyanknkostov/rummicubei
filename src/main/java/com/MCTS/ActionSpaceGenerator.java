@@ -14,15 +14,32 @@ public class ActionSpaceGenerator {
     private ArrayList<Integer> startingRack;
     private ArrayList<ArrayList<Integer>> allPossibleSets;
     private ArrayList<ArrayList<Integer>> possibleSets;
-    private  ArrayList<Integer> availableTilesStart;
+    private ArrayList<Integer> availableTilesStart;
 
     public static void main(String[] args) {
         ArrayList<ArrayList<Integer>> board = new ArrayList<>();
-        board.add(new ArrayList<>(Arrays.asList(1,2,3)));
-        board.add(new ArrayList<>(Arrays.asList(7,8,9)));
-        ArrayList<Integer> rack = new ArrayList<>(Arrays.asList(14,15,16));
+        ArrayList<Integer> rack = new ArrayList<>();
+        
+        // Populate the rack with integers from 1 to 34
+        for (Integer i = 1; i < 36; i++) {
+            rack.add(i);
+        }
+
+        // Measure the start time
+        long startTime = System.currentTimeMillis();
+
+        // Create the ActionSpaceGenerator
         ActionSpaceGenerator myGenerator = new ActionSpaceGenerator(board, rack);
-        System.out.println(myGenerator.getResultingBoards());
+
+        // Measure the end time
+        long endTime = System.currentTimeMillis();
+
+        // Calculate and print the elapsed time
+        long elapsedTime = endTime - startTime;
+        System.out.println("Time taken: " + elapsedTime + " milliseconds");
+
+        // Print the resulting boards (empty in this example)
+        //System.out.println(myGenerator.getResultingBoards());
     }
 
     public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
