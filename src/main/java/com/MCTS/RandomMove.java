@@ -20,13 +20,31 @@ public class RandomMove {
     private boolean hasFinished;
 
     //TODO randomMove doesn't handel not being able to play yet
+/* 
+    public static void main(String[] args) {
+        // Example usage for testing
+        ArrayList<ArrayList<Integer>> initialBoard = new ArrayList<>();
+        initialBoard.add(new ArrayList<>(Arrays.asList(1, 2, 3)));
+        initialBoard.add(new ArrayList<>(Arrays.asList(4, 5, 6)));
+        initialBoard.add(new ArrayList<>(Arrays.asList(7, 8, 9)));
 
+        ArrayList<Integer> initialRack = new ArrayList<>(Arrays.asList(10, 11, 12,13,14,15,16,17,18,19,20,21,22,23,24,25,26));
+
+        RandomMove randomMove = new RandomMove(initialBoard, initialRack);
+
+        // Display the resulting random move
+        System.out.println("Random Move:");
+        ArrayList<ArrayList<Integer>> move = randomMove.getRandomMove();
+        for (ArrayList<Integer> set : move) {
+            System.out.println(set);
+        }
+    }*/
     public RandomMove(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
         ArrayList<ArrayList<Integer>> boardForRandomMove = CustomUtility.deepCopy(board);
         // System.out.println("IN Action");
         //get all possible sets
         //Here we are getting all the sets
-        allPossibleSets = AllSetGenerator.generateAllSets();
+        this.allPossibleSets = AllSetGenerator.generateAllSets();
         this.hasFinished = false;
         this.rand = new Random();
         this.resultingBoards = new ArrayList<>();
@@ -61,6 +79,7 @@ public class RandomMove {
             int x = this.resultingBoards.size();
             //include the prob of not playing anything at all
             int y = this.rand.nextInt(x); //because of zero based indexing
+            System.out.println("Rand number: "+y);
             this.randomMove = CustomUtility.deepCopy(this.resultingBoards.get(y));
             if(CustomUtility.decompose(this.resultingBoards.get(y)).equals(CustomUtility.decompose(this.startingBoard)) && this.resultingBoards.size() == 1){
                 //meaning the only possible move was not doing anything
@@ -72,14 +91,19 @@ public class RandomMove {
 
     private void createRandomPlayouts(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles, int lastCheckedSet){
         // if all sets have been checked return
-        if(lastCheckedSet == this.possibleSets.size() || CustomUtility.validBoard(currentBoard, CustomUtility.decompose(this.startingBoard))){
+        if(lastCheckedSet == this.possibleSets.size()-1 && CustomUtility.validBoard(currentBoard, CustomUtility.decompose(this.startingBoard))){
             this.hasFinished = true;
-            return;
+            System.out.println("reached leaf node and valid board throwing exception");
+            throw new StopRecursionException();
             
         }
-        if(lastCheckedSet == this.possibleSets.size()){
+        
+        if(lastCheckedSet == this.possibleSets.size()-1){
+            //System.out.println(currentBoard);
+            //System.out.println("Reached leaf node second case");
             return;
         }
+        
         for(int i = lastCheckedSet ; i < this.possibleSets.size();i++){
             if(this.hasFinished){
                 return;
@@ -94,15 +118,24 @@ public class RandomMove {
             ArrayList<ArrayList<Integer>> currentBoardCopy = CustomUtility.deepCopy(currentBoard);
             currentBoardCopy.add(this.possibleSets.get(i));
             ArrayList<Integer> currentAvailableTiles = new ArrayList<>(availableTiles);
+            //System.out.println("Added Set:" + this.possibleSets.get(i));
             currentAvailableTiles.removeAll(possibleSets.get(i));
+
 
             // Remove tiles in the set in our rack and available tiles list
             //now check if the board is valid
             if(CustomUtility.validBoard(currentBoardCopy, CustomUtility.decompose(this.startingBoard))){
                 // Add board and racks to the results as board is valid
                 this.resultingBoards.add(currentBoardCopy);
+                
             }
-            createRandomPlayouts(currentBoardCopy, currentAvailableTiles,i);
+            try {
+                createRandomPlayouts(currentBoardCopy, currentAvailableTiles, i);
+            }catch(StopRecursionException e){
+                System.out.println("caught excpetion stopping recursion");
+                return;
+            }
         }
     }
+    
 }
