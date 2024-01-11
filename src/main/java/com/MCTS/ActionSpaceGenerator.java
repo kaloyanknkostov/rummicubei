@@ -2,6 +2,8 @@ package com.MCTS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import javafx.css.SimpleStyleableDoubleProperty;
 
@@ -13,44 +15,26 @@ public class ActionSpaceGenerator {
     private ArrayList<Integer> startingBoard;
     private ArrayList<Integer> startingRack;
     private ArrayList<ArrayList<Integer>> allPossibleSets;
+    private HashMap<ArrayList<Integer>,HashSet<Integer>> conflicts;
     private ArrayList<ArrayList<Integer>> possibleSets;
+    private HashMap<ArrayList<Integer>,HashSet<Integer>> possibleConflicts;
     private ArrayList<Integer> availableTilesStart;
 
-    public static void main(String[] args) {
-        ArrayList<ArrayList<Integer>> board = new ArrayList<>();
-        ArrayList<Integer> rack = new ArrayList<>();
-        
-        // Populate the rack with integers from 1 to 34
-        for (Integer i = 1; i < 36; i++) {
-            rack.add(i);
-        }
-
-        // Measure the start time
-        long startTime = System.currentTimeMillis();
-
-        // Create the ActionSpaceGenerator
-        ActionSpaceGenerator myGenerator = new ActionSpaceGenerator(board, rack);
-
-        // Measure the end time
-        long endTime = System.currentTimeMillis();
-
-        // Calculate and print the elapsed time
-        long elapsedTime = endTime - startTime;
-        System.out.println("Time taken: " + elapsedTime + " milliseconds");
-
-        // Print the resulting boards (empty in this example)
-        //System.out.println(myGenerator.getResultingBoards());
-    }
-
     public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
-        // System.out.println("IN Action");
         ArrayList<ArrayList<Integer>> boardForActionSpace = CustomUtility.deepCopy(board);
-        allPossibleSets = AllSetGenerator.generateAllSets();
+        this.allPossibleSets = AllSetGenerator.generateAllSets();
+        this.conflicts = ConflictingSets.getAllConflicts();
+        this.possibleConflicts = new HashMap<>();
         this.resultingBoards = new ArrayList<>();
         this.startingBoard = CustomUtility.decompose(boardForActionSpace);
         this.startingRack = new ArrayList<>(rack);
         this.possibleSets = CustomUtility.possibleSets(this.startingRack,this.startingBoard, this.allPossibleSets);
-        //probably put this somewhere else
+        for(ArrayList<Integer> set: this.possibleSets){
+            if(conflicts.containsKey(set)){
+                this.possibleConflicts.put(set, conflicts.get(set));
+            }
+        }
+        //now this.possibleConflicts contains only the conflicts for possiblesets
         this.availableTilesStart = new ArrayList<>();
         for(Integer tile: startingRack){
             this.availableTilesStart.add(tile);
@@ -58,39 +42,10 @@ public class ActionSpaceGenerator {
         for(Integer tile: startingBoard){
             this.availableTilesStart.add(tile);
         }
-        createAllMoves(new ArrayList<>(), this.availableTilesStart, 0);
     }
 
-    public void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles, int lastCheckedSet){
-        // if all sets have been checked return
-        if(lastCheckedSet == this.possibleSets.size()){
-            return;
-        }
-        for(int i = lastCheckedSet ; i < this.possibleSets.size(); i++){
-            // If cannot create set with tiles go to next one
-            if(!CustomUtility.canCreateSet(availableTiles, possibleSets.get(i))){
-                continue;
-            }
-            // Create copy of board so changes in this iteration of the loop are unique to the next iteration
-            // Pass this copy as a reference in the recursion
-            ArrayList<ArrayList<Integer>> currentBoardCopy = CustomUtility.deepCopy(currentBoard);
-            currentBoardCopy.add(this.possibleSets.get(i));
-            ArrayList<Integer> currentAvailableTiles = new ArrayList<>(availableTiles);
-            currentAvailableTiles.removeAll(this.possibleSets.get(i));
-
-            // Remove tiles in the set in our rack and available tiles list
-            //now check if the board is valid
-            if(CustomUtility.validBoard(currentBoardCopy,this.startingBoard)){
-                // Add board and racks to the results as board is valid
-                resultingBoards.add(currentBoardCopy);
-            }
-            createAllMoves(currentBoardCopy, currentAvailableTiles, i+1);
-            //this can be i+1 since there is only 1 instance we can never check the same board twice
-            //TODO, THE MOVING EVERYTHING TO SETS IS DONE, NOW CHECK HOW TO RECALCULATE POSSIBLESETS AT EVERY TURN!!!!!!!
-        }
-    }
-    public ArrayList<ArrayList<Integer>> getPossibleSets(){
-        return this.possibleSets;
+    private void createAllMoves(){
+        
     }
 
     public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
