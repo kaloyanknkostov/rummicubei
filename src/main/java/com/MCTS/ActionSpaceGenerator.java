@@ -15,9 +15,9 @@ public class ActionSpaceGenerator {
     private ArrayList<Integer> startingBoard;
     private ArrayList<Integer> startingRack;
     private ArrayList<ArrayList<Integer>> allPossibleSets;
-    private HashMap<ArrayList<Integer>,HashSet<Integer>> conflicts;
+    private HashMap<ArrayList<Integer>,HashSet<ArrayList>> conflicts;
     private ArrayList<ArrayList<Integer>> possibleSets;
-    private HashMap<ArrayList<Integer>,HashSet<Integer>> possibleConflicts;
+    private HashMap<ArrayList<Integer>,HashSet<ArrayList>> possibleConflicts;
     private ArrayList<Integer> availableTilesStart;
 
     public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
@@ -30,7 +30,7 @@ public class ActionSpaceGenerator {
         this.startingRack = new ArrayList<>(rack);
         this.possibleSets = CustomUtility.possibleSets(this.startingRack,this.startingBoard, this.allPossibleSets);
         for(ArrayList<Integer> set: this.possibleSets){
-            if(conflicts.containsKey(set)){
+            if(conflicts.containsValue(set)){
                 this.possibleConflicts.put(set, conflicts.get(set));
             }
         }
