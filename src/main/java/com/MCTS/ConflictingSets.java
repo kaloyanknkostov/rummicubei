@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+//to acces this class class write ConflictingSets.getInstance().getAllConflicts();
+
 public class ConflictingSets {
     private static ConflictingSets instance;
     private static HashMap<ArrayList<Integer>,HashSet<ArrayList>> conflictingSets;
@@ -21,8 +23,7 @@ public class ConflictingSets {
         generateAllConflicts();
     }
     
-    public static HashMap<ArrayList<Integer>,HashSet<ArrayList>> getAllConflicts() {
-        System.out.println(conflictingSets.size());
+    public HashMap<ArrayList<Integer>,HashSet<ArrayList>> getAllConflicts() {
         return conflictingSets;
     }
 
