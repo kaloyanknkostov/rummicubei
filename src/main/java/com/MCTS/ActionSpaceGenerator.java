@@ -22,10 +22,6 @@ public class ActionSpaceGenerator {
         ArrayList<ArrayList<Integer>> boardForActionSpace = CustomUtility.deepCopy(board);
         this.allPossibleSets = AllSetGenerator.getInstance().getAllSets();
         this.conflicts = ConflictingSets.getInstance().getAllConflicts();
-        System.out.println("got all conflicts");
-        for(ArrayList<Integer> set: allPossibleSets){
-            System.out.println(conflicts.get(set));
-        }
         this.resultingBoards = new ArrayList<>();
         this.startingBoard = CustomUtility.decompose(boardForActionSpace);
         this.startingRack = new ArrayList<>(rack);
@@ -70,11 +66,12 @@ public class ActionSpaceGenerator {
         if(setsNoConflicts.isEmpty()){
             return;
         }
-        for(ArrayList<Integer> rummukubSet: setsNoConflicts){
+        System.out.println(setsNoConflicts);
+        for(ArrayList<Integer> rummikubSet: setsNoConflicts){
             ArrayList<ArrayList<Integer>> newBoard = CustomUtility.deepCopy(currentBoard);
             ArrayList<ArrayList<Integer>> newConflicts = CustomUtility.deepCopy(setsNoConflicts);
-            newBoard.add(rummukubSet);
-            newConflicts.removeAll(this.conflicts.get(rummukubSet));
+            newBoard.add(rummikubSet);
+            CustomUtility.removeConflicts(setsNoConflicts, this.conflicts.get(rummikubSet));
             //if(!forwardCheck(newBoard, newConflicts)){
             //    return;
             //}
@@ -116,6 +113,4 @@ public class ActionSpaceGenerator {
         }
         return result;
     }
-
-
 }
