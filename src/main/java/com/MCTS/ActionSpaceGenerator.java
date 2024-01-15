@@ -39,11 +39,14 @@ public class ActionSpaceGenerator {
 
     public static void main(String[] args) {
         // Example board and rack for testing
-        ArrayList<ArrayList<Integer>> exampleBoard = new ArrayList<>();
-        exampleBoard.add(new ArrayList<>(Arrays.asList(1,2,3)));
+        ArrayList<ArrayList<Integer>> exampleBoard = new ArrayList<>(new ArrayList(Arrays.asList(1,2,3,4,5)));
+
         // Populate exampleBoard with your data
 
-        ArrayList<Integer> exampleRack = new ArrayList<>(Arrays.asList(6,4,7));
+        ArrayList<Integer> exampleRack = new ArrayList<>();
+        for(Integer i = 8; i < 16; i ++){
+            exampleRack.add(i);
+        }
         // Populate exampleRack with your data
         // Create an instance of ActionSpaceGenerator
         ActionSpaceGenerator actionSpaceGenerator = new ActionSpaceGenerator(exampleBoard, exampleRack);
