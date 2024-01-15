@@ -70,9 +70,9 @@ public class ActionSpaceGenerator {
             ArrayList<ArrayList<Integer>> newConflicts = CustomUtility.deepCopy(setsNoConflicts);
             newBoard.add(rummikubSet);
             newConflicts.removeIf(this.conflicts.get(rummikubSet)::contains);
-            //if(!forwardCheck(newBoard, newConflicts)){
-            //    return;
-            //}
+            if(!forwardCheck(newBoard, newConflicts)){
+                continue;
+            }
             if(CustomUtility.validBoard(newBoard, this.startingBoard)){
                 this.resultingBoards.add(newBoard);
             }
@@ -110,5 +110,27 @@ public class ActionSpaceGenerator {
             }
         }
         return result;
+    }
+
+    /**
+    * Performs forward checking to determine if the placement of pieces on the new board
+    * is consistent with the constraints represented by the new conflicts.
+    *
+    * @param newBoard     The new board configuration containing placements of pieces.
+    * @param newConflicts Represents the tiles which are still able to be added
+    * @return True if the placement is consistent and does not violate any constraints,
+    *         false otherwise.
+    */
+    public boolean forwardCheck(ArrayList<ArrayList<Integer>> newBoard,ArrayList<ArrayList<Integer>> newConflicts){
+        ArrayList<Integer> allPieces =new ArrayList<>();
+        for (ArrayList<Integer> set:newBoard){
+            allPieces.addAll(set);
+        }
+        for (ArrayList<Integer> set:newConflicts){
+            allPieces.addAll(set);
+        }
+        ArrayList<Integer> copy=new ArrayList<>(this.startingBoard);
+        copy.removeAll(allPieces);
+        return copy.isEmpty();
     }
 }
