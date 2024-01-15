@@ -44,11 +44,11 @@ public class ActionSpaceGenerator {
         ArrayList<ArrayList<Integer>> exampleBoard = new ArrayList<>();
         exampleBoard.add(new ArrayList<>(Arrays.asList(1,2,3)));
         // Populate exampleBoard with your data
-        
+
         ArrayList<Integer> exampleRack = new ArrayList<>();
         exampleBoard.add(new ArrayList<>(Arrays.asList(5,6,4,7)));
         // Populate exampleRack with your data
-        
+
         // Create an instance of ActionSpaceGenerator
         ActionSpaceGenerator actionSpaceGenerator = new ActionSpaceGenerator(exampleBoard, exampleRack);
 
@@ -62,7 +62,7 @@ public class ActionSpaceGenerator {
                 System.out.println("\t" + set);
             }
             System.out.println("--------");
-        }        
+        }
     }
 
     private void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard ,ArrayList<ArrayList<Integer>> setsNoConflicts){
@@ -86,5 +86,33 @@ public class ActionSpaceGenerator {
 
     public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
         return resultingBoards;
+    }
+
+    private ArrayList<ArrayList<Integer>> sortPossibleSets(ArrayList<ArrayList<Integer>> possibleSets, ArrayList<Integer> board) {
+        // First checks how many tiles from the possible sets are already on the board, then creates a ArrayList that
+        // Maps the index in possibleSet to the amount of tiles that it has on the board.
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        HashMap<Integer, Stack<Integer>> amountOfTilesMap = new HashMap<>(); // Maps K: amount of the tiles on the board - > V: set index
+        for (int setIndex = 0; setIndex < possibleSets.size(); setIndex++) { // Check each set
+            ArrayList<Integer> currentSet = possibleSets.get(setIndex);
+            int tilesOnTheBoard = 0;
+            for (int tileIndex = 0; tileIndex < currentSet.size(); tileIndex++) { // Check each tile in each set
+                int currentTile = currentSet.get(tileIndex);
+                if (board.contains(currentTile)) { // Check if the tile is on the board
+                    tilesOnTheBoard += 1;
+                }
+            }
+            amountOfTilesMap.get(tilesOnTheBoard).push(setIndex); // Map K: amount of the tiles on the board - > V: set
+        }
+        List<Integer> keysList = new ArrayList<>(amountOfTilesMap.keySet()); // convert the keys of the dict to a list
+
+        for (int i = keysList.size() - 1; i >= 0; i--) { // Get each entry in the map in reversed order
+            int key = keysList.get(i);
+            Stack<Integer> currentDictEntry = amountOfTilesMap.get(key);
+            while (!currentDictEntry.isEmpty()) { // For each entry add it to the result
+                result.add(possibleSets.get(currentDictEntry.pop()) );
+            }
+        }
+        return result;
     }
 }
