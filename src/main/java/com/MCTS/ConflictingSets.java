@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class ConflictingSets {
     private static ConflictingSets instance;
-    private static HashMap<ArrayList<Integer>,HashSet<ArrayList>> conflictingSets;
+    private static HashMap<ArrayList<Integer>,HashSet<ArrayList<Integer>>> conflictingSets;
 
     public static ConflictingSets getInstance() {
         if (instance == null) {
@@ -22,17 +22,17 @@ public class ConflictingSets {
         conflictingSets = generateAllConflicts();
     }
     
-    public HashMap<ArrayList<Integer>,HashSet<ArrayList>> getAllConflicts() {
+    public HashMap<ArrayList<Integer>,HashSet<ArrayList<Integer>>> getAllConflicts() {
         return conflictingSets;
     }
 
-    private HashMap<ArrayList<Integer>,HashSet<ArrayList>> generateAllConflicts(){
+    private HashMap<ArrayList<Integer>,HashSet<ArrayList<Integer>>> generateAllConflicts(){
         ArrayList<ArrayList<Integer>> allPossibleSets = AllSetGenerator.getInstance().getAllSets();
         for(int i  = 0; i < allPossibleSets.size(); i++){
-            conflictingSets.put(allPossibleSets.get(i), new HashSet<>());
+            conflictingSets.put(allPossibleSets.get(i), new HashSet<ArrayList<Integer>>());
             for(int j = 0; j < allPossibleSets.size(); j ++){
-                if(hasCommonTile(allPossibleSets.get(i), allPossibleSets.get(j))){
-                    conflictingSets.get(allPossibleSets.get(i)).add(allPossibleSets.get(j));
+                if(i != j && hasCommonTile(allPossibleSets.get(i), allPossibleSets.get(j))){
+                    conflictingSets.get(allPossibleSets.get(i).add(allPossibleSets.get(j)));
                 }
             }
         }
