@@ -26,7 +26,7 @@ public class ConflictingSets {
         return conflictingSets;
     }
 
-    private HashMap<ArrayList<Integer>,HashSet<ArrayList>> generateAllConflicts(){
+    public HashMap<ArrayList<Integer>,HashSet<ArrayList>> generateAllConflicts(){
         ArrayList<ArrayList<Integer>> allPossibleSets = AllSetGenerator.getInstance().getAllSets();
         for(int i  = 0; i < allPossibleSets.size(); i++){
             conflictingSets.put(allPossibleSets.get(i), new HashSet<>());
