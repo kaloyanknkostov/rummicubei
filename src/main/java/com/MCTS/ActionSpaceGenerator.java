@@ -45,7 +45,7 @@ public class ActionSpaceGenerator {
         // Populate exampleBoard with your data
 
         ArrayList<Integer> exampleRack = new ArrayList<>();
-        exampleBoard.add(new ArrayList<>(Arrays.asList(5,6,4,7)));
+        exampleBoard.add(new ArrayList<>(Arrays.asList(6,4,7)));
         // Populate exampleRack with your data
         // Create an instance of ActionSpaceGenerator
         ActionSpaceGenerator actionSpaceGenerator = new ActionSpaceGenerator(exampleBoard, exampleRack);
@@ -86,7 +86,7 @@ public class ActionSpaceGenerator {
         return resultingBoards;
     }
 
-    public ArrayList<ArrayList<Integer>> sortPossibleSets(ArrayList<ArrayList<Integer>> possibleSets, ArrayList<Integer> board) {
+    private ArrayList<ArrayList<Integer>> sortPossibleSets(ArrayList<ArrayList<Integer>> possibleSets, ArrayList<Integer> board) {
         // First checks how many tiles from the possible sets are already on the board, then creates a ArrayList that
         // Maps the index in possibleSet to the amount of tiles that it has on the board.
         ArrayList<ArrayList<Integer>> result = new ArrayList<>();
@@ -114,11 +114,5 @@ public class ActionSpaceGenerator {
         return result;
     }
 
-    public ArrayList<ArrayList<Integer>> getPossibleSets() {
-        return possibleSets;
-    }
 
-    public ArrayList<ArrayList<Integer>> getAllPossibleSets() {
-        return allPossibleSets;
-    }
 }

@@ -32,7 +32,7 @@ public class ConflictingSets {
             conflictingSets.put(allPossibleSets.get(i), new HashSet<ArrayList<Integer>>());
             for(int j = 0; j < allPossibleSets.size(); j ++){
                 if(i != j && hasCommonTile(allPossibleSets.get(i), allPossibleSets.get(j))){
-                    conflictingSets.get(allPossibleSets.get(i).add(allPossibleSets.get(j)));
+                    conflictingSets.get(allPossibleSets.get(i)).add(allPossibleSets.get(j));
                 }
             }
         }
