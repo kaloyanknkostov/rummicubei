@@ -19,8 +19,7 @@ public class ConflictingSets {
     }
 
     private ConflictingSets() {
-        conflictingSets = new HashMap<>();
-        generateAllConflicts();
+        conflictingSets = generateAllConflicts();
     }
     
     public HashMap<ArrayList<Integer>,HashSet<ArrayList>> getAllConflicts() {

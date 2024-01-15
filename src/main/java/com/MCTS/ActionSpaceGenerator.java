@@ -15,16 +15,14 @@ public class ActionSpaceGenerator {
     private HashMap<ArrayList<Integer>,HashSet<ArrayList>> conflicts;
     private ArrayList<ArrayList<Integer>> possibleSets;
     private ArrayList<Integer> availableTilesStart;
-    private AllSetGenerator allSetGenerator;
-    private ConflictingSets conflictingSets;
+
 
 
     public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
         ArrayList<ArrayList<Integer>> boardForActionSpace = CustomUtility.deepCopy(board);
-        this.allSetGenerator = AllSetGenerator.getInstance();
-        this.conflictingSets = ConflictingSets.getInstance();
-        this.allPossibleSets = allSetGenerator.getAllSets();
-        this.conflicts = conflictingSets.getAllConflicts();
+        this.allPossibleSets = AllSetGenerator.getInstance().getAllSets();
+        System.out.println(this.allPossibleSets);
+        this.conflicts = ConflictingSets.getInstance().getAllConflicts();
         this.resultingBoards = new ArrayList<>();
         this.startingBoard = CustomUtility.decompose(boardForActionSpace);
         this.startingRack = new ArrayList<>(rack);
@@ -54,7 +52,7 @@ public class ActionSpaceGenerator {
 
         // Get the resulting boards
         ArrayList<ArrayList<ArrayList<Integer>>> resultingBoards = actionSpaceGenerator.getResultingBoards();
-
+        System.out.println("resulted in: " + resultingBoards.size() + " boards");
         // Print the resulting boards for testing purposes
         for (ArrayList<ArrayList<Integer>> board : resultingBoards) {
             System.out.println("Board:");
