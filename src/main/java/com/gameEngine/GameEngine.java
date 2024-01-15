@@ -57,9 +57,8 @@ public class GameEngine {
         StartScreensApplication.activeController.playerTurn();
         gameModel.setCurrentBoard(board);
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
-        currentDraw = getThisDrawnTile();
-
-        // Game Loop starting
+        currentDraw = getThisDrawnTile(); 
+        
         while (!isGameEnding()) {
             if(!logged){
                 logCurrentGameState();
@@ -74,96 +73,50 @@ public class GameEngine {
 
             if (gameModel.isNextTurn() || getCurrentPlayer() instanceof ComputerPlayer) {
                 gameModel.setNextTurn(false);
-                Board copyBoard= board;
                 ArrayList<Tile> copy = new ArrayList<>(getCurrentPlayer().getDeckOfTiles());
-                Board incomingBoard;
-                if(getCurrentPlayer() instanceof HumanPlayer) {
-                    incomingBoard = createBoardFromTiles(transformImagesToTiles());
-                }
-                else {
-                    System.out.println("Computer is playing");
-                    // Get length of other players decks:
-                    ArrayList<Integer> deck_lengths = new ArrayList<Integer>();
-                    for (Player player : listOfPlayers) {
-                        // Check if the current object is not the one to be excluded
-                        if (!player.equals(getCurrentPlayer())) {
-                            // Add the object to the result list
-                            deck_lengths.add(player.getDeckOfTiles().size());
-                        }
-                    }
-                    getCurrentPlayer().setDeckLengths(deck_lengths);
-                    incomingBoard = getCurrentPlayer().getNewBoard(board);
-                }
+                Board incomingBoard = getIncomingBoard(); // first we need to get the incoming board which depens on whetehr we have a human or computer player so I moved that to a method 
 
-                if (incomingBoard.checkBoardValidity()) {
+                
+                if(sameBoardCheck(incomingBoard, copy)){ // first we check if the board is the same board as the one we started with, when that is the case we can insatntly handle the dame turn with ease. 
+                    board = incomingBoard;
+                    gameTurn();
+                } else if (incomingBoard.checkBoardValidity()) { // if it is not the exact same we check validity of the board 
 
-                    if (getCurrentPlayer().getIsOut()) {
-                        if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
-                            getCurrentPlayer().setDeckOfTiles(copy);
-                            getCurrentPlayer().getDeckOfTiles().add(currentDraw);
-                            System.out.println(currentDraw.getPicture());
-                            getThisDrawnTile();
-                        }
+                    if (getCurrentPlayer().getIsOut()) { // if the player is out and the new board is valid then this would be a valid turn 
+                        sameBoardCheck(incomingBoard, copy); 
                         board = incomingBoard;
                         System.out.println("VALID BOARD");
                         gameTurn();
                     }
                     else {
-                        int valueOfTurn = getValueOfTurn(incomingBoard);
-                        boolean gotOut = true;
-                        for (Set set : board.getSetList()) {
-                            boolean contained=false;
-                            for (Set newSet : incomingBoard.getSetList()) {
-                                if (set.equals(newSet)) {
-                                    contained = true;
-                                    break;
-                                }
-                            }
-                            if(!contained){
-                                gotOut = false;
-                                //StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
-                                System.out.println("You can't the tiles in the board!");
-                                break;
-                            }
-
-                        }
-
-                        if (valueOfTurn >= 30 && gotOut) {
-                            getCurrentPlayer().setIsOut(true);
+                        int valueOfTurn = getValueOfTurn(incomingBoard); // if they arent out yet we need to determine two things, one of which is the numerical value
+                        boolean gotOut = checkOut(incomingBoard); // changed the method so its outside the main game loop and we call it here so we know whther they follow the rules for going out
+            
+                        if (valueOfTurn >= 30 && gotOut) { // if the value of the turn is more than 30 than this is a valid move 
+                            getCurrentPlayer().setIsOut(true); // we update the plyaer so that they havve player the thirty rule now
                             board = incomingBoard;
                             System.out.println("VALID BOARD");
                             gameTurn();
                         } else {
-                            if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
-                                getCurrentPlayer().setDeckOfTiles(copy);
-                                getCurrentPlayer().getDeckOfTiles().add(currentDraw);
-                                System.out.println(currentDraw.getPicture());
-                                getThisDrawnTile();
-                                System.out.println("VALID BOARD");
-                                gameTurn();
-                            } else {
-
-                                if(getCurrentPlayer() instanceof ComputerPlayer) {
+                                if(getCurrentPlayer() instanceof ComputerPlayer) {  // if the computer cant play more than 30 points than we give it back its originl deck plus the drawn tile 
                                     getCurrentPlayer().setDeckOfTiles(copy);
                                     getCurrentPlayer().getDeckOfTiles().add(currentDraw);
                                     System.out.println(currentDraw.getPicture());
                                     getThisDrawnTile();
                                     gameTurn();
                                 }
-
-                                else {
-                                    System.out.println("Get more then 30");
+                                else { // for human player we just tell them they dont have 30 points 
+                                    System.out.println("Get more then 30"); 
                                     StartScreensApplication.getInstance().setMessageLabel("1", "You need to get more then 30 points!");
                                 }
-                            }
-                        }
+                        } }
                     }
-                } else {
+                   else {                        
                     getCurrentPlayer().setDeckOfTiles(copy);
                     StartScreensApplication.getInstance().setMessageLabel("1", "Not a valid board");
                     System.out.println("NOT VALID");
                 }
-            } else {
+            }   else {
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
@@ -171,7 +124,44 @@ public class GameEngine {
                 }
             }
         }
-        System.out.println("GAME FINISHED");
+        
+        System.out.println("GAME FINISHED"); 
+    }
+    
+    
+
+    private boolean sameBoardCheck(Board incomingBoard, ArrayList<Tile> copy){ // checks if the board is the same returns true if it is and already draws tile
+        boolean same = false; 
+        if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
+                            getCurrentPlayer().setDeckOfTiles(copy);
+                            getCurrentPlayer().getDeckOfTiles().add(currentDraw);
+                            System.out.println(currentDraw.getPicture());
+                            getThisDrawnTile();
+                            same = true; 
+                        }
+        return same; 
+        
+    }
+
+    private boolean checkOut(Board incomingBoard){
+        boolean gotOut = true; 
+         for (Set set : board.getSetList()) {
+                boolean contained=false;
+                for (Set newSet : incomingBoard.getSetList()) {
+                    if (set.equals(newSet)) {
+                        contained = true;
+                        break;
+                    }
+                }
+                if(!contained){
+                    gotOut = false;
+                    //StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
+                    System.out.println("You can't the tiles in the board!");
+                    break;
+                }
+
+             }
+            return gotOut; 
     }
 
     private int getValueOfTurn(Board incomingBoard) {
@@ -195,6 +185,33 @@ public class GameEngine {
         currentDraw = draw;
         System.out.println(draw.getPicture());
         return draw;
+    }
+    private void setLengthOtherDecks(){
+         
+                    ArrayList<Integer> deck_lengths = new ArrayList<Integer>();
+                    for (Player player : listOfPlayers) {
+                        // Check if the current object is not the one to be excluded
+                        if (!player.equals(getCurrentPlayer())) {
+                            // Add the object to the result list
+                            deck_lengths.add(player.getDeckOfTiles().size());
+                        }
+                    }
+                    getCurrentPlayer().setDeckLengths(deck_lengths);
+                    
+    
+            }
+    
+    private Board getIncomingBoard(){
+        Board incomingBoard; // first we need to get the incoming board which depens on whetehr we have a human or computer player 
+                if(getCurrentPlayer() instanceof HumanPlayer) {
+                    incomingBoard = createBoardFromTiles(transformImagesToTiles()); // if human we transform it from tiles 
+                }
+                else {
+                    System.out.println("Computer is playing");
+                    setLengthOtherDecks(); // Get length of other players decks:
+                    incomingBoard = getCurrentPlayer().getNewBoard(board);
+                }
+        return incomingBoard; 
     }
 
     private void gameTurn() {
