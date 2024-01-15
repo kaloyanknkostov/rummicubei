@@ -51,7 +51,7 @@ public class RandomMove {
         // System.out.println("IN Action");
         //get all possible sets
         //Here we are getting all the sets
-        this.allPossibleSets = AllSetGenerator.generateAllSets();
+        this.allPossibleSets = AllSetGenerator.getInstance().getAllSets();
         this.hasFinished = false;
         this.rand = new Random(40);
         rand.nextInt(10);
