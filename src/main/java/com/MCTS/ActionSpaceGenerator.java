@@ -24,16 +24,10 @@ public class ActionSpaceGenerator {
         ArrayList<ArrayList<Integer>> boardForActionSpace = CustomUtility.deepCopy(board);
         this.allPossibleSets = AllSetGenerator.generateAllSets();
         this.conflicts = ConflictingSets.getAllConflicts();
-        this.possibleConflicts = new HashMap<>();
         this.resultingBoards = new ArrayList<>();
         this.startingBoard = CustomUtility.decompose(boardForActionSpace);
         this.startingRack = new ArrayList<>(rack);
         this.possibleSets = CustomUtility.possibleSets(this.startingRack,this.startingBoard, this.allPossibleSets);
-        for(ArrayList<Integer> set: this.possibleSets){
-            if(conflicts.containsValue(set)){
-                this.possibleConflicts.put(set, conflicts.get(set));
-            }
-        }
         //now this.possibleConflicts contains only the conflicts for possiblesets
         this.availableTilesStart = new ArrayList<>();
         for(Integer tile: startingRack){
@@ -42,14 +36,55 @@ public class ActionSpaceGenerator {
         for(Integer tile: startingBoard){
             this.availableTilesStart.add(tile);
         }
+        createAllMoves(new ArrayList<>(), this.possibleSets);
     }
 
-    private void createAllMoves(){
+    public static void main(String[] args) {
+        // Example board and rack for testing
+        ArrayList<ArrayList<Integer>> exampleBoard = new ArrayList<>();
+        exampleBoard.add(new ArrayList<>(Arrays.asList(1,2,3)));
+        // Populate exampleBoard with your data
         
+        ArrayList<Integer> exampleRack = new ArrayList<>();
+        exampleBoard.add(new ArrayList<>(Arrays.asList(5,6,4,7)));
+        // Populate exampleRack with your data
+        
+        // Create an instance of ActionSpaceGenerator
+        ActionSpaceGenerator actionSpaceGenerator = new ActionSpaceGenerator(exampleBoard, exampleRack);
+
+        // Get the resulting boards
+        ArrayList<ArrayList<ArrayList<Integer>>> resultingBoards = actionSpaceGenerator.getResultingBoards();
+
+        // Print the resulting boards for testing purposes
+        for (ArrayList<ArrayList<Integer>> board : resultingBoards) {
+            System.out.println("Board:");
+            for (ArrayList<Integer> set : board) {
+                System.out.println("\t" + set);
+            }
+            System.out.println("--------");
+        }        
+    }
+
+    private void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard ,ArrayList<ArrayList<Integer>> setsNoConflicts){
+        if(setsNoConflicts.isEmpty()){
+            return;
+        }
+        for(ArrayList<Integer> rummukubSet: setsNoConflicts){
+            ArrayList<ArrayList<Integer>> newBoard = CustomUtility.deepCopy(currentBoard);
+            ArrayList<ArrayList<Integer>> newConflicts = CustomUtility.deepCopy(setsNoConflicts);
+            newBoard.add(rummukubSet);
+            newConflicts.removeAll(this.conflicts.get(rummukubSet));
+            //if(!forwardCheck(newBoard, newConflicts)){
+            //    return;
+            //}
+            if(CustomUtility.validBoard(newBoard, this.startingBoard)){
+                this.resultingBoards.add(newBoard);
+            }
+            createAllMoves(newBoard, newConflicts);
+        }
     }
 
     public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
         return resultingBoards;
-
     }
 }
