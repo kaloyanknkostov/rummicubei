@@ -43,7 +43,9 @@ public class RandomMove {
             }
     }*/
 
-
+    public RandomMove(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
+        this(board, rack, new Random());
+    }
     public RandomMove(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack,Random seed){
         ArrayList<ArrayList<Integer>> boardForRandomMove = CustomUtility.deepCopy(board);
         // System.out.println("IN Action");

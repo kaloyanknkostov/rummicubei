@@ -3,6 +3,7 @@ package com.MCTS;
 import java.util.ArrayList;
 
 import java.lang.Math;
+import java.util.Random;
 
 public class Node {
     private GameState gameState;
