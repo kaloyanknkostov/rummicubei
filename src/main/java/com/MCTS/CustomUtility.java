@@ -118,24 +118,6 @@ public class CustomUtility {
         return new ArrayList<>(setNew);
     }
 
-    /**
-    * Removes sets from the provided list that are found in the conflicts set.
-    * 
-    * @param setsLeft  The list of sets from which conflicts will be removed.
-    * @param conflicts The set of sets representing conflicts to be removed from setsLeft.
-    */
-    public static void removeConflicts(ArrayList<ArrayList<Integer>> setsLeft, Set<ArrayList<Integer>> conflicts) {
-        /*
-         * Iterate through the sets in setsLeft.
-         * If a set is found in the conflicts set, remove it from setsLeft.
-         */
-        for (ArrayList<Integer> set : setsLeft) {
-            if (conflicts.contains(set)) {
-                setsLeft.remove(set);
-            }
-        }
-    }
-
 
 
     /**

@@ -43,8 +43,7 @@ public class ActionSpaceGenerator {
         exampleBoard.add(new ArrayList<>(Arrays.asList(1,2,3)));
         // Populate exampleBoard with your data
 
-        ArrayList<Integer> exampleRack = new ArrayList<>();
-        exampleBoard.add(new ArrayList<>(Arrays.asList(6,4,7)));
+        ArrayList<Integer> exampleRack = new ArrayList<>(Arrays.asList(6,4,7));
         // Populate exampleRack with your data
         // Create an instance of ActionSpaceGenerator
         ActionSpaceGenerator actionSpaceGenerator = new ActionSpaceGenerator(exampleBoard, exampleRack);
@@ -66,12 +65,11 @@ public class ActionSpaceGenerator {
         if(setsNoConflicts.isEmpty()){
             return;
         }
-        System.out.println(setsNoConflicts);
         for(ArrayList<Integer> rummikubSet: setsNoConflicts){
             ArrayList<ArrayList<Integer>> newBoard = CustomUtility.deepCopy(currentBoard);
             ArrayList<ArrayList<Integer>> newConflicts = CustomUtility.deepCopy(setsNoConflicts);
             newBoard.add(rummikubSet);
-            CustomUtility.removeConflicts(setsNoConflicts, this.conflicts.get(rummikubSet));
+            newConflicts.removeIf(this.conflicts.get(rummikubSet)::contains);
             //if(!forwardCheck(newBoard, newConflicts)){
             //    return;
             //}
