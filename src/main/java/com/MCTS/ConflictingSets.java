@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class ConflictingSets {
     private static ConflictingSets instance;
-    private static HashMap<ArrayList<Integer>,HashSet<ArrayList>> ConflictingSets;
+    private static HashMap<ArrayList<Integer>,HashSet<ArrayList>> conflictingSets;
 
     public static ConflictingSets getInstance() {
         if (instance == null) {
@@ -17,25 +17,26 @@ public class ConflictingSets {
     }
 
     private ConflictingSets() {
-        ConflictingSets = new HashMap<>();
+        conflictingSets = new HashMap<>();
         generateAllConflicts();
     }
     
     public static HashMap<ArrayList<Integer>,HashSet<ArrayList>> getAllConflicts() {
-        return ConflictingSets;
+        System.out.println(conflictingSets.size());
+        return conflictingSets;
     }
 
     private HashMap<ArrayList<Integer>,HashSet<ArrayList>> generateAllConflicts(){
-        ArrayList<ArrayList<Integer>> allPossibleSets = AllSetGenerator.generateAllSets();
-        for(int i  = 0; i < allPossibleSets.size()-1; i++){
-            ConflictingSets.put(allPossibleSets.get(i), new HashSet<>());
-            for(int j = i+1; j < allPossibleSets.size(); j ++){
+        ArrayList<ArrayList<Integer>> allPossibleSets = AllSetGenerator.getInstance().getAllSets();
+        for(int i  = 0; i < allPossibleSets.size(); i++){
+            conflictingSets.put(allPossibleSets.get(i), new HashSet<>());
+            for(int j = 0; j < allPossibleSets.size(); j ++){
                 if(hasCommonTile(allPossibleSets.get(i), allPossibleSets.get(j))){
-                    ConflictingSets.get(allPossibleSets.get(i)).add(allPossibleSets.get(j));
+                    conflictingSets.get(allPossibleSets.get(i)).add(allPossibleSets.get(j));
                 }
             }
         }
-        return ConflictingSets;
+        return conflictingSets;
     }
 
     private boolean hasCommonTile(ArrayList<Integer> list1, ArrayList<Integer> list2){

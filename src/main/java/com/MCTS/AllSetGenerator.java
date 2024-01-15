@@ -20,11 +20,11 @@ public class AllSetGenerator {
         allSets = new ArrayList<>();
         generateAllSets();
     }
-    public static ArrayList<ArrayList<Integer>> getAllSets() {
+    public ArrayList<ArrayList<Integer>> getAllSets() {
         return allSets;
     }
 
-    public static ArrayList<ArrayList<Integer>> generateAllSets() {
+    private static ArrayList<ArrayList<Integer>> generateAllSets() {
         ArrayList<ArrayList<Integer>> runs=generateRunsWithoutJokers();
         ArrayList<ArrayList<Integer>> group=generateGroupsWithoutJokers();
         ArrayList<ArrayList<Integer>> allSets = new ArrayList<ArrayList<Integer>>();
