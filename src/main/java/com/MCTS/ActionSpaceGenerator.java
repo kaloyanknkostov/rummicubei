@@ -132,7 +132,7 @@ public class ActionSpaceGenerator {
         return resultingBoards;
     }
 
-    private ArrayList<ArrayList<Integer>> sortPossibleSets(ArrayList<ArrayList<Integer>> possibleSets, ArrayList<Integer> board) {
+    public ArrayList<ArrayList<Integer>> sortPossibleSets(ArrayList<ArrayList<Integer>> possibleSets, ArrayList<Integer> board) {
         // First checks how many tiles from the possible sets are already on the board, then creates a ArrayList that
         // Maps the index in possibleSet to the amount of tiles that it has on the board.
         ArrayList<ArrayList<Integer>> result = new ArrayList<>();
@@ -160,6 +160,9 @@ public class ActionSpaceGenerator {
         return result;
     }
 
+    public ArrayList<ArrayList<Integer>> getPossibleSets() {
+        return possibleSets;
+    }
     /**
      * Performs forward checking to determine if the placement of pieces on the new board
      * is consistent with the constraints represented by the new conflicts.
