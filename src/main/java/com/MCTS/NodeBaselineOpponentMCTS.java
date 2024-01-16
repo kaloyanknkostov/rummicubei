@@ -17,15 +17,14 @@ public class NodeBaselineOpponentMCTS {
     private double uct;
     private boolean isLeaf; // if its an endstate
     private double c = 0.6; // factor for uct (see lecture 4 slide 20)
-    private int currentPlayer;
+    //currentplayer is always zero since we are never from out opponents perspective
 
-    public NodeBaselineOpponentMCTS (GameState gameState, NodeBaselineOpponentMCTS parent, int currentPlayer, boolean isleaf){
+    public NodeBaselineOpponentMCTS (GameState gameState, NodeBaselineOpponentMCTS parent, boolean isleaf){
         this.results = new ArrayList<Float>();
         this.childList = new ArrayList<NodeBaselineOpponentMCTS>();
         this.gameState = gameState;
         this.parent = parent;
         this.visitCount = 1; // visit count at generation is 1 (otherwise uct will not work)
-        this.currentPlayer = currentPlayer;
         this.isLeaf = isleaf;
         this.uct = 0.0;
     }
@@ -83,22 +82,26 @@ public class NodeBaselineOpponentMCTS {
     }
 
     public void expand(){
-        ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[currentPlayer]);
+        ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[0]);
         for(ArrayList<ArrayList<Integer>> board: actionSpace.getResultingBoards()){
             //for every action move it could make it copies the current gamestate and updates it based on the action
             GameState newState = this.gameState.copy();
-            int res = newState.updateGameState(board, currentPlayer);
+            int res = newState.updateGameState(board, 0);
             if(res == 2){
                 //its a draw
                 backpropagate(0.5f);
-                NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, (currentPlayer +1) %2, true);
+                NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, true);
                 this.childList.add(child);
             } else if(res == 1){
-                //one of the players won, we have to check which one
                 backpropagate(newState.getWinner());
-                NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, (currentPlayer +1) %2, true);
+                NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, true);
                 this.childList.add(child);
             } else {
+                //in this case our opponent gets to play now
+                ArrayList<ArrayList<Integer>> opponentBoard = BaselineAgent.getBestMove(board, newState.getRacks()[1]); // this is the baseline best move our opponent can make
+                int opponentRes = newState.updateGameState(opponentBoard, (currentPlayer +1) %2);
+                //now we do have to check for our opponent again what his move resulted in
+                if()
                 NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, (currentPlayer +1) %2, false);
                 this.childList.add(child);
             }
@@ -130,26 +133,15 @@ public class NodeBaselineOpponentMCTS {
         }
     }
 
-    public void backpropagate(float winner){
+    public void backpropagate(Float result){
         if (this.parent == null){
             return;
         }
-        // propagate the result of the play-out back to the root of the tree
-        if(winner == 0.5){
-            //propagate the same result to everyone since its a draw
-            this.results.add(winner);
-        } else {
-            // at every node check if the winner is equal to the parent
-            if(this.parent.currentPlayer == winner){
-                this.results.add(1f);
-            } else {
-                this.results.add(0f);
-            }
-        }
+        this.results.add(result);
         this.calculateUCT(); // Calc new uct and save it to save on computation
 
         if(this.parent != null){
-            this.parent.backpropagate(winner);
+            this.parent.backpropagate(result);
         }
     }
 
