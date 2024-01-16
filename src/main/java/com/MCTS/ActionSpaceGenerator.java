@@ -39,40 +39,62 @@ public class ActionSpaceGenerator {
 
     public static void main(String[] args) {
         // Example board and rack for testing
-        ArrayList<ArrayList<Integer>> exampleBoard = new ArrayList<>(new ArrayList(Arrays.asList(1,2,3,4,5)));
-
+        ArrayList<ArrayList<Integer>> exampleBoard = new ArrayList<>();
         // Populate exampleBoard with your data
+        // Populate exampleBoard with two sets of integers
+        ArrayList<Integer> set1 = new ArrayList<>();
+        set1.add(1);
+        set1.add(2);
+        set1.add(3);
 
+        ArrayList<Integer> set2 = new ArrayList<>();
+        set2.add(4);
+        set2.add(5);
+        set2.add(6);
+
+        //exampleBoard.add(set1);
+        //exampleBoard.add(set2);
         ArrayList<Integer> exampleRack = new ArrayList<>();
-        for(Integer i = 8; i < 16; i ++){
+        for (Integer i = 1; i < 33; i++) {
             exampleRack.add(i);
         }
         // Populate exampleRack with your data
+
+        // Record the start time
+        long startTime = System.currentTimeMillis();
+
         // Create an instance of ActionSpaceGenerator
         ActionSpaceGenerator actionSpaceGenerator = new ActionSpaceGenerator(exampleBoard, exampleRack);
 
         // Get the resulting boards
         ArrayList<ArrayList<ArrayList<Integer>>> resultingBoards = actionSpaceGenerator.getResultingBoards();
-        System.out.println("resulted in: " + resultingBoards.size() + " boards");
+
+        // Record the end time
+        long endTime = System.currentTimeMillis();
+
         // Print the resulting boards for testing purposes
-        for (ArrayList<ArrayList<Integer>> board : resultingBoards) {
-            System.out.println("Board:");
-            for (ArrayList<Integer> set : board) {
-                System.out.println("\t" + set);
-            }
-            System.out.println("--------");
-        }
+        System.out.println("Resulted in: " + resultingBoards.size() + " boards");
+
+        // Print the execution time
+        System.out.println("Execution time: " + (endTime - startTime) + " milliseconds");
+
+        //System.out.println("Pruned " + actionSpaceGenerator.pruningCounter + " times.");
     }
 
     private void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard ,ArrayList<ArrayList<Integer>> setsNoConflicts){
         if(setsNoConflicts.isEmpty()){
             return;
         }
+        ArrayList<ArrayList<Integer>> conflichtNext = CustomUtility.deepCopy(setsNoConflicts);
         for(ArrayList<Integer> rummikubSet: setsNoConflicts){
             ArrayList<ArrayList<Integer>> newBoard = CustomUtility.deepCopy(currentBoard);
-            ArrayList<ArrayList<Integer>> newConflicts = CustomUtility.deepCopy(setsNoConflicts);
+            ArrayList<ArrayList<Integer>> newConflicts = CustomUtility.deepCopy(conflichtNext);
+            conflichtNext.remove(rummikubSet);
             newBoard.add(rummikubSet);
+            newConflicts.remove(rummikubSet);
             newConflicts.removeIf(this.conflicts.get(rummikubSet)::contains);
+            //97415
+            //2066
             if(!forwardCheck(newBoard, newConflicts)){
                 continue;
             }
@@ -82,6 +104,29 @@ public class ActionSpaceGenerator {
             createAllMoves(newBoard, newConflicts);
         }
     }
+
+
+    public boolean checker(ArrayList<ArrayList<Integer>> newBoard){
+        for (ArrayList<ArrayList<Integer>> board:resultingBoards){
+            if(isEqual(newBoard,board))return true;
+        }
+        return false;
+    }
+    public boolean isEqual(ArrayList<ArrayList<Integer>> board1,ArrayList<ArrayList<Integer>> board2){
+
+        for (ArrayList<Integer>set1:board1){
+            boolean checker=false;
+            for (ArrayList<Integer>set2:board2){
+                if (set1.equals(set2)) {
+                    checker = true;
+                    break;
+                }
+            }
+            if (!checker)return checker;
+        }
+        return true;
+    }
+
 
     public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
         return resultingBoards;
@@ -116,14 +161,14 @@ public class ActionSpaceGenerator {
     }
 
     /**
-    * Performs forward checking to determine if the placement of pieces on the new board
-    * is consistent with the constraints represented by the new conflicts.
-    *
-    * @param newBoard     The new board configuration containing placements of pieces.
-    * @param newConflicts Represents the tiles which are still able to be added
-    * @return True if the placement is consistent and does not violate any constraints,
-    *         false otherwise.
-    */
+     * Performs forward checking to determine if the placement of pieces on the new board
+     * is consistent with the constraints represented by the new conflicts.
+     *
+     * @param newBoard     The new board configuration containing placements of pieces.
+     * @param newConflicts Represents the tiles which are still able to be added
+     * @return True if the placement is consistent and does not violate any constraints,
+     *         false otherwise.
+     */
     public boolean forwardCheck(ArrayList<ArrayList<Integer>> newBoard,ArrayList<ArrayList<Integer>> newConflicts){
         ArrayList<Integer> allPieces =new ArrayList<>();
         for (ArrayList<Integer> set:newBoard){
@@ -137,3 +182,4 @@ public class ActionSpaceGenerator {
         return copy.isEmpty();
     }
 }
+
