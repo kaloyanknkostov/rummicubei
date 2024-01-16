@@ -335,13 +335,13 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
             }
         }
 
-        potOfTilesCopy.addAll(potOfTiles);
-        int a = potOfTiles.size();
-        for (int i = 0; i < a; i++) {
-            potOfTiles.add(potOfTiles.get(i));
-        }
+//        potOfTilesCopy.addAll(potOfTiles);
+//        int a = potOfTiles.size();
+//        for (int i = 0; i < a; i++) {
+//            potOfTiles.add(potOfTiles.get(i));
+//        }
 
-        potOfTiles.add(new Tile(0, "", true, "painted_tile_1.png"));
+        //potOfTiles.add(new Tile(0, "", true, "painted_tile_1.png"));
         potOfTiles.add(new Tile(0, "", true, "painted_tile_3.png"));
 
     }

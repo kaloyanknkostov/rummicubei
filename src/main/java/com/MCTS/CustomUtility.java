@@ -2,7 +2,9 @@ package com.MCTS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CustomUtility {
 
@@ -24,18 +26,6 @@ public class CustomUtility {
         return count;
     }
 
-
-    // Helper function to check if a tile is present in a list
-    public static boolean containsTile(ArrayList<Integer> list, Integer tile) {
-        for (Integer element : list) {
-
-            if (element.equals(tile)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     /**
      * Decomposes a 2D ArrayList representing a board into a 1D ArrayList of integers.
      *
@@ -55,39 +45,43 @@ public class CustomUtility {
         return result;
     }
 
-    // custome remove function that only removes the first instance of a variable
-    public static void customRemove(List<Integer> list, ArrayList<Integer> elementsToRemove) {
-        for (Integer element : elementsToRemove) {
-            list.remove(element);
-        }
-    }
+
 
     //function to check if the board is valid. thus if all tiles that are in startingBoard are also present in new board
-    //cant use sets cause there can be duplicates in our board like 2 green 4's and a set would remove one of them
-    //for optimization this can maybe be done in a faster way
     public static boolean validBoard(ArrayList<ArrayList<Integer>> newBoard,ArrayList<Integer> startingBoard) {
-        //small check
-        if(countIntegers(newBoard) < startingBoard.size()){
-            return false;
+        // Convert both starting board and new board to sets
+        Set<Integer> startingBoardSet = new HashSet<>(startingBoard);
+        Set<Integer> newBoardSet = new HashSet<>();
+
+        // Iterate through each row in the new board and add its elements to the new board set
+        for (ArrayList<Integer> row : newBoard) {
+            newBoardSet.addAll(row);
         }
-        ArrayList<Integer> decomposedBoard = decompose(newBoard);
-        for(Integer tile: startingBoard){
-            if(!decomposedBoard.contains(tile)){
-                return false;
-            }
-        }
-        // All tiles in the new board are present in the starting board, so the board is valid
-        return true;
+
+        // Remove new board elements from starting board
+        startingBoardSet.removeAll(newBoardSet);
+
+        // Check if starting board is empty after removal
+        return startingBoardSet.isEmpty();        
     }
 
 
     // this method keeps track of the available tiles by removing all the tiles in the board from the tiles available at the start.
     public static ArrayList<Integer> getAvailableTiles(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> availableTilesStart){
-        ArrayList<Integer> result = new ArrayList<>(availableTilesStart);
-        for(ArrayList<Integer> row: board){
-            customRemove(result, row);
+        // Convert both board and availableTilesStart to sets
+        Set<Integer> boardSet = new HashSet<>();
+        Set<Integer> availableTilesSet = new HashSet<>(availableTilesStart);
+
+        // Iterate through each row in the board and add its elements to the board set
+        for (ArrayList<Integer> row : board) {
+            boardSet.addAll(row);
         }
-        return result;
+
+        // Remove board elements from availableTilesSet
+        availableTilesSet.removeAll(boardSet);
+
+        // Convert the result back to ArrayList
+        return new ArrayList<>(availableTilesSet);        
     }
 
 
@@ -107,37 +101,24 @@ public class CustomUtility {
         if (array.isEmpty() || set.isEmpty()) {
             return false;
         }
-        ArrayList<Integer> tiles = new ArrayList<Integer>();
-        for (Integer integer : array) {
-            tiles.add(integer);
-        }
-        for (Integer integer : set) { // checks if the array contains each elemnt to creaate the set
-            if (!tiles.contains(integer)) {
-                return false;
-            } else {
-                ArrayList<Integer> tileToRemove = new ArrayList<Integer>(List.of(integer)); // a but clunky but for now its fine
-                customRemove(tiles,tileToRemove); // essentially removing it from available tiles after its checked but only removes first instance
-            }
-        }
-
-        return true;
+        Set<Integer> set1 = new HashSet<>(array);
+        Set<Integer> set2 = new HashSet<>(set);
+        return set1.containsAll(set2);
     }
 
     //this function takes in a board and gets the difference in tiles from the old one
     //check for empty
     public static ArrayList<Integer> getDifference(ArrayList<ArrayList<Integer>> newBoard, ArrayList<ArrayList<Integer>> oldBoard){
-        ArrayList<Integer> result = new ArrayList<>();
-        ArrayList<Integer> decomposedOld = decompose(oldBoard);
-        ArrayList<Integer> decomposedNew = decompose(newBoard);
-        for(Integer tile: decomposedNew){
-            if(!decomposedOld.contains(tile)){
-                result.add(tile);
-            } else {
-                customRemove(decomposedOld, new ArrayList<>(Arrays.asList(tile)));
-            }
-        }
-        return result;
+
+        ArrayList<Integer> newBoardDecomposed = decompose(newBoard);
+        ArrayList<Integer> oldBoardDecomposed = decompose(oldBoard);
+        Set<Integer> setNew = new HashSet<>(newBoardDecomposed);
+        Set<Integer> setOld = new HashSet<>(oldBoardDecomposed);
+        setNew.removeAll(setOld); // this is now a set containing only ones that are in new but not in old
+        return new ArrayList<>(setNew);
     }
+
+
 
     /**
      * Generates a list of possible sets based on a combination of tiles from the starting rack and starting board.
