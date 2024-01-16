@@ -92,6 +92,9 @@ public class ActionSpaceGenerator {
         // Maps the index in possibleSet to the amount of tiles that it has on the board.
         ArrayList<ArrayList<Integer>> result = new ArrayList<>();
         HashMap<Integer, Stack<Integer>> amountOfTilesMap = new HashMap<>(); // Maps K: amount of the tiles on the board - > V: set index
+        for (int setIndex = 0; setIndex < possibleSets.size(); setIndex++) {
+            amountOfTilesMap.put(setIndex, new Stack<>());
+        }
         for (int setIndex = 0; setIndex < possibleSets.size(); setIndex++) { // Check each set
             ArrayList<Integer> currentSet = possibleSets.get(setIndex);
             int tilesOnTheBoard = 0;
