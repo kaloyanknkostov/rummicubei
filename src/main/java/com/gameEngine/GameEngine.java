@@ -24,7 +24,7 @@ public class GameEngine {
     private final int gameId = 0;
     private int moveNumber  = 0;
     private boolean logged = false;
-    private final int startingTiles = 4;
+    private final int startingTiles = 14;
 
     public static void main(String[] args) {
         GameEngine engine = new GameEngine();
@@ -271,7 +271,7 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
 
     public void addPlayers() {
         for (int i = 0; i < numberOfBots; i++) {
-            listOfPlayers.add(new ComputerPlayer("test","mcts"));
+            listOfPlayers.add(new ComputerPlayer("test","baseline"));
             for (int k = 0; k < startingTiles; k++) {
                 listOfPlayers.get(listOfPlayers.size() - 1).drawTile(drawTile());
             }
