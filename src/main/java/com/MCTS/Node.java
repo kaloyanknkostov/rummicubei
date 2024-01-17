@@ -120,9 +120,11 @@ public class Node {
         }
         if(res == 2){
             //its a draw
+            System.out.println("it was a draw");
             backpropagate(0.5f);
         } else {
             //one of the players won, we have to check which one
+            System.out.println(stateForPlayout.getWinner());
             backpropagate(stateForPlayout.getWinner());
         }
     }

@@ -22,10 +22,10 @@ public class MCTS {
         ArrayList<ArrayList<Integer>> board = new ArrayList<>();
         board.add(new ArrayList<>(Arrays.asList(1,2,3)));
         board.add(new ArrayList<>(Arrays.asList(5,6,7)));
-        ArrayList<Integer> deck =  new ArrayList<>(Arrays.asList(9,10,11));
+        ArrayList<Integer> deck =  new ArrayList<>(Arrays.asList(9,10,12));
 
         MCTS mcts = new MCTS(board, deck, 6);
-        mcts.loopMCTS(2);
+        mcts.loopMCTS(1);
     }
 
 
