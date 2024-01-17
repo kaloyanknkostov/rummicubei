@@ -46,16 +46,29 @@ public class MCTS {
         // Should loop n* player count times
         for (int i = 0; i < loops*2; i++){//TODO only works for 2 players
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
             time = LocalTime.now().format(formatter);
             System.err.println(time + " || Loop: " + i + " || SELECTION");
             Node selected_node = this.root.selectNode();
+
+            time = LocalTime.now().format(formatter);
+            System.err.println(time + " || Loop: " + i + " || CHECKING FOR EARLY STOP");
+            Node bestChild = this.root.getBestChild(true);
+            if(bestChild != null && bestChild.getLeaf()){
+                System.err.println("Winning move detected - SEARCH STOPPED!");
+                System.err.println("Best next board: " + bestChild.getGameState().getBoard().toString());
+                break;
+            }
+
             time = LocalTime.now().format(formatter);
             System.err.println(time + " || Loop: " + i + " || EXPANSION");
             selected_node.expand();
+
             // Get a child from the selected node to start Play-Out (first child node)
             time = LocalTime.now().format(formatter);
             System.err.println(time + " || Loop: " + i + " || SELECTION FOR PLAYOUT");
             selected_node = selected_node.selectNode();
+
             time = LocalTime.now().format(formatter);
             System.err.println(time + " || Loop: " + i + " || PLAYOUT");
             selected_node.playOut();

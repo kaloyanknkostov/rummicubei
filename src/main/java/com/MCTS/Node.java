@@ -3,7 +3,6 @@ package com.MCTS;
 import java.util.ArrayList;
 
 import java.lang.Math;
-import java.util.Random;
 
 public class Node {
     private GameState gameState;
@@ -60,22 +59,37 @@ public class Node {
         if(this.childList.isEmpty()){
             return this;
         }
-        // Search for the highest UCT value in the list of children nodes
+        return this.getBestChild(false).selectNode();
+    }
+
+    public Node getBestChild(boolean leaf){
+        /**
+         * Boolean to either include leaf nodes in the search (if true) or not
+         * gets the child with the highest UCT
+         * Search for the highest UCT value in the list of children nodes
+         **/
+
         // ARGMAX
         double highestUCT = Double.NEGATIVE_INFINITY;
         Node nextNode = null;
         //System.err.println("STARTING UCT: "+ highestUCT);
         ///System.err.println("CHILD LIST:" + this.childList);
         for (Node child: this.childList){
-            if(child.getUCT()>highestUCT && !child.getLeaf()){
-                highestUCT = child.getUCT();
-                nextNode = child;
+            if(child.getUCT()>highestUCT){
+                if(!leaf && !child.getLeaf()){
+                    highestUCT = child.getUCT();
+                    nextNode = child;
+                }
+                else if(leaf){
+                    highestUCT = child.getUCT();
+                    nextNode = child;
+                }
             }
         }
-        return nextNode.selectNode();
+        return nextNode;
     }
 
-    private boolean getLeaf(){
+    public boolean getLeaf(){
         return this.isLeaf;
     }
 
@@ -87,14 +101,14 @@ public class Node {
             int res = newState.updateGameState(board, currentPlayer);
             if(res == 2){
                 //its a draw
-                backpropagate(0.5f);
                 Node child = new Node(newState, this, (currentPlayer +1) %2, true);
                 this.childList.add(child);
+                child.backpropagate(0.5f);
             } else if(res == 1){
                 //one of the players won, we have to check which one
-                backpropagate(newState.getWinner());
                 Node child = new Node(newState, this, (currentPlayer +1) %2, true);
                 this.childList.add(child);
+                child.backpropagate(newState.getWinner());
             } else {
                 Node child = new Node(newState, this, (currentPlayer +1) %2, false);
                 this.childList.add(child);
