@@ -1,13 +1,10 @@
 package com.gameEngine;
 
 import com.example.GUI.GameModel;
-import com.example.GUI.StartScreensApplication;
-import javafx.animation.FadeTransition;
 import javafx.scene.image.Image;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
 import java.util.StringJoiner;
@@ -43,9 +40,7 @@ public class GameEngine {
         // Game initialization
         addPlayers();
         startLog();
-        StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
         gameModel.setCurrentPlayer(getCurrentPlayer());
-        StartScreensApplication.activeController.playerTurn();
         gameModel.setCurrentBoard(board);
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
         currentDraw = getThisDrawnTile(); 
@@ -98,13 +93,11 @@ public class GameEngine {
                                 }
                                 else { // for human player we just tell them they dont have 30 points 
                                     System.out.println("Get more then 30"); 
-                                    StartScreensApplication.getInstance().setMessageLabel("1", "You need to get more then 30 points!");
                                 }
                         } }
                     }
                    else {                        
                     getCurrentPlayer().setDeckOfTiles(copy);
-                    StartScreensApplication.getInstance().setMessageLabel("1", "Not a valid board");
                     System.out.println("NOT VALID");
                 }
             }   else {
@@ -194,15 +187,11 @@ public class GameEngine {
     
     private Board getIncomingBoard(){
         Board incomingBoard; // first we need to get the incoming board which depens on whetehr we have a human or computer player 
-                if(getCurrentPlayer() instanceof HumanPlayer) {
-                    incomingBoard = createBoardFromTiles(transformImagesToTiles()); // if human we transform it from tiles 
-                }
-                else {
-                    System.out.println("Computer is playing");
-                    setLengthOtherDecks(); // Get length of other players decks:
-                    incomingBoard = getCurrentPlayer().getNewBoard(board);
-                }
-        return incomingBoard; 
+        System.out.println("Computer is playing");
+        setLengthOtherDecks(); // Get length of other players decks:
+        incomingBoard = getCurrentPlayer().getNewBoard(board);
+        System.out.println("got the board");
+        return incomingBoard;
     }
 
     private void gameTurn() {
@@ -213,18 +202,10 @@ public class GameEngine {
         }
         //move to end maybe
         gameModel.setCurrentPlayer(getCurrentPlayer());
-        StartScreensApplication.activeController.playerTurn();
         for (String s : gameModel.playerNames) {
             System.out.println(s);
         }
         System.out.println("changing that to the player index: " + currentPlayerIndex);
-        if (getCurrentPlayer() instanceof HumanPlayer) {
-            StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
-        }
-        else {
-            StartScreensApplication.getInstance().setMessageLabel("Bot", "");
-        }
-        StartScreensApplication.activeController.updateBoard(board);
     }
 
 
@@ -248,52 +229,52 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
     }
 
 
-    private ArrayList<ArrayList<Tile>> transformImagesToTiles() {
-        ArrayList<ArrayList<Image>> potentialNewBoard = gameModel.getTransferBoardViaImages();
-        ArrayList<ArrayList<Tile>> board2D = new ArrayList<>();
-        ArrayList<Tile> listOfBoardTiles = board.getTilesInBoard();
-        ArrayList<Tile> listOfPlayerTiles = listOfPlayers.get(currentPlayerIndex).getDeckOfTiles();
-        for (ArrayList<Image> row : potentialNewBoard) {
-            ArrayList<Tile> imageToTile = new ArrayList<>();
-            for (Image image : row) {
-                if (image != null) {
-
-                    boolean checker = false;
-                    for (Tile placedTile : listOfBoardTiles) {
-                        if (placedTile.getImage().equals(image)) {
-                            imageToTile.add(placedTile);
-                            checker = true;
-                            break;
-                        }
-                    }
-                    if (!checker) {
-                        for (Tile playerTile : listOfPlayerTiles) {
-                            if (playerTile.getImage().equals(image)) {
-                                listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().remove(playerTile);
-                                imageToTile.add(playerTile);
-                                checker = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!checker) {
-                        for (Tile placedTile : potOfTilesCopy) {
-                            if (placedTile.getImage().equals(image)) {
-                                imageToTile.add(placedTile);
-                                break;
-                            }
-                        }
-                    }
-
-                } else {
-                    imageToTile.add(null);
-                }
-            }
-            board2D.add(imageToTile);
-        }
-        return board2D;
-    }
+//    private ArrayList<ArrayList<Tile>> transformImagesToTiles() {
+//        ArrayList<ArrayList<Image>> potentialNewBoard = gameModel.getTransferBoardViaImages();
+//        ArrayList<ArrayList<Tile>> board2D = new ArrayList<>();
+//        ArrayList<Tile> listOfBoardTiles = board.getTilesInBoard();
+//        ArrayList<Tile> listOfPlayerTiles = listOfPlayers.get(currentPlayerIndex).getDeckOfTiles();
+//        for (ArrayList<Image> row : potentialNewBoard) {
+//            ArrayList<Tile> imageToTile = new ArrayList<>();
+//            for (Image image : row) {
+//                if (image != null) {
+//
+//                    boolean checker = false;
+//                    for (Tile placedTile : listOfBoardTiles) {
+//                        if (placedTile.getImage().equals(image)) {
+//                            imageToTile.add(placedTile);
+//                            checker = true;
+//                            break;
+//                        }
+//                    }
+//                    if (!checker) {
+//                        for (Tile playerTile : listOfPlayerTiles) {
+//                            if (playerTile.getImage().equals(image)) {
+//                                listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().remove(playerTile);
+//                                imageToTile.add(playerTile);
+//                                checker = true;
+//                                break;
+//                            }
+//                        }
+//                    }
+//
+//                    if (!checker) {
+//                        for (Tile placedTile : potOfTilesCopy) {
+//                            if (placedTile.getImage().equals(image)) {
+//                                imageToTile.add(placedTile);
+//                                break;
+//                            }
+//                        }
+//                    }
+//
+//                } else {
+//                    imageToTile.add(null);
+//                }
+//            }
+//            board2D.add(imageToTile);
+//        }
+//        return board2D;
+//    }
 
 
     private boolean isGameEnding() { // check game ending conditions
@@ -336,7 +317,7 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
 
     public void addPlayers() {
         for (int i = 0; i < numberOfRealPlayers; i++) {
-            listOfPlayers.add(new HumanPlayer("test"));
+            listOfPlayers.add(new HumanPlayer("baseline"));
             for (int k = 0; k < 15; k++) {
                 listOfPlayers.get(listOfPlayers.size() - 1).drawTile(drawTile());
             }
