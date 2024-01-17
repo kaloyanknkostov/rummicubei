@@ -30,17 +30,8 @@ public class GameEngine {
 
     public static void main(String[] args) {
         GameEngine engine = new GameEngine();
-        Thread guiThread = new Thread(() -> StartScreensApplication.launch(StartScreensApplication.class));
-        guiThread.start();
-        while (!engine.gameModel.isStartGame()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        engine.numberOfRealPlayers = engine.gameModel.getNumberOfPlayers();
-        engine.numberOfBots = 1;
+        engine.numberOfRealPlayers = 0;
+        engine.numberOfBots = 2;
         engine.board = new Board();
         engine.generateTiles();
         engine.gameLoop();
