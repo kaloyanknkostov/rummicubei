@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 
 public class BaselineAgent {
-    
+
     public static ArrayList<ArrayList<Integer>> getBestMove(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
         ActionSpaceGenerator actionSpaceGenerator = new ActionSpaceGenerator(board, rack);
         ArrayList<ArrayList<ArrayList<Integer>>> actionSpace = actionSpaceGenerator.getResultingBoards();
@@ -13,7 +13,7 @@ public class BaselineAgent {
         int keepingTrack = 0; // the index we are currently checking
         int bestMove = 0;  // the index of the best move in the actionspace
         int currentNumerical = 0; // the values of the best move numerically (all the tiles added)
-        ArrayList<ArrayList<Integer>> maxArrayList = null; // the best move as the array list of array lists of integers
+        ArrayList<ArrayList<Integer>> maxArrayList = new ArrayList<>(); // the best move as the array list of array lists of integers
         for (ArrayList<ArrayList<Integer>> move : actionSpace) { // loop through each moves
             currentSize = 0;
             for (ArrayList<Integer> set : move) {  // check each set of the move and add the size of that set to the current size
