@@ -99,10 +99,13 @@ public class RandomMove {
     }
 
     private void createRandomPlayouts(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles, int lastCheckedSet){
+        if(this.hasFinished==true){
+            return
+        }
         //System.out.println("Resulting boards:  "+ resultingBoards);
         //System.out.println("Current board: " + currentBoard);
         if(resultingBoards.size()>1){
-        if((!currentBoard.containsAll(resultingBoards.get(resultingBoards.size()-2)))&&CustomUtility.validBoard(resultingBoards.get(resultingBoards.size()-1), CustomUtility.decompose(this.startingBoard))){
+        if((!currentBoard.containsAll(resultingBoards.get(resultingBoards.size()-2)))&&CustomUtility.validBoard(resultingBoards.get(resultingBoards.size()-2), CustomUtility.decompose(this.startingBoard))){
             currentBoard=resultingBoards.get(resultingBoards.size()-2);
             this.hasFinished=true;
             resultingBoards.remove(resultingBoards.size()-1);
@@ -160,6 +163,7 @@ public class RandomMove {
                 createRandomPlayouts(currentBoardCopy, currentAvailableTiles, i);
             }catch(StopRecursionException e){
                 //System.out.println("caught excpetion stopping recursion");
+                this.hasFinished=true;
                 return;
             }
         
