@@ -89,20 +89,28 @@ public class NodeBaselineOpponentMCTS {
             int res = newState.updateGameState(board, 0);
             if(res == 2){
                 //its a draw
-                backpropagate(0.5f);
                 NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, true);
                 this.childList.add(child);
+                child.backpropagate(0.5f);
             } else if(res == 1){
-                backpropagate(newState.getWinner());
                 NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, true);
                 this.childList.add(child);
+                child.backpropagate(1f);
             } else {
                 //in this case our opponent gets to play now
                 ArrayList<ArrayList<Integer>> opponentBoard = BaselineAgent.getBestMove(board, newState.getRacks()[1]); // this is the baseline best move our opponent can make
-                int opponentRes = newState.updateGameState(opponentBoard, (currentPlayer +1) %2);
+                int opponentRes = newState.updateGameState(opponentBoard,1);
                 //now we do have to check for our opponent again what his move resulted in
-                if()
-                NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, (currentPlayer +1) %2, false);
+                if(opponentRes == 2){
+                    NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, true);
+                    this.childList.add(child);
+                    child.backpropagate(0.5f);
+                } else if(opponentRes == 1) {
+                    NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, true);
+                    this.childList.add(child);
+                    child.backpropagate(0f);
+                } 
+                NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, false);
                 this.childList.add(child);
             }
             //only works for two players
