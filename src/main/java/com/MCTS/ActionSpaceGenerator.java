@@ -16,10 +16,11 @@ public class ActionSpaceGenerator {
     private ArrayList<ArrayList<Integer>> possibleSets;
     private ArrayList<Integer> availableTilesStart;
 
+    private ArrayList<ArrayList<Integer>> boardForActionSpace;
 
 
     public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
-        ArrayList<ArrayList<Integer>> boardForActionSpace = CustomUtility.deepCopy(board);
+        boardForActionSpace = CustomUtility.deepCopy(board);
         this.allPossibleSets = AllSetGenerator.getInstance().getAllSets();
         this.conflicts = ConflictingSets.getInstance().getAllConflicts();
         this.resultingBoards = new ArrayList<>();
@@ -129,7 +130,11 @@ public class ActionSpaceGenerator {
 
 
     public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
-        return resultingBoards;
+        if (this.resultingBoards.isEmpty()){
+            this.resultingBoards.add(this.boardForActionSpace);
+        }
+            return resultingBoards;
+
     }
 
     public ArrayList<ArrayList<Integer>> sortPossibleSets(ArrayList<ArrayList<Integer>> possibleSets, ArrayList<Integer> board) {

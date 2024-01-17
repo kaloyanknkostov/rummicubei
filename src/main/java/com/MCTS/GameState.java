@@ -60,7 +60,9 @@ public class GameState {
             }
         }
         else if (equals(CustomUtility.decompose(newBoard),CustomUtility.decompose(this.board))){
-            drawCard(playerIndex);
+            if(!this.pile.isEmpty()){
+                drawCard(playerIndex);
+            }
             this.couldntPlay[playerIndex] = false;
             //if the game did not finish or one player did not just draw, then one player played a move and we have to update his
             //rack and the board
