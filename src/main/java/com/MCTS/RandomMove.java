@@ -100,7 +100,7 @@ public class RandomMove {
 
     private void createRandomPlayouts(ArrayList<ArrayList<Integer>> currentBoard, ArrayList<Integer> availableTiles, int lastCheckedSet){
         if(this.hasFinished==true){
-            return
+            return;
         }
         //System.out.println("Resulting boards:  "+ resultingBoards);
         //System.out.println("Current board: " + currentBoard);
