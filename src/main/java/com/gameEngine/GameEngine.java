@@ -24,6 +24,7 @@ public class GameEngine {
     private final int gameId = 0;
     private int moveNumber  = 0;
     private boolean logged = false;
+    private final int startingTiles = 4;
 
     public static void main(String[] args) {
         GameEngine engine = new GameEngine();
@@ -229,53 +230,6 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
     }
 
 
-//    private ArrayList<ArrayList<Tile>> transformImagesToTiles() {
-//        ArrayList<ArrayList<Image>> potentialNewBoard = gameModel.getTransferBoardViaImages();
-//        ArrayList<ArrayList<Tile>> board2D = new ArrayList<>();
-//        ArrayList<Tile> listOfBoardTiles = board.getTilesInBoard();
-//        ArrayList<Tile> listOfPlayerTiles = listOfPlayers.get(currentPlayerIndex).getDeckOfTiles();
-//        for (ArrayList<Image> row : potentialNewBoard) {
-//            ArrayList<Tile> imageToTile = new ArrayList<>();
-//            for (Image image : row) {
-//                if (image != null) {
-//
-//                    boolean checker = false;
-//                    for (Tile placedTile : listOfBoardTiles) {
-//                        if (placedTile.getImage().equals(image)) {
-//                            imageToTile.add(placedTile);
-//                            checker = true;
-//                            break;
-//                        }
-//                    }
-//                    if (!checker) {
-//                        for (Tile playerTile : listOfPlayerTiles) {
-//                            if (playerTile.getImage().equals(image)) {
-//                                listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().remove(playerTile);
-//                                imageToTile.add(playerTile);
-//                                checker = true;
-//                                break;
-//                            }
-//                        }
-//                    }
-//
-//                    if (!checker) {
-//                        for (Tile placedTile : potOfTilesCopy) {
-//                            if (placedTile.getImage().equals(image)) {
-//                                imageToTile.add(placedTile);
-//                                break;
-//                            }
-//                        }
-//                    }
-//
-//                } else {
-//                    imageToTile.add(null);
-//                }
-//            }
-//            board2D.add(imageToTile);
-//        }
-//        return board2D;
-//    }
-
 
     private boolean isGameEnding() { // check game ending conditions
         if (listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().isEmpty()) {
@@ -318,7 +272,7 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
     public void addPlayers() {
         for (int i = 0; i < numberOfBots; i++) {
             listOfPlayers.add(new ComputerPlayer("test","mcts"));
-            for (int k = 0; k < 15; k++) {
+            for (int k = 0; k < startingTiles; k++) {
                 listOfPlayers.get(listOfPlayers.size() - 1).drawTile(drawTile());
             }
         }
@@ -344,6 +298,7 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
         StringJoiner sj = new StringJoiner(",");
         sj.add(String.valueOf(gameId)); // Logging gameId
         sj.add(board.toString()); // Logging the board
+
         sj.add(listOfPlayers.stream()
                 .map(player -> player.getDeckOfTiles().stream()
                         .map(Tile::toString)

@@ -25,9 +25,6 @@ public class Tile
         //this.image=new Image(pictureName);
     }
 
-//    public Image getImage() {
-//        return image;
-//    }
 
     public int getNumber() {
         return number;
