@@ -19,9 +19,11 @@ public class RandomMove {
     private HashMap<ArrayList<Integer>,HashSet<ArrayList<Integer>>> conflicts;
     private Random rand;
     private boolean hasFinished;
+    private double notPlaying;
+    ArrayList<ArrayList<Integer>> boardForRandomMove;
 
     public RandomMove(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
-        ArrayList<ArrayList<Integer>> boardForRandomMove = CustomUtility.deepCopy(board);
+        this.boardForRandomMove = CustomUtility.deepCopy(board);
         this.allPossibleSets = AllSetGenerator.getInstance().getAllSets();
         this.conflicts = ConflictingSets.getInstance().getAllConflicts();
         this.hasFinished = false;
@@ -35,37 +37,9 @@ public class RandomMove {
         //probably put this somewhere else
         ArrayList<ArrayList<Integer>> beginningBoard = new ArrayList<>();
         createRandomMoves(beginningBoard, this.possibleSets);
+        this.notPlaying = 0;
         calculateRandomMove();
         //now the resulting random move can just be accessed from the getMethod
-    }
-
-    public static void main(String[] args) {
-        // Example board and rack for testing
-        ArrayList<ArrayList<Integer>> exampleBoard = new ArrayList<>();
-        // Populate exampleBoard with your data
-            // Populate exampleBoard with two sets of integers
-        ArrayList<Integer> set1 = new ArrayList<>();
-        set1.add(1);
-        set1.add(2);
-        set1.add(3);
-
-        ArrayList<Integer> set2 = new ArrayList<>();
-        set2.add(4);
-        set2.add(5);
-        set2.add(6);
-
-        exampleBoard.add(set1);
-        exampleBoard.add(set2);
-        ArrayList<Integer> exampleRack = new ArrayList<>();
-        for (Integer i = 8; i < 25; i++) {
-            exampleRack.add(i);
-        }
-        // Populate exampleRack with your data
-
-        RandomMove randomMove = new RandomMove(exampleBoard, exampleRack);
-
-        //System.out.println(randomMove.getResultingBoards());
-        
     }
 
     public ArrayList<ArrayList<Integer>> getRandomMove(){
@@ -73,7 +47,7 @@ public class RandomMove {
     }
 
     private void calculateRandomMove(){
-        if(this.resultingBoards.isEmpty()){ //this can only happen if we cant play on the first turn of the game
+        if(this.resultingBoards.isEmpty()){
             this.randomMove = new ArrayList<>();
             this.randomMove.add(0,new ArrayList<>(Arrays.asList(-1)));
         } else {
@@ -81,11 +55,11 @@ public class RandomMove {
             //include the prob of not playing anything at all
             int y = this.rand.nextInt(x); //because of zero based indexing
             //System.out.println("Rand number: "+y);
-            this.randomMove = CustomUtility.deepCopy(this.resultingBoards.get(y));
-            if(CustomUtility.decompose(this.resultingBoards.get(y)).equals(this.startingBoard) && this.resultingBoards.size() == 1){
-                //meaning the only possible move was not doing anything
-                this.randomMove.add(0,new ArrayList<>(Arrays.asList(-1)));
-                //add a -1 as the first set of the resulting board
+            double didNotPlay = this.rand.nextDouble();
+            if(didNotPlay < this.notPlaying){
+                this.randomMove = this.boardForRandomMove;
+            } else {
+                this.randomMove = CustomUtility.deepCopy(this.resultingBoards.get(y));
             }
         }
     }
@@ -115,22 +89,22 @@ public class RandomMove {
             if(!forwardCheck(newBoard, newConflicts)){
                 continue;
             }
-            if(CustomUtility.validBoard(newBoard, this.startingBoard)){
+            if(CustomUtility.validBoard(newBoard, this.startingBoard) && !isEqual(newBoard, this.boardForRandomMove)){
+                //System.out.println("FOUND");
                 this.resultingBoards.add(newBoard);
             }
             createRandomMoves(newBoard, newConflicts);
-
         }
     }
-        /**
-    * Performs forward checking to determine if the placement of pieces on the new board
-    * is consistent with the constraints represented by the new conflicts.
-    *
-    * @param newBoard     The new board configuration containing placements of pieces.
-    * @param newConflicts Represents the tiles which are still able to be added
-    * @return True if the placement is consistent and does not violate any constraints,
-    *         false otherwise.
-    */
+    /**
+     * Performs forward checking to determine if the placement of pieces on the new board
+     * is consistent with the constraints represented by the new conflicts.
+     *
+     * @param newBoard     The new board configuration containing placements of pieces.
+     * @param newConflicts Represents the tiles which are still able to be added
+     * @return True if the placement is consistent and does not violate any constraints,
+     *         false otherwise.
+     */
     public boolean forwardCheck(ArrayList<ArrayList<Integer>> newBoard,ArrayList<ArrayList<Integer>> newConflicts){
         ArrayList<Integer> allPieces =new ArrayList<>();
         for (ArrayList<Integer> set:newBoard){
@@ -146,6 +120,20 @@ public class RandomMove {
 
     public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards(){
         return this.resultingBoards;
+    }
+
+    public boolean isEqual(ArrayList<ArrayList<Integer>> board1, ArrayList<ArrayList<Integer>> board2){
+        ArrayList<Integer> x = CustomUtility.decompose(board1);
+        ArrayList<Integer> y = CustomUtility.decompose(board2);
+        if(x.size() != y.size()){
+            return false;
+        }
+        Set<Integer> xSet = new HashSet<>(x);
+        Set<Integer> ySet = new HashSet<>(y);
+        if(xSet.containsAll(ySet)){
+            return true;
+        }
+        return false;
     }
 
 }
