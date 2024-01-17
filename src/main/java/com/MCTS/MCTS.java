@@ -33,6 +33,8 @@ public class MCTS {
         // get game state
         this.board = board;
         this.deck = deck;
+        this.guessedOppononetDeck = new ArrayList<>();
+        this.guessedPile = new ArrayList<>();
         // Get predictions of other players decks
         // We can decide here if we want to create multiple trees by sampling the tiles based on the predictions/ probabilities we got (advanced stuff)
         guessPlayer2DeckAndPile(numberTilesOpponent);
@@ -43,19 +45,19 @@ public class MCTS {
     public void loopMCTS(int loops){
         // Should loop n* player count times
         for (int i = 0; i < loops*2; i++){//TODO only works for 2 players
-            //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-            //time = LocalTime.now().format(formatter);
-            //System.err.println(time + " || Loop: " + i + " || SELECTION");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            time = LocalTime.now().format(formatter);
+            System.err.println(time + " || Loop: " + i + " || SELECTION");
             Node selected_node = this.root.selectNode();
-            //time = LocalTime.now().format(formatter);
-            //System.err.println(time + " || Loop: " + i + " || EXPANSION");
+            time = LocalTime.now().format(formatter);
+            System.err.println(time + " || Loop: " + i + " || EXPANSION");
             selected_node.expand();
             // Get a child from the selected node to start Play-Out (first child node)
-            //time = LocalTime.now().format(formatter);
-            //System.err.println(time + " || Loop: " + i + " || SELECTION FOR PLAYOUT");
+            time = LocalTime.now().format(formatter);
+            System.err.println(time + " || Loop: " + i + " || SELECTION FOR PLAYOUT");
             selected_node = selected_node.selectNode();
-            //time = LocalTime.now().format(formatter);
-            //System.err.println(time + " || Loop: " + i + " || PLAYOUT");
+            time = LocalTime.now().format(formatter);
+            System.err.println(time + " || Loop: " + i + " || PLAYOUT");
             selected_node.playOut();
         }
     }
@@ -72,9 +74,10 @@ public class MCTS {
             51, 52, 53));
         allTiles.removeAll(allTilesNotPile);
         Collections.shuffle(allTiles);
-        for(int i = 0; i < 53; i++){
+        for(int i = 0; i < allTiles.size(); i++){
             if(i < opponentDeckSize){
                 this.guessedOppononetDeck.add(allTiles.get(i));
+
             } else {
                 this.guessedPile.add(allTiles.get(i));
             }
