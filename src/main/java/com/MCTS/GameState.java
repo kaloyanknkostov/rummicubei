@@ -97,8 +97,6 @@ public class GameState {
 
     public static boolean equals(ArrayList<Integer> one, ArrayList<Integer> two){
         if(one.size()!= two.size())return false;
-
-
         Collections.sort(one);
         Collections.sort(two);
         for (int i = 0; i <one.size() ; i++) {

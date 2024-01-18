@@ -62,7 +62,7 @@ public class CustomUtility {
         startingBoardSet.removeAll(newBoardSet);
 
         // Check if starting board is empty after removal
-        return startingBoardSet.isEmpty();        
+        return startingBoardSet.isEmpty();
     }
 
 
@@ -81,7 +81,7 @@ public class CustomUtility {
         availableTilesSet.removeAll(boardSet);
 
         // Convert the result back to ArrayList
-        return new ArrayList<>(availableTilesSet);        
+        return new ArrayList<>(availableTilesSet);
     }
 
 
@@ -166,4 +166,14 @@ public class CustomUtility {
         return copy;
     }
 
+    public static int sumOfArrayLists(ArrayList<ArrayList<Integer>> listOfLists) {
+        int sum = 0;
+
+        for (ArrayList<Integer> innerList : listOfLists) {
+            for (Integer number : innerList) {
+                sum += number;
+            }
+        }
+        return sum;
+    }
 }

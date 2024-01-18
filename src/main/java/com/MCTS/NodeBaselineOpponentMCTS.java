@@ -1,29 +1,30 @@
 package com.MCTS;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import java.lang.Math;
+import java.util.Random;
 
-public class Node {
-    private boolean playerMelted;
+public class NodeBaselineOpponentMCTS {
+    /*
+     * this class is the same as normal MCTS but here every node is from out perspective so we assume our opponent plays baseline
+     */
     private GameState gameState;
-    private Node parent;
+    private NodeBaselineOpponentMCTS parent;
     private int visitCount;
-    private ArrayList<Node> childList;
+    private ArrayList<NodeBaselineOpponentMCTS> childList;
     private ArrayList<Float> results; // results of the playouts of all childs
     private double uct;
     private boolean isLeaf; // if its an endstate
     private double c = 0.6; // factor for uct (see lecture 4 slide 20)
-    private int currentPlayer;
+    //currentplayer is always zero since we are never from out opponents perspective
 
-    public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf, boolean playerMelted){
+    public NodeBaselineOpponentMCTS (GameState gameState, NodeBaselineOpponentMCTS parent, boolean isleaf){
         this.results = new ArrayList<Float>();
-        this.childList = new ArrayList<Node>();
+        this.childList = new ArrayList<NodeBaselineOpponentMCTS>();
         this.gameState = gameState;
         this.parent = parent;
         this.visitCount = 1; // visit count at generation is 1 (otherwise uct will not work)
-        this.currentPlayer = currentPlayer;
         this.isLeaf = isleaf;
         this.uct = 0.0;
     }
@@ -54,88 +55,54 @@ public class Node {
      * Returns the next node in the search tree that has to be expanded.
      * This is an recursive method that searches for the highest UCT value in the children nodes.
      */
-    public Node selectNode(){
+    public NodeBaselineOpponentMCTS selectNode(){
         // BIAS towards the first child all have the same uct value
         // if this Node has no children then we return this node (to execute play-out)
         this.visitCount += 1;
         if(this.childList.isEmpty()){
             return this;
         }
-        return this.getBestChild(false).selectNode();
-    }
-
-    public Node getBestChild(boolean leaf){
-        /**
-         * Boolean to either include leaf nodes in the search (if true) or not
-         * gets the child with the highest UCT
-         * Search for the highest UCT value in the list of children nodes
-         **/
-
+        // Search for the highest UCT value in the list of children nodes
         // ARGMAX
         double highestUCT = Double.NEGATIVE_INFINITY;
-        Node nextNode = null;
+        NodeBaselineOpponentMCTS nextNode = null;
         //System.err.println("STARTING UCT: "+ highestUCT);
         ///System.err.println("CHILD LIST:" + this.childList);
-        for (Node child: this.childList){
-            if(child.getUCT()>highestUCT){
-                if(!leaf && !child.getLeaf()){
-                    highestUCT = child.getUCT();
-                    nextNode = child;
-                }
-                else if(leaf){
-                    highestUCT = child.getUCT();
-                    nextNode = child;
-                }
+        for (NodeBaselineOpponentMCTS child: this.childList){
+            if(child.getUCT()>highestUCT && !child.getLeaf()){
+                highestUCT = child.getUCT();
+                nextNode = child;
             }
         }
-        return nextNode;
+        return nextNode.selectNode();
     }
 
-    public boolean getLeaf(){
+    private boolean getLeaf(){
         return this.isLeaf;
     }
 
     public void expand(){
-        ArrayList<ArrayList<ArrayList<Integer>>> resultingBoards;
-        if(playerMelted){
-            ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[currentPlayer]);
-            resultingBoards = actionSpace.getResultingBoards();
-        } else {
-            // if player has not melted yet, create actions without tiles on the board
-            // then filter actions to only include boards with value of at least 30
-            ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(new ArrayList<ArrayList<Integer>>(), this.gameState.getRacks()[currentPlayer]);
-            resultingBoards = actionSpace.getResultingBoards();
-            Iterator<ArrayList<ArrayList<Integer>>> boardIterator = resultingBoards.iterator();
-            while(boardIterator.hasNext()){
-                ArrayList<ArrayList<Integer>> current = boardIterator.next();
-                if(CustomUtility.sumOfArrayLists(current)<30){
-                    boardIterator.remove();
-                } else {
-                    // Add the original tiles of the board back to all results
-                    for(ArrayList<Integer> set: this.gameState.getBoard()){
-                        current.add(set);
-                    }
-                }
-            }
-        }
-        // Create do nothing board
-        resultingBoards.add(this.gameState.getBoard());
-        for(ArrayList<ArrayList<Integer>> board: resultingBoards){
+        ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[0]);
+        for(ArrayList<ArrayList<Integer>> board: actionSpace.getResultingBoards()){
             //for every action move it could make it copies the current gamestate and updates it based on the action
             GameState newState = this.gameState.copy();
-            int res = newState.updateGameState(board, currentPlayer);
+            int res = newState.updateGameState(board, 0);
             if(res == 2){
                 //its a draw
-                Node child = new Node(newState, this, (currentPlayer +1) %2, true, true);
+                backpropagate(0.5f);
+                NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, true);
                 this.childList.add(child);
-                child.backpropagate(0.5f);
             } else if(res == 1){
-                //one of the players won, we have to check which one
-                Node child = new Node(newState, this, (currentPlayer +1) %2, true, true);
+                backpropagate(newState.getWinner());
+                NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, true);
                 this.childList.add(child);
-                child.backpropagate(newState.getWinner());
             } else {
-                Node child = new Node(newState, this, (currentPlayer +1) %2, false, true);
+                //in this case our opponent gets to play now
+                ArrayList<ArrayList<Integer>> opponentBoard = BaselineAgent.getBestMove(board, newState.getRacks()[1]); // this is the baseline best move our opponent can make
+                int opponentRes = newState.updateGameState(opponentBoard, (currentPlayer +1) %2);
+                //now we do have to check for our opponent again what his move resulted in
+                if()
+                NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, (currentPlayer +1) %2, false);
                 this.childList.add(child);
             }
             //only works for two players
@@ -166,26 +133,15 @@ public class Node {
         }
     }
 
-    public void backpropagate(float winner){
+    public void backpropagate(Float result){
         if (this.parent == null){
             return;
         }
-        // propagate the result of the play-out back to the root of the tree
-        if(winner == 0.5){
-            //propagate the same result to everyone since its a draw
-            this.results.add(winner);
-        } else {
-            // at every node check if the winner is equal to the parent
-            if(this.parent.currentPlayer == winner){
-                this.results.add(1f);
-            } else {
-                this.results.add(0f);
-            }
-        }
+        this.results.add(result);
         this.calculateUCT(); // Calc new uct and save it to save on computation
 
         if(this.parent != null){
-            this.parent.backpropagate(winner);
+            this.parent.backpropagate(result);
         }
     }
 
@@ -197,7 +153,7 @@ public class Node {
         return this.gameState;
     }
 
-    public ArrayList<Node> getChildList(){
+    public ArrayList<NodeBaselineOpponentMCTS> getChildList(){
         return this.childList;
     }
 }
