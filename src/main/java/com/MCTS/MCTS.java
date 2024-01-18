@@ -20,9 +20,9 @@ public class MCTS {
 
     public static void main(String[] args) {
         ArrayList<ArrayList<Integer>> board = new ArrayList<>();
-        board.add(new ArrayList<>(Arrays.asList(1,2)));
-        board.add(new ArrayList<>(Arrays.asList(5,6)));
-        ArrayList<Integer> deck =  new ArrayList<>(Arrays.asList(9,10, 11, 7));
+        board.add(new ArrayList<>(Arrays.asList(1,2, 3)));
+        board.add(new ArrayList<>(Arrays.asList(5,6, 7)));
+        ArrayList<Integer> deck =  new ArrayList<>(Arrays.asList(10, 11, 12, 13));
 
         MCTS mcts = new MCTS(board, deck, 6);
         mcts.loopMCTS(2);

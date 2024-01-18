@@ -108,7 +108,7 @@ public class Node {
             Iterator<ArrayList<ArrayList<Integer>>> boardIterator = resultingBoards.iterator();
             while(boardIterator.hasNext()){
                 ArrayList<ArrayList<Integer>> current = boardIterator.next();
-                if(CustomUtility.sumOfArrayLists(current)<30){
+                if(CustomUtility.sumOfBoard(current)<30){
                     boardIterator.remove();
                 } else {
                     // Add the original tiles of the board back to all results
