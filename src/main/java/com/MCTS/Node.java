@@ -1,10 +1,12 @@
 package com.MCTS;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import java.lang.Math;
 
 public class Node {
+    private boolean playerMelted;
     private GameState gameState;
     private Node parent;
     private int visitCount;
@@ -15,7 +17,7 @@ public class Node {
     private double c = 0.6; // factor for uct (see lecture 4 slide 20)
     private int currentPlayer;
 
-    public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf){
+    public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf, boolean playerMelted){
         this.results = new ArrayList<Float>();
         this.childList = new ArrayList<Node>();
         this.gameState = gameState;
@@ -94,23 +96,46 @@ public class Node {
     }
 
     public void expand(){
-        ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[currentPlayer]);
-        for(ArrayList<ArrayList<Integer>> board: actionSpace.getResultingBoards()){
+        ArrayList<ArrayList<ArrayList<Integer>>> resultingBoards;
+        if(playerMelted){
+            ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[currentPlayer]);
+            resultingBoards = actionSpace.getResultingBoards();
+        } else {
+            // if player has not melted yet, create actions without tiles on the board
+            // then filter actions to only include boards with value of at least 30
+            ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(new ArrayList<ArrayList<Integer>>(), this.gameState.getRacks()[currentPlayer]);
+            resultingBoards = actionSpace.getResultingBoards();
+            Iterator<ArrayList<ArrayList<Integer>>> boardIterator = resultingBoards.iterator();
+            while(boardIterator.hasNext()){
+                ArrayList<ArrayList<Integer>> current = boardIterator.next();
+                if(CustomUtility.sumOfArrayLists(current)<30){
+                    boardIterator.remove();
+                } else {
+                    // Add the original tiles of the board back to all results
+                    for(ArrayList<Integer> set: this.gameState.getBoard()){
+                        current.add(set);
+                    }
+                }
+            }
+        }
+        // Create do nothing board
+        resultingBoards.add(this.gameState.getBoard());
+        for(ArrayList<ArrayList<Integer>> board: resultingBoards){
             //for every action move it could make it copies the current gamestate and updates it based on the action
             GameState newState = this.gameState.copy();
             int res = newState.updateGameState(board, currentPlayer);
             if(res == 2){
                 //its a draw
-                Node child = new Node(newState, this, (currentPlayer +1) %2, true);
+                Node child = new Node(newState, this, (currentPlayer +1) %2, true, true);
                 this.childList.add(child);
                 child.backpropagate(0.5f);
             } else if(res == 1){
                 //one of the players won, we have to check which one
-                Node child = new Node(newState, this, (currentPlayer +1) %2, true);
+                Node child = new Node(newState, this, (currentPlayer +1) %2, true, true);
                 this.childList.add(child);
                 child.backpropagate(newState.getWinner());
             } else {
-                Node child = new Node(newState, this, (currentPlayer +1) %2, false);
+                Node child = new Node(newState, this, (currentPlayer +1) %2, false, true);
                 this.childList.add(child);
             }
             //only works for two players

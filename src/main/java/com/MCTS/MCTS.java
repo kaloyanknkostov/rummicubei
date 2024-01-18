@@ -20,9 +20,9 @@ public class MCTS {
 
     public static void main(String[] args) {
         ArrayList<ArrayList<Integer>> board = new ArrayList<>();
-        board.add(new ArrayList<>(Arrays.asList(1,2,3)));
-        board.add(new ArrayList<>(Arrays.asList(5,6,7)));
-        ArrayList<Integer> deck =  new ArrayList<>(Arrays.asList(9,10,11));
+        board.add(new ArrayList<>(Arrays.asList(1,2)));
+        board.add(new ArrayList<>(Arrays.asList(5,6)));
+        ArrayList<Integer> deck =  new ArrayList<>(Arrays.asList(9,10, 11, 7));
 
         MCTS mcts = new MCTS(board, deck, 6);
         mcts.loopMCTS(2);
@@ -39,7 +39,7 @@ public class MCTS {
         // We can decide here if we want to create multiple trees by sampling the tiles based on the predictions/ probabilities we got (advanced stuff)
         guessPlayer2DeckAndPile(numberTilesOpponent);
         this.gameState = new GameState(this.deck, this.guessedOppononetDeck, this.board ,this.guessedPile);
-        this.root = new Node(this.gameState, null, 0, false);
+        this.root = new Node(this.gameState, null, 0, false, false);
     }
 
     public void loopMCTS(int loops){
@@ -63,7 +63,12 @@ public class MCTS {
             time = LocalTime.now().format(formatter);
             System.err.println(time + " || Loop: " + i + " || EXPANSION");
             selected_node.expand();
-
+            if(i==0 && selected_node.getChildList().size() == 1){
+                // Only one move possible can only be at the start
+                System.err.println("NEXT MOVE DETERMINED - only one is possible");
+                System.err.println(selected_node.getChildList().get(0).getGameState().getBoard());
+                break;
+            }
             // Get a child from the selected node to start Play-Out (first child node)
             time = LocalTime.now().format(formatter);
             System.err.println(time + " || Loop: " + i + " || SELECTION FOR PLAYOUT");
@@ -73,6 +78,13 @@ public class MCTS {
             System.err.println(time + " || Loop: " + i + " || PLAYOUT");
             selected_node.playOut();
         }
+        // Debugging prints to determine the outcome of MCTS
+        System.err.println("LOOP OVER");
+        System.err.println("Child nodes of root: "+ this.root.getChildList().size());
+        for(Node child: this.root.getChildList()){
+            System.err.println(child.getGameState().getBoard()+"  "+child.getUCT());
+        }
+        System.err.println("Next move: "+ this.root.getBestChild(true).getGameState().getBoard());
     }
 
     private void guessPlayer2DeckAndPile(int opponentDeckSize){
