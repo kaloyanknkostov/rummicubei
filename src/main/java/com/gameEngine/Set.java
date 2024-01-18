@@ -34,7 +34,7 @@ public class Set {
                 if(tilesList.get(i-1).getNumber()==13)return false;
                 tilesList.get(i).setNumber(tilesList.get(i-1).getNumber()+1);
                 tilesList.get(i).setColor(tilesList.get(i-1).getColor());
-                tilesList.get(i).setJoker(false);
+                //tilesList.get(i).setJoker(false);WHY WOULD WE DO THIS??? WE LOOSE THE JOKER PROPERTY
             }
             if(tilesList.get(i).getNumber() - 1 != tilesList.get(i-1).getNumber() ||  !tilesList.get(i).getColor().equals(tilesList.get(i-1).getColor())) {
                 return false;
