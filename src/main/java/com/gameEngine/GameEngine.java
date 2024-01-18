@@ -325,7 +325,7 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
 
     private void generateTiles() {
 
-        boolean isJoker = false;
+        //boolean isJoker = false;
 
         String[] colors = {"red", "blue", "black", "yellow"};
 
