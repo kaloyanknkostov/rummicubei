@@ -181,34 +181,32 @@ public class CustomUtility {
             int start = innerList.getFirst();
             int second = innerList.get(1); // to test if start or end are joker
             int end = innerList.getLast();
-            System.err.println(end);
             // Difficulty here: Joker has the value of the tile its representing
             if(start == 53){
                 if(second%13 == end%13){
                     // group
-                    sum += (end%13)*innerList.size(); // Convert to tile number and multiply by length
+                    sum += ((end-1)%13 +1 )*innerList.size(); // Convert to tile number and multiply by length
                 } else {
                     // run
-                    start = (second%13)-1; // move one back for the run, e.g. Joker, 9, 10 -> J=8
-                    sum += innerList.size()*(start + end%13)/2; // sum of arithmetic series
+                    start = ((second-1)%13)+1 -1; // move one back for the run, e.g. Joker, 9, 10 -> J=8
+                    sum += innerList.size()*(start + (end-1)%13+1)/2; // sum of arithmetic series
                 }
             } else if(end == 53){
                 if(start%13==second%13){
                     // group
-                    sum += (start%13)*innerList.size(); // Convert to tile number and multiply by length
+                    sum += ((start-1)%13 +1 )*innerList.size(); // Convert to tile number and multiply by length
                 } else {
                     // run
-                    end = start + innerList.size() -1; // e.g. 11 = 9 + 3 -1
-                    System.err.println(end);
+                    end = ((start-1)%13 +1 ) + innerList.size() -1; // e.g. 11 = 9 + 3 -1
                     sum += innerList.size()*(start%13 + end)/2; // sum of arithmetic series
                 }
             } else {
                 if(start%13==end%13){
                     // group
-                    sum += (start%13)*innerList.size(); // Convert to tile number and multiply by length
+                    sum += ((start-1)%13 +1 )*innerList.size(); // Convert to tile number and multiply by length
                 } else {
                     // run
-                    sum += innerList.size()*(start%13 + end%13)/2; // sum of arithmetic series
+                    sum += innerList.size()*(((start-1)%13 +1 ) + ((end-1)%13 +1 ))/2; // sum of arithmetic series
                 }
 
             }
