@@ -96,22 +96,6 @@ public class StartScreensApplication extends Application {
     }
 
     public void handleResetBoard(ActionEvent event) {
-        ImageView[] entireBoard = getBoard();
-        ArrayList<ArrayList<Image>> newBoardImages = gameModel.curr;
-        int currentIndex = 0;
-        Player currentPlayer = gameModel.getCurrentPlayer();
-        int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
-        ImageView[] playerBoard = getPlayerBoard();
-        for (int i = 0; i < playerBoard.length; i++) {
-            if (i < numOfTiles) {
-                Image image = gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getImage();
-                playerBoard[i].setImage(image);
-                playerBoard[i].setVisible(true);
-            } else {
-                playerBoard[i].setVisible(false);
-            }
-        }
-        initializeDragAndDrop();
         updateBoard(GameModel.getInstance().currBoard);
         updateHand(GameModel.getInstance().getCurrentPlayer().getDeckOfTiles());
     }
