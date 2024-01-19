@@ -1,11 +1,8 @@
 package com.gameEngine;
 
-
-
 import com.MCTS.ActionSpaceGenerator;
 import com.MCTS.BaselineAgent;
 import com.MCTS.MCTS;
-
 import java.util.ArrayList;
 
 public class ComputerPlayer implements Player
@@ -16,8 +13,7 @@ public class ComputerPlayer implements Player
     private ArrayList<Integer> deckLengths;
     private String type;
 
-    public ComputerPlayer(String username, String type)
-    {
+    public ComputerPlayer(String username, String type) {
         this.type = type;
         this.username = username;
         this.deckOfTiles = new ArrayList<>();
