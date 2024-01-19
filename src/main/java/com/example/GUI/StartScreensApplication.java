@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 
-@SuppressWarnings("CallToPrintStackTrace")
+@SuppressWarnings({"CallToPrintStackTrace", "ClassEscapesDefinedScope"})
 public class StartScreensApplication extends Application {
     @FXML
     public TextField firstPlayerName, secondPlayerName, thirdPlayerName, fourthPlayerName;
@@ -95,22 +95,11 @@ public class StartScreensApplication extends Application {
         gameModel.setTransferBoardViaImages(transformIntoBoard());
     }
 
-    public void handleResetBoard(ActionEvent event) {
+    public void handleResetBoard(ActionEvent ignoredEvent) {
         updateBoard(GameModel.getInstance().currBoard);
         updateHand(GameModel.getInstance().getCurrentPlayer().getDeckOfTiles());
     }
 
-    private Tile findTileByImage(Image image) {
-        Player player = GameModel.getInstance().getCurrentPlayer();
-        if (player != null) {
-            for (Tile tile : player.getDeckOfTiles()) {
-                if (tile.getImage() != null && tile.getImage().equals(image)) {
-                    return tile;
-                }
-            }
-        }
-        return null; // Tile not found
-    }
 
     public ArrayList<ArrayList<Image>> transformIntoBoard() {
         ImageView[] imageViews = getBoard();
@@ -221,8 +210,8 @@ public class StartScreensApplication extends Application {
 
     public void updateHand(ArrayList<Tile> newHand){
         ImageView[] hand = getPlayerBoard();
-        for(int index = 0; index < hand.length; index++){
-            hand[index].setImage(null);
+        for (ImageView imageView : hand) {
+            imageView.setImage(null);
         }
         for(int index = 0; index < newHand.size(); index ++){
             hand[index].setImage(newHand.get(index).getImage());
@@ -231,20 +220,19 @@ public class StartScreensApplication extends Application {
     public void updateBoard(Board newBoard) {
         ImageView[] GuiBoard = getBoard();
         // clean the board
-        for (int index = 0; index < GuiBoard.length; index++) {
-            GuiBoard[index].setImage(null);
+        for (ImageView imageView : GuiBoard) {
+            imageView.setImage(null);
         }
         ArrayList<Set> setArrayList = newBoard.getSetList();
         int lastEmptySlot = 0;
         int SlotsInCurrentRow = 17;
         int usedRows =0;
         //go thought the sets
-        for (int setIndex = 0; setIndex < setArrayList.size(); setIndex++) {
+        for (Set currentTileSet : setArrayList) {
             //go thought the tiles in the set
-            Set currentTileSet = setArrayList.get(setIndex);
-            if(currentTileSet.getSize() > SlotsInCurrentRow){
+            if (currentTileSet.getSize() > SlotsInCurrentRow) {
                 usedRows++;
-                lastEmptySlot = 17*usedRows;
+                lastEmptySlot = 17 * usedRows;
                 SlotsInCurrentRow = 17;
             }
             for (int tileIndex = 0; tileIndex < currentTileSet.getSizes(); tileIndex++) {
@@ -253,7 +241,7 @@ public class StartScreensApplication extends Application {
                 lastEmptySlot++;
                 SlotsInCurrentRow--;
             }
-            lastEmptySlot ++;
+            lastEmptySlot++;
             SlotsInCurrentRow--;
         }
     }
