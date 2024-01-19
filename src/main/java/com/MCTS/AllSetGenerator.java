@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 //this file is the exact same as normal allsetgenerator but it does not include with 2 jokers
-//to acces write AllSetGenerator.getInstance().getAllSets();
+//to access write AllSetGenerator.getInstance().getAllSets();
 
 public class AllSetGenerator {
     private static AllSetGenerator instance;
