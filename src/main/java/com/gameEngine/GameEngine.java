@@ -55,7 +55,7 @@ public class GameEngine {
         StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
         gameModel.setCurrentPlayer(getCurrentPlayer());
         StartScreensApplication.activeController.playerTurn();
-        gameModel.setCurrentBoard(board);
+        // gameModel.setCurrentBoard(board); why was that function there?
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
         currentDraw = getThisDrawnTile(); 
         
@@ -106,7 +106,7 @@ public class GameEngine {
                                     gameTurn();
                                 }
                                 else { // for human player we just tell them they dont have 30 points 
-                                    System.out.println("Get more then 30"); 
+                                    System.out.println("Get more then 30");
                                     StartScreensApplication.getInstance().setMessageLabel("1", "You need to get more then 30 points!");
                                 }
                         } }
@@ -156,7 +156,7 @@ public class GameEngine {
                 if(!contained){
                     gotOut = false;
                     //StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
-                    System.out.println("You can't the tiles in the board!");
+                    System.out.println("You can't use the tiles in the board!");
                     break;
                 }
 
@@ -220,6 +220,10 @@ public class GameEngine {
         } else {
             currentPlayerIndex++;
         }
+        // curr = transformIntoBoard();
+        System.out.println("Updating the curr to:");
+        board.printBoard();
+        GameModel.getInstance().curr = board.turnIntoImages();
         //move to end maybe
         gameModel.setCurrentPlayer(getCurrentPlayer());
         StartScreensApplication.activeController.playerTurn();

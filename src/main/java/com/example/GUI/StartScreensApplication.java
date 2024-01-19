@@ -57,7 +57,6 @@ public class StartScreensApplication extends Application {
     private final GameModel gameModel = GameModel.getInstance();
     private final ObjectProperty<ImageView> dragSource = new SimpleObjectProperty<>();
     private final StartScreenHelper helper = StartScreenHelper.getInstance();
-    private ArrayList<ArrayList<Image>> curr;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -98,16 +97,13 @@ public class StartScreensApplication extends Application {
     public void handleNextTurn() {
         gameModel.setNextTurn(true);
         gameModel.setTransferBoardViaImages(transformIntoBoard());
-        curr = transformIntoBoard();
     }
 
     public void handleResetBoard(ActionEvent event) {
         ImageView[] entireBoard = getBoard();
-        ArrayList<ArrayList<Image>> newBoardImages = curr;
-
+        ArrayList<ArrayList<Image>> newBoardImages = gameModel.curr;
         int currentIndex = 0;
         ArrayList<Tile> tilesToRemoveFromBoard = new ArrayList<>();
-
         for (ArrayList<Image> row : newBoardImages) {
             for (Image image : row) {
                 ImageView currentImageView = entireBoard[currentIndex];
