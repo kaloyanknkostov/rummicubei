@@ -1,9 +1,6 @@
 package com.example.GUI;
 
-import com.gameEngine.Board;
-import com.gameEngine.Player;
-import com.gameEngine.Set;
-import com.gameEngine.Tile;
+import com.gameEngine.*;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.input.DragEvent;
@@ -30,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 
-@SuppressWarnings("CallToPrintStackTrace")
+@SuppressWarnings({"CallToPrintStackTrace", "ClassEscapesDefinedScope"})
 public class StartScreensApplication extends Application {
     @FXML
     public TextField firstPlayerName, secondPlayerName, thirdPlayerName, fourthPlayerName;
@@ -57,7 +54,6 @@ public class StartScreensApplication extends Application {
     private final GameModel gameModel = GameModel.getInstance();
     private final ObjectProperty<ImageView> dragSource = new SimpleObjectProperty<>();
     private final StartScreenHelper helper = StartScreenHelper.getInstance();
-    private ArrayList<ArrayList<Image>> curr;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -81,7 +77,6 @@ public class StartScreensApplication extends Application {
 
     public void handleStartGame(ActionEvent event) {
         if (helper.checkNames(firstPlayerName, secondPlayerName, thirdPlayerName, fourthPlayerName)) {
-            System.out.print("checkNames passed");
             gameModel.setStartGame(true);
             switchScene("GamePane.fxml", event);
         } else {
@@ -98,58 +93,13 @@ public class StartScreensApplication extends Application {
     public void handleNextTurn() {
         gameModel.setNextTurn(true);
         gameModel.setTransferBoardViaImages(transformIntoBoard());
-        curr = transformIntoBoard();
     }
 
-    public void handleResetBoard(ActionEvent event) {
-        ImageView[] entireBoard = getBoard();
-        ArrayList<ArrayList<Image>> newBoardImages = curr;
-
-        int currentIndex = 0;
-        ArrayList<Tile> tilesToRemoveFromBoard = new ArrayList<>();
-
-        for (ArrayList<Image> row : newBoardImages) {
-            for (Image image : row) {
-                ImageView currentImageView = entireBoard[currentIndex];
-                if (currentImageView.getImage() != null) {
-                    Tile correspondingTile = findTileByImage(image, gameModel.getCurrentPlayer());
-                    if (correspondingTile != null) {
-                        tilesToRemoveFromBoard.add(correspondingTile);
-                    }
-                }
-                currentImageView.setImage(image);
-                currentIndex++;
-            }
-        }
-
-        Player currentPlayer = gameModel.getCurrentPlayer();
-        if (currentPlayer != null) {
-            Platform.runLater(() -> currentPlayer.getDeckOfTiles().addAll(tilesToRemoveFromBoard));
-        }
-        int numOfTiles = gameModel.getCurrentPlayer().getDeckOfTiles().size();
-        ImageView[] playerBoard = getPlayerBoard();
-        for (int i = 0; i < playerBoard.length; i++) {
-            if (i < numOfTiles) {
-                Image image = gameModel.getCurrentPlayer().getDeckOfTiles().get(i).getImage();
-                playerBoard[i].setImage(image);
-                playerBoard[i].setVisible(true);
-            } else {
-                playerBoard[i].setVisible(false);
-            }
-        }
-        initializeDragAndDrop();
+    public void handleResetBoard(ActionEvent ignoredEvent) {
+        updateBoard(GameModel.getInstance().currBoard);
+        updateHand(GameModel.getInstance().getCurrentPlayer().getDeckOfTiles());
     }
 
-    private Tile findTileByImage(Image image, Player player) {
-        if (player != null) {
-            for (Tile tile : player.getDeckOfTiles()) {
-                if (tile.getImage() != null && tile.getImage().equals(image)) {
-                    return tile;
-                }
-            }
-        }
-        return null; // Tile not found
-    }
 
     public ArrayList<ArrayList<Image>> transformIntoBoard() {
         ImageView[] imageViews = getBoard();
@@ -258,23 +208,31 @@ public class StartScreensApplication extends Application {
         initializeDragAndDrop();
     }
 
+    public void updateHand(ArrayList<Tile> newHand){
+        ImageView[] hand = getPlayerBoard();
+        for (ImageView imageView : hand) {
+            imageView.setImage(null);
+        }
+        for(int index = 0; index < newHand.size(); index ++){
+            hand[index].setImage(newHand.get(index).getImage());
+        }
+    }
     public void updateBoard(Board newBoard) {
         ImageView[] GuiBoard = getBoard();
         // clean the board
-        for (int index = 0; index < GuiBoard.length; index++) {
-            GuiBoard[index].setImage(null);
+        for (ImageView imageView : GuiBoard) {
+            imageView.setImage(null);
         }
         ArrayList<Set> setArrayList = newBoard.getSetList();
         int lastEmptySlot = 0;
         int SlotsInCurrentRow = 17;
         int usedRows =0;
         //go thought the sets
-        for (int setIndex = 0; setIndex < setArrayList.size(); setIndex++) {
+        for (Set currentTileSet : setArrayList) {
             //go thought the tiles in the set
-            Set currentTileSet = setArrayList.get(setIndex);
-            if(currentTileSet.getSize() > SlotsInCurrentRow){
+            if (currentTileSet.getSize() > SlotsInCurrentRow) {
                 usedRows++;
-                lastEmptySlot = 17*usedRows;
+                lastEmptySlot = 17 * usedRows;
                 SlotsInCurrentRow = 17;
             }
             for (int tileIndex = 0; tileIndex < currentTileSet.getSizes(); tileIndex++) {
@@ -283,7 +241,7 @@ public class StartScreensApplication extends Application {
                 lastEmptySlot++;
                 SlotsInCurrentRow--;
             }
-            lastEmptySlot ++;
+            lastEmptySlot++;
             SlotsInCurrentRow--;
         }
     }
@@ -419,7 +377,6 @@ public class StartScreensApplication extends Application {
                 activeController.B713, activeController.B714, activeController.B715, activeController.B716
         };
     }
-
     private ImageView getDrawImageView() {
         return activeController.DrawTile;
     }

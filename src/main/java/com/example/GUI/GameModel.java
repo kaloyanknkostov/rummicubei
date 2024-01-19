@@ -16,33 +16,28 @@ public class GameModel {
     private int numberOfBots = 0;
     private ArrayList<ArrayList<Image>> transferBoardViaImages;
     public ArrayList<String> playerNames = new ArrayList();
-    public void setCurrentBoard(Board currentBoard) {
-    }
-
+    public ArrayList<ArrayList<Image>> curr = new ArrayList<>();
     public Tile drawTile;
-
     public void setNumberOfBots(int bots){
         this.numberOfBots = bots;
     }
-
     public int getNumberOfBots(){
         return this.numberOfBots;
     }
     public boolean isNextTurn() {
         return nextTurn;
     }
-
     public Tile getDrawTile(){
         return this.drawTile;
     }
     public void setDrawable(Tile t){
         this.drawTile = t;
     }
-
-
     public void setNextTurn(boolean nextTurn) {
         this.nextTurn = nextTurn;
     }
+
+    public Board currBoard = new Board();
 
     @SuppressWarnings("ClassEscapesDefinedScope")
     public Player getCurrentPlayer() {

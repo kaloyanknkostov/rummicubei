@@ -1,6 +1,8 @@
 package com.gameEngine;
 
 
+import javafx.scene.image.Image;
+
 import java.util.ArrayList;
 public class Board {
 
@@ -57,5 +59,18 @@ public class Board {
           board.add(intSet);
        }
        return board;
+    }
+
+    public ArrayList<ArrayList<Image>> turnIntoImages(){
+        ArrayList<ArrayList<Image>> board=new ArrayList<>();
+        for (Set set : setList){
+            ArrayList<Image> ImageSet=new ArrayList<>();
+            for (Tile tile : set.getTilesList()){
+              ImageSet.add(tile.getImage());
+            }
+            ImageSet.add(null);
+            board.add(ImageSet);
+        }
+        return board;
     }
 }

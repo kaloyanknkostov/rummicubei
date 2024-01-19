@@ -55,7 +55,7 @@ public class GameEngine {
         StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
         gameModel.setCurrentPlayer(getCurrentPlayer());
         StartScreensApplication.activeController.playerTurn();
-        gameModel.setCurrentBoard(board);
+        // gameModel.setCurrentBoard(board); why was that function there?
         // Starts the game loop which runs until a game ending event (quit button, or win, etc.)
         currentDraw = getThisDrawnTile(); 
         
@@ -101,12 +101,11 @@ public class GameEngine {
                                 if(getCurrentPlayer() instanceof ComputerPlayer) {  // if the computer cant play more than 30 points than we give it back its originl deck plus the drawn tile 
                                     getCurrentPlayer().setDeckOfTiles(copy);
                                     getCurrentPlayer().getDeckOfTiles().add(currentDraw);
-                                    System.out.println(currentDraw.getPicture());
                                     getThisDrawnTile();
                                     gameTurn();
                                 }
                                 else { // for human player we just tell them they dont have 30 points 
-                                    System.out.println("Get more then 30"); 
+                                    System.out.println("Get more then 30");
                                     StartScreensApplication.getInstance().setMessageLabel("1", "You need to get more then 30 points!");
                                 }
                         } }
@@ -137,10 +136,9 @@ public class GameEngine {
      */
     private boolean sameBoardCheck(Board incomingBoard, ArrayList<Tile> copy){ 
         boolean same = false; 
-        if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) { //checks if size is the same, if not they can't be the same
-                            getCurrentPlayer().setDeckOfTiles(copy); 
-                            getCurrentPlayer().getDeckOfTiles().add(currentDraw); //automatically draws a new tile if the board was unchanged
-                            System.out.println(currentDraw.getPicture());
+        if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
+                            getCurrentPlayer().setDeckOfTiles(copy);
+                            getCurrentPlayer().getDeckOfTiles().add(currentDraw);
                             getThisDrawnTile();
                             same = true; 
                         }
@@ -165,7 +163,9 @@ public class GameEngine {
                 }
                 if(!contained){
                     gotOut = false;
-                    System.out.println("You can't the tiles in the board!");
+                    //StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
+                    System.out.println("You can't use the tiles in the board!");
+
                     break;
                 }
 
@@ -197,7 +197,6 @@ public class GameEngine {
         Tile draw = drawTile();
         gameModel.setDrawable(draw);
         currentDraw = draw;
-        System.out.println(draw.getPicture());
         return draw;
     }
     /**
@@ -241,14 +240,13 @@ public class GameEngine {
         } else {
             currentPlayerIndex++;
         }
+        // curr = transformIntoBoard();
+        GameModel.getInstance().curr = board.turnIntoImages();
+        GameModel.getInstance().currBoard = board;
         //move to end maybe
         gameModel.setCurrentPlayer(getCurrentPlayer()); //update current player
         StartScreensApplication.activeController.playerTurn();
-        for (String s : gameModel.playerNames) {
-            System.out.println(s);
-        }
-        System.out.println("changing that to the player index: " + currentPlayerIndex);
-        if (getCurrentPlayer() instanceof HumanPlayer) { //distinguishing between human player and bots
+        if (getCurrentPlayer() instanceof HumanPlayer) {
             StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
         }
         else {

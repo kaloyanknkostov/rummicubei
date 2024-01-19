@@ -14,6 +14,7 @@ public class BaselineAgent {
         int bestMove = 0;  // the index of the best move in the actionspace
         int currentNumerical = 0; // the values of the best move numerically (all the tiles added)
         ArrayList<ArrayList<Integer>> maxArrayList = new ArrayList<>(); // the best move as the array list of array lists of integers
+
         for (ArrayList<ArrayList<Integer>> move : actionSpace) { // loop through each moves
             currentSize = 0;
             for (ArrayList<Integer> set : move) {  // check each set of the move and add the size of that set to the current size
