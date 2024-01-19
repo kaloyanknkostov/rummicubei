@@ -56,7 +56,7 @@ public class ComputerPlayer implements Player
 
                 baselineAgent =new BaselineAgent(new ArrayList<ArrayList<Integer>>(),deckOfIntTiles);
             }
-            newBoard = baselineAgent.getBestMove();
+            newBoard = BaselineAgent.getBestMove();
         }
         else if (type == "mcts"){
             MCTS mctsAgent = new MCTS(oldBoard.turnToIntBoard(), deckOfIntTiles, deckLengths.get(0));
