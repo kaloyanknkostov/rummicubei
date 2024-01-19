@@ -55,6 +55,13 @@ public class GameState {
                 if(this.couldntPlay[(playerIndex+1)%2]){
                     //TODO only works for two players
                     //this means that the current player could not play and the player before it also couldnt play thus its a draw
+                    //check which player won
+                    int boardDiff = CustomUtility.sumOfRack(this.racks[0])-CustomUtility.sumOfRack(this.racks[1]);
+                    if(boardDiff > 0){
+                        this.winner = 0;
+                    } else if (boardDiff < 0) {
+                        this.winner = 1;
+                    }
                     return 2;
                 }
             }
