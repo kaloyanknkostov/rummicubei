@@ -12,7 +12,6 @@ Done by group 8: <br />
 ## Prerequisites
 - java
 - maven
-- git
 
 ### Python prerequisites
 
