@@ -48,15 +48,12 @@ public class ComputerPlayer implements Player
         System.out.println("Gave the bot this deck: "+deckOfIntTiles);
         ArrayList<ArrayList<Integer>> newBoard = null;
         if (type == "baseline"){
-            BaselineAgent baselineAgent;
             if(isOut){
-                baselineAgent =new BaselineAgent(oldBoard.turnToIntBoard(),deckOfIntTiles);
+                newBoard = BaselineAgent.getBestMove(oldBoard.turnToIntBoard(),deckOfIntTiles);
             }
             else {
-
-                baselineAgent =new BaselineAgent(new ArrayList<ArrayList<Integer>>(),deckOfIntTiles);
+                newBoard = BaselineAgent.getBestMove(new ArrayList<ArrayList<Integer>>(),deckOfIntTiles);
             }
-            newBoard = BaselineAgent.getBestMove();
         }
         else if (type == "mcts"){
             MCTS mctsAgent = new MCTS(oldBoard.turnToIntBoard(), deckOfIntTiles, deckLengths.get(0));
