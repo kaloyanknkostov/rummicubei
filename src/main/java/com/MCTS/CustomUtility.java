@@ -213,4 +213,22 @@ public class CustomUtility {
         }
         return sum;
     }
+
+    /**
+     * Sums up a rack according to the rummikub rules. The joker represents 20 points.
+     *
+     * @param rack The rack where all tiles should be summed up
+     * @return Sum of all tiles
+     */
+    public static int sumOfRack(ArrayList<Integer> rack) {
+        int sum = 0;
+        for(int tile: rack){
+            if(tile==53){
+                sum += 20;
+            } else {
+                sum += ((tile-1)% 13) + 1;
+            }
+        }
+        return sum;
+    }
 }
