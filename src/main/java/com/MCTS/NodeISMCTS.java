@@ -157,34 +157,19 @@ public class NodeISMCTS {
             res = stateForPlayout.updateGameState((new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[playoutMaxer])).getRandomMove(),playoutMaxer);
             //if this loop terminates it means an endstate was reached, since startingstate is a reference it works in function before
         }
-        if(res == 2){
-            //its a draw
-            System.out.println("it was a draw");
-            int totalValue = CustomUtility.sumOfR stateForPlayout.getRacks()[0] + stateForPlayout.getRacks()[1].size();
-            float rackPercentage = 
-            backpropagate();
-        } else {
-            //one of the players won, we have to check which one
-            System.out.println(stateForPlayout.getWinner());
-            backpropagate(stateForPlayout.getWinner());
-        }
+        System.out.println(stateForPlayout.getWinner());
+        backpropagate(stateForPlayout.getWinner());
     }
 
     public void backpropagate(float winner){
         if (this.parent == null){
             return;
         }
-        // propagate the result of the play-out back to the root of the tree
-        if(winner == 0.5){
-            //propagate the same result to everyone since its a draw
-            this.results.add(winner);
-        } else {
-            // at every node check if the winner is equal to the parent
-            if(this.parent.currentPlayer == winner){
+        if(this.parent.currentPlayer == winner){
                 this.results.add(1f);
-            } else {
-                this.results.add(0f);
-            }
+        } else {
+            this.results.add(0f);
+        }
         this.calculateUCT(); // Calc new uct and save it to save on computation
 
         if(this.parent != null){

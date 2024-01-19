@@ -157,32 +157,21 @@ public class Node {
             res = stateForPlayout.updateGameState((new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[playoutMaxer])).getRandomMove(),playoutMaxer);
             //if this loop terminates it means an endstate was reached, since startingstate is a reference it works in function before
         }
-        if(res == 2){
-            //its a draw
-            System.out.println("it was a draw");
-            backpropagate(0.5f);
-        } else {
-            //one of the players won, we have to check which one
-            System.out.println(stateForPlayout.getWinner());
-            backpropagate(stateForPlayout.getWinner());
-        }
+        //one of the players won, we have to check which one
+        System.out.println(stateForPlayout.getWinner());
+        backpropagate(stateForPlayout.getWinner());
+        
     }
 
     public void backpropagate(float winner){
         if (this.parent == null){
             return;
         }
-        // propagate the result of the play-out back to the root of the tree
-        if(winner == 0.5){
-            //propagate the same result to everyone since its a draw
-            this.results.add(winner);
+        // at every node check if the winner is equal to the parent
+        if(this.parent.currentPlayer == winner){
+            this.results.add(1f);
         } else {
-            // at every node check if the winner is equal to the parent
-            if(this.parent.currentPlayer == winner){
-                this.results.add(1f);
-            } else {
-                this.results.add(0f);
-            }
+            this.results.add(0f);
         }
         this.calculateUCT(); // Calc new uct and save it to save on computation
 
