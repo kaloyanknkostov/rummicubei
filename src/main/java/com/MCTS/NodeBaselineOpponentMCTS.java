@@ -89,20 +89,28 @@ public class NodeBaselineOpponentMCTS {
             int res = newState.updateGameState(board, 0);
             if(res == 2){
                 //its a draw
-                backpropagate(0.5f);
                 NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, true);
                 this.childList.add(child);
+                child.backpropagate(0.5f);
             } else if(res == 1){
-                backpropagate(newState.getWinner());
                 NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, true);
                 this.childList.add(child);
+                child.backpropagate(1f);
             } else {
                 //in this case our opponent gets to play now
                 ArrayList<ArrayList<Integer>> opponentBoard = BaselineAgent.getBestMove(board, newState.getRacks()[1]); // this is the baseline best move our opponent can make
-                int opponentRes = newState.updateGameState(opponentBoard, (currentPlayer +1) %2);
+                int opponentRes = newState.updateGameState(opponentBoard,1);
                 //now we do have to check for our opponent again what his move resulted in
-                if()
-                NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, (currentPlayer +1) %2, false);
+                if(opponentRes == 2){
+                    NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, true);
+                    this.childList.add(child);
+                    child.backpropagate(0.5f);
+                } else if(opponentRes == 1) {
+                    NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, true);
+                    this.childList.add(child);
+                    child.backpropagate(0f);
+                } 
+                NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, false);
                 this.childList.add(child);
             }
             //only works for two players
@@ -113,23 +121,25 @@ public class NodeBaselineOpponentMCTS {
 
     public void playOut(){
         GameState stateForPlayout = this.gameState.copy();
-        int playoutMaxer = this.currentPlayer;
-        RandomMove newMove = new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[playoutMaxer]);
+        RandomMove newMove = new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[0]);
         ArrayList<ArrayList<Integer>> newBoard = newMove.getRandomMove();
-        int res = stateForPlayout.updateGameState(newBoard,playoutMaxer);
+        int player = 0;
+        int res = stateForPlayout.updateGameState(newBoard,0);
         while(res == 0){
             //update so its the next players turn
             //TODO this is constrained for 2 players
-            playoutMaxer = (playoutMaxer + 1) % 2;
-            res = stateForPlayout.updateGameState((new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[playoutMaxer])).getRandomMove(),playoutMaxer);
+            player = (player + 1) % 2;
+            res = stateForPlayout.updateGameState((new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[player])).getRandomMove(),player);
             //if this loop terminates it means an endstate was reached, since startingstate is a reference it works in function before
         }
         if(res == 2){
             //its a draw
             backpropagate(0.5f);
-        } else {
+        } else if (stateForPlayout.getWinner() == 0){
             //one of the players won, we have to check which one
-            backpropagate(stateForPlayout.getWinner());
+            backpropagate(1f);
+        } else { 
+            backpropagate(0f);
         }
     }
 

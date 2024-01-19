@@ -25,7 +25,7 @@ public class MCTS {
         ArrayList<Integer> deck =  new ArrayList<>(Arrays.asList(10, 11, 12, 13));
 
         MCTS mcts = new MCTS(board, deck, 6);
-        mcts.loopMCTS(2);
+        mcts.loopMCTS(1);
     }
 
 
