@@ -178,9 +178,9 @@ public class CustomUtility {
         for (ArrayList<Integer> innerList : board) {
             // sum += number;
             // if run use n*(start+end)/2
-            int start = innerList.getFirst();
+            int start = innerList.get(0);
             int second = innerList.get(1); // to test if start or end are joker
-            int end = innerList.getLast();
+            int end = innerList.get(-1);
             // Difficulty here: Joker has the value of the tile its representing
             if(start == 53){
                 if(second%13 == end%13){
@@ -209,6 +209,24 @@ public class CustomUtility {
                     sum += innerList.size()*(((start-1)%13 +1 ) + ((end-1)%13 +1 ))/2; // sum of arithmetic series
                 }
 
+            }
+        }
+        return sum;
+    }
+
+    /**
+     * Sums up a rack according to the rummikub rules. The joker represents 20 points.
+     *
+     * @param rack The rack where all tiles should be summed up
+     * @return Sum of all tiles
+     */
+    public static int sumOfRack(ArrayList<Integer> rack) {
+        int sum = 0;
+        for(int tile: rack){
+            if(tile==53){
+                sum += 20;
+            } else {
+                sum += ((tile-1)% 13) + 1;
             }
         }
         return sum;
