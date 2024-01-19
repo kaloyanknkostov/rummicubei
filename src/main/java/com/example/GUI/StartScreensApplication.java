@@ -108,7 +108,7 @@ public class StartScreensApplication extends Application {
             for (Image image : row) {
                 ImageView currentImageView = entireBoard[currentIndex];
                 if (currentImageView.getImage() != null) {
-                    Tile correspondingTile = findTileByImage(image, gameModel.getCurrentPlayer());
+                    Tile correspondingTile = findTileByImage(image);
                     if (correspondingTile != null) {
                         tilesToRemoveFromBoard.add(correspondingTile);
                     }
@@ -134,9 +134,11 @@ public class StartScreensApplication extends Application {
             }
         }
         initializeDragAndDrop();
+        updateBoard(GameModel.getInstance().currBoard);
     }
 
-    private Tile findTileByImage(Image image, Player player) {
+    private Tile findTileByImage(Image image) {
+        Player player = GameModel.getInstance().getCurrentPlayer();
         if (player != null) {
             for (Tile tile : player.getDeckOfTiles()) {
                 if (tile.getImage() != null && tile.getImage().equals(image)) {
@@ -415,7 +417,6 @@ public class StartScreensApplication extends Application {
                 activeController.B713, activeController.B714, activeController.B715, activeController.B716
         };
     }
-
     private ImageView getDrawImageView() {
         return activeController.DrawTile;
     }

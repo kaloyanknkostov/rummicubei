@@ -37,6 +37,8 @@ public class GameModel {
         this.nextTurn = nextTurn;
     }
 
+    public Board currBoard = new Board();
+
     @SuppressWarnings("ClassEscapesDefinedScope")
     public Player getCurrentPlayer() {
         return currentPlayer;

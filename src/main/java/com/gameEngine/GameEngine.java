@@ -224,6 +224,7 @@ public class GameEngine {
         System.out.println("Updating the curr to:");
         board.printBoard();
         GameModel.getInstance().curr = board.turnIntoImages();
+        GameModel.getInstance().currBoard = board;
         //move to end maybe
         gameModel.setCurrentPlayer(getCurrentPlayer());
         StartScreensApplication.activeController.playerTurn();
