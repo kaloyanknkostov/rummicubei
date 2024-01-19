@@ -14,7 +14,8 @@ public class Board {
 
     public boolean checkBoardValidity() {
         for (Set set : setList) {
-            if (!set.isValid()) return false;
+            if (!set.isValid()) {
+                return false;}
         }
         return true;
     }

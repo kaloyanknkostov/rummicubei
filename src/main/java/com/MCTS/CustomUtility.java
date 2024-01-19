@@ -62,7 +62,7 @@ public class CustomUtility {
         startingBoardSet.removeAll(newBoardSet);
 
         // Check if starting board is empty after removal
-        return startingBoardSet.isEmpty();        
+        return startingBoardSet.isEmpty();
     }
 
 
@@ -81,7 +81,7 @@ public class CustomUtility {
         availableTilesSet.removeAll(boardSet);
 
         // Convert the result back to ArrayList
-        return new ArrayList<>(availableTilesSet);        
+        return new ArrayList<>(availableTilesSet);
     }
 
 
@@ -166,4 +166,69 @@ public class CustomUtility {
         return copy;
     }
 
+    /**
+     * Sums up the board according to the rummikub rules. The joker represents the tile that could replace it.
+     *
+     * @param board The board where all tiles should be summed up
+     * @return Sum of all tiles (sets) on the board
+     */
+    public static int sumOfBoard(ArrayList<ArrayList<Integer>> board) {
+        int sum = 0;
+
+        for (ArrayList<Integer> innerList : board) {
+            // sum += number;
+            // if run use n*(start+end)/2
+            int start = innerList.get(0);
+            int second = innerList.get(1); // to test if start or end are joker
+            int end = innerList.get(-1);
+            // Difficulty here: Joker has the value of the tile its representing
+            if(start == 53){
+                if(second%13 == end%13){
+                    // group
+                    sum += ((end-1)%13 +1 )*innerList.size(); // Convert to tile number and multiply by length
+                } else {
+                    // run
+                    start = ((second-1)%13)+1 -1; // move one back for the run, e.g. Joker, 9, 10 -> J=8
+                    sum += innerList.size()*(start + (end-1)%13+1)/2; // sum of arithmetic series
+                }
+            } else if(end == 53){
+                if(start%13==second%13){
+                    // group
+                    sum += ((start-1)%13 +1 )*innerList.size(); // Convert to tile number and multiply by length
+                } else {
+                    // run
+                    end = ((start-1)%13 +1 ) + innerList.size() -1; // e.g. 11 = 9 + 3 -1
+                    sum += innerList.size()*(start%13 + end)/2; // sum of arithmetic series
+                }
+            } else {
+                if(start%13==end%13){
+                    // group
+                    sum += ((start-1)%13 +1 )*innerList.size(); // Convert to tile number and multiply by length
+                } else {
+                    // run
+                    sum += innerList.size()*(((start-1)%13 +1 ) + ((end-1)%13 +1 ))/2; // sum of arithmetic series
+                }
+
+            }
+        }
+        return sum;
+    }
+
+    /**
+     * Sums up a rack according to the rummikub rules. The joker represents 20 points.
+     *
+     * @param rack The rack where all tiles should be summed up
+     * @return Sum of all tiles
+     */
+    public static int sumOfRack(ArrayList<Integer> rack) {
+        int sum = 0;
+        for(int tile: rack){
+            if(tile==53){
+                sum += 20;
+            } else {
+                sum += ((tile-1)% 13) + 1;
+            }
+        }
+        return sum;
+    }
 }

@@ -55,12 +55,21 @@ public class GameState {
                 if(this.couldntPlay[(playerIndex+1)%2]){
                     //TODO only works for two players
                     //this means that the current player could not play and the player before it also couldnt play thus its a draw
+                    //check which player won
+                    int boardDiff = CustomUtility.sumOfRack(this.racks[0])-CustomUtility.sumOfRack(this.racks[1]);
+                    if(boardDiff > 0){
+                        this.winner = 0;
+                    } else if (boardDiff < 0) {
+                        this.winner = 1;
+                    }
                     return 2;
                 }
             }
         }
         else if (equals(CustomUtility.decompose(newBoard),CustomUtility.decompose(this.board))){
-            drawCard(playerIndex);
+            if(!this.pile.isEmpty()){
+                drawCard(playerIndex);
+            }
             this.couldntPlay[playerIndex] = false;
             //if the game did not finish or one player did not just draw, then one player played a move and we have to update his
             //rack and the board
@@ -97,8 +106,6 @@ public class GameState {
 
     public static boolean equals(ArrayList<Integer> one, ArrayList<Integer> two){
         if(one.size()!= two.size())return false;
-
-
         Collections.sort(one);
         Collections.sort(two);
         for (int i = 0; i <one.size() ; i++) {
