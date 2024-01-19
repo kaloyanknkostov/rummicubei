@@ -124,12 +124,7 @@ public class Node {
             //for every action move it could make it copies the current gamestate and updates it based on the action
             GameState newState = this.gameState.copy();
             int res = newState.updateGameState(board, currentPlayer);
-            if(res == 2){
-                //its a draw
-                Node child = new Node(newState, this, (currentPlayer +1) %2, true, true);
-                this.childList.add(child);
-                child.backpropagate(0.5f);
-            } else if(res == 1){
+            if(res == 1 || res == 2){
                 //one of the players won, we have to check which one
                 Node child = new Node(newState, this, (currentPlayer +1) %2, true, true);
                 this.childList.add(child);
