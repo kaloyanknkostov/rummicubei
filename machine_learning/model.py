@@ -4,7 +4,7 @@ from rich import print
 
 
 class TilePredNet(nn.Module):
-    def __init__(self, n_rounds=1, n_opponents=3, dropout=0.3):
+    def __init__(self, n_rounds=1, n_opponents=3, n_sets=1174, dropout=0.3):
         super(TilePredNet, self).__init__()
 
         # Multi use variables
@@ -15,9 +15,9 @@ class TilePredNet(nn.Module):
 
         # linear layers
         self.fc_in = nn.Linear(
-            in_features=53 + 1174 * n_opponents * n_rounds, out_features=1174
+            in_features=53 + n_sets * n_rounds, out_features=n_sets
         )
-        self.fc_hidden_1 = nn.Linear(in_features=1174, out_features=100)
+        self.fc_hidden_1 = nn.Linear(in_features=n_sets, out_features=100)
         self.fc_out = nn.Linear(in_features=100, out_features=1 + n_opponents)
 
     # Define function which represents the model architecture (top-down)
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     n = 4
     n_opp = 3
     model = TilePredNet(n_rounds=n, n_opponents=n_opp)
-    x = torch.randn((64, 53 + 1174 * n_opp * n))
+    x = torch.randn((64, 53 + 679 * n))
     pred = model(x)
     print("Pred shape:", pred.shape)
     print("[green]SUCCESS![/green]")

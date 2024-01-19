@@ -53,7 +53,7 @@ def train_loop(dataloader, model, loss_fn, optimizer, epoch: int, csv: list = No
         #  TODO Get the metrics with sklearn!
         if batch % 3 == 0:
             print(
-                f"loss: {loss:>7f}, Recall: {(recall):>0.4f}, "
+                f"loss: {loss:>7f}, Acc: {(acc):>0.4f}, Recall: {(recall):>0.4f}, "
                 + f"Precision: {precision:>0.4f}, MCC: {mcc:>.4f}"
                 + f" [{current:>5d}/{size:>5d}]"
             )
@@ -102,8 +102,9 @@ def test_loop(dataloader, model, loss_fn, epoch, csv=None):
             ]
         )
     print(
-        f"[magenta1]Testing:\nloss: {test_loss:>7f}, Recall: {(recall):>0.4f},",
-        f"Precision: {precision:>0.4f}, MCC: {mcc:>.4f}\n[/magenta1]",
+        f"[magenta1]Testing:\nloss: {test_loss:>7f}, Acc: {(acc):>0.4f},",
+        f"[magenta1]Recall: {(recall):>0.4f}, Precision: {precision:>0.4f},",
+        f"[magenta1]MCC: {mcc:>.4f}\n",
     )
     return test_loss
 
@@ -120,24 +121,15 @@ def run_training(
     saving_annotation="",
     annotations_df=None,
 ):
-    # datasets
-    if annotations_df is None:
-        df = pd.read_csv(dataset_path + "/image_label_mapping.csv")
-        train_root_dir = dataset_path + "/training"
-        test_root_dir = dataset_path + "/validation"
-    else:
-        df = annotations_df
-        train_root_dir = ""
-        test_root_dir = ""
+    dataset = TileDataset(annotations_file=r"data\training_data\training_data_tile_53.csv")
+    generator = torch.Generator().manual_seed(42)
+    train_dataset, test_dataset = torch.utils.data.random_split(dataset, lengths=[.7, .3], generator=generator)
 
-    train_data = None  # TileDataset(train_root_dir)
-    test_data = None  # TileDataset()
+    print("Train:", len(train_dataset))
+    print("test", len(test_dataset))
 
-    print("Train:", len(train_data))
-    print("test", len(test_data))
-
-    train_dataloader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
-    test_dataloader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
 
     model_loss_fn = loss_fn()
     model_optimizer = optimizer(model.parameters(), lr=learning_rate)
@@ -223,7 +215,7 @@ if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device")
 
-    model = TilePredNet(n_rounds=1, n_opponents=3, dropout=0.2).to(device)
+    model = TilePredNet(n_rounds=8, n_opponents=1, n_sets=679, dropout=0.2).to(device)
     # print(model)
 
     print("Model in use:", model._get_name())

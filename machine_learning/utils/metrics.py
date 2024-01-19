@@ -10,8 +10,8 @@ def get_metrics(pred, target, thresh=0.5):
         Accuracy, MatthewsCorrCoef, JaccardIndex in dict
     """
     # Remove the background layer so metrics are only for the leaves
-    pred_tensor = pred[0, 1]
-    target_tensor = target[0, 1]
+    pred_tensor = pred
+    target_tensor = target
     metrics = dict()
     metrics["acc"] = clf.BinaryAccuracy(threshold=thresh)(
         pred_tensor, target_tensor
