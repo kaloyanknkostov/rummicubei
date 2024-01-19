@@ -121,10 +121,13 @@ public class GameEngine {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                            
             }
+            
         }
         
         System.out.println("GAME FINISHED"); 
+       
     }
     
     
@@ -342,9 +345,14 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
      */
     private boolean isGameEnding() { 
         //condition 1: A player is out of tiles
-        if (listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().isEmpty()) {
+        for (Player player : listOfPlayers) {
+             if (player.getDeckOfTiles().isEmpty()) {
+            StartScreensApplication.getInstance().setMessageLabel(player.getUsername(), player.getUsername() + " won the game!");
             return true;
         }
+            
+        }
+       
         //condition 2: No more tiles to draw
         return potOfTiles.isEmpty();
     }
