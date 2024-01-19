@@ -129,12 +129,17 @@ public class GameEngine {
     }
     
     
-
-    private boolean sameBoardCheck(Board incomingBoard, ArrayList<Tile> copy){ // checks if the board is the same returns true if it is and already draws tile
+    /**
+     * Checks if the incoming board is the same as the old one
+     * @param incomingBoard New board
+     * @param copy Copy of the current player's deck
+     * @return true if the old and new boards are the same, false otherwise
+     */
+    private boolean sameBoardCheck(Board incomingBoard, ArrayList<Tile> copy){ 
         boolean same = false; 
-        if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) {
-                            getCurrentPlayer().setDeckOfTiles(copy);
-                            getCurrentPlayer().getDeckOfTiles().add(currentDraw);
+        if (board.getTilesInBoard().size() == incomingBoard.getTilesInBoard().size()) { //checks if size is the same, if not they can't be the same
+                            getCurrentPlayer().setDeckOfTiles(copy); 
+                            getCurrentPlayer().getDeckOfTiles().add(currentDraw); //automatically draws a new tile if the board was unchanged
                             System.out.println(currentDraw.getPicture());
                             getThisDrawnTile();
                             same = true; 
@@ -143,19 +148,23 @@ public class GameEngine {
         
     }
 
+    /**
+     * Checks if all of the points the player put on the board come from new sets
+     * @param incomingBoard New board
+     * @return true if the requirement is met, false otherwise
+     */
     private boolean checkOut(Board incomingBoard){
         boolean gotOut = true; 
          for (Set set : board.getSetList()) {
                 boolean contained=false;
-                for (Set newSet : incomingBoard.getSetList()) {
-                    if (set.equals(newSet)) {
+                for (Set newSet : incomingBoard.getSetList()) { //compares every set of old board to every set of incomingBoard
+                    if (set.equals(newSet)) { //two identical sets
                         contained = true;
                         break;
                     }
                 }
                 if(!contained){
                     gotOut = false;
-                    //StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
                     System.out.println("You can't the tiles in the board!");
                     break;
                 }
@@ -164,17 +173,22 @@ public class GameEngine {
             return gotOut; 
     }
 
+    /**
+     * Calculates the total value of tiles a player put in his turn
+     * @param incomingBoard New board
+     * @return The value of tiles a player played in his turn
+     */
     private int getValueOfTurn(Board incomingBoard) {
         int valueOfTurn = 0;
-        for (Set set : incomingBoard.getSetList()) {
+        for (Set set : incomingBoard.getSetList()) { //all sets on the new board
             boolean present = false;
-            for (Set boardSet : board.getSetList()) {
-                if (set.equals(boardSet)) {
+            for (Set boardSet : board.getSetList()) { //all sets on the old board
+                if (set.equals(boardSet)) { //if a set is present in both old and new board we dont include it in the counting
                     present = true;
                     break;
                 }
             }
-            if (!present) valueOfTurn += set.getValue();
+            if (!present) valueOfTurn += set.getValue(); //only adds the value of sets that were not present before
         }
         return valueOfTurn;
     }
@@ -186,21 +200,25 @@ public class GameEngine {
         System.out.println(draw.getPicture());
         return draw;
     }
+    /**
+     * Updates DecksLengths for the current player
+     */
     private void setLengthOtherDecks(){
-         
-                    ArrayList<Integer> deck_lengths = new ArrayList<Integer>();
-                    for (Player player : listOfPlayers) {
-                        // Check if the current object is not the one to be excluded
-                        if (!player.equals(getCurrentPlayer())) {
-                            // Add the object to the result list
-                            deck_lengths.add(player.getDeckOfTiles().size());
-                        }
-                    }
-                    getCurrentPlayer().setDeckLengths(deck_lengths);
-                    
-    
+        ArrayList<Integer> deck_lengths = new ArrayList<Integer>();
+            for (Player player : listOfPlayers) {
+                // Check if the current object is not the one to be excluded
+                if (!player.equals(getCurrentPlayer())) {
+                    // Add the object to the result list
+                    deck_lengths.add(player.getDeckOfTiles().size());
+                }
             }
-    
+            getCurrentPlayer().setDeckLengths(deck_lengths);
+    }
+
+    /**
+     * Gets the board after the player put some tiles on it
+     * @return Board after changes
+     */
     private Board getIncomingBoard(){
         Board incomingBoard; // first we need to get the incoming board which depens on whetehr we have a human or computer player 
                 if(getCurrentPlayer() instanceof HumanPlayer) {
@@ -214,20 +232,23 @@ public class GameEngine {
         return incomingBoard; 
     }
 
+    /**
+    *Updates the game turn
+    */
     private void gameTurn() {
         if (currentPlayerIndex == listOfPlayers.size() - 1) {
-            currentPlayerIndex = 0;
+            currentPlayerIndex = 0; //switch back from the last to the first player
         } else {
             currentPlayerIndex++;
         }
         //move to end maybe
-        gameModel.setCurrentPlayer(getCurrentPlayer());
+        gameModel.setCurrentPlayer(getCurrentPlayer()); //update current player
         StartScreensApplication.activeController.playerTurn();
         for (String s : gameModel.playerNames) {
             System.out.println(s);
         }
         System.out.println("changing that to the player index: " + currentPlayerIndex);
-        if (getCurrentPlayer() instanceof HumanPlayer) {
+        if (getCurrentPlayer() instanceof HumanPlayer) { //distinguishing between human player and bots
             StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "");
         }
         else {
@@ -236,17 +257,21 @@ public class GameEngine {
         StartScreensApplication.activeController.updateBoard(board);
     }
 
-
+/**
+ * Transforms an ArrayList of ArrayLists of tiles into a board
+ * @param map ArrayList of ArrayLists of tiles
+ * @return Map represented as a board
+ */
 private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
         Board newBoard = new Board();
-        for (ArrayList<Tile> row : map) {
+        for (ArrayList<Tile> row : map) { //iterate through all the rows of map
             Set set = new Set();
             for (Tile tile : row) {
-                if (tile != null) {
-                    set.addTile(tile);
+                if (tile != null) { //check if tile exists
+                    set.addTile(tile); //if it does, it must form a set
                 } else {
                     if (!set.isEmpty()) {
-                        newBoard.addSet(set);
+                        newBoard.addSet(set); //add set to board
                         set = new Set();
                     }
                 }
@@ -256,25 +281,33 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
         return newBoard;
     }
 
-
+    /**
+     * Transforms a 2D ArrayList of Images into a 2D ArrayList of Tiles
+     * based on the current state of the game model, player decks, and
+     * a pool of tiles.
+     *
+     * @return A 2D ArrayList of Tiles representing the transformed board.
+     */
     private ArrayList<ArrayList<Tile>> transformImagesToTiles() {
         ArrayList<ArrayList<Image>> potentialNewBoard = gameModel.getTransferBoardViaImages();
         ArrayList<ArrayList<Tile>> board2D = new ArrayList<>();
+         // Retrieve the lists of tiles on the current board and player's deck
         ArrayList<Tile> listOfBoardTiles = board.getTilesInBoard();
         ArrayList<Tile> listOfPlayerTiles = listOfPlayers.get(currentPlayerIndex).getDeckOfTiles();
-        for (ArrayList<Image> row : potentialNewBoard) {
+        for (ArrayList<Image> row : potentialNewBoard) { // Iterate through each row of images in the potential new board
             ArrayList<Tile> imageToTile = new ArrayList<>();
             for (Image image : row) {
-                if (image != null) {
-
+                if (image != null) { // Check if the image is not null
                     boolean checker = false;
-                    for (Tile placedTile : listOfBoardTiles) {
+                    for (Tile placedTile : listOfBoardTiles) {  // Check if the image corresponds to a tile on the current board
                         if (placedTile.getImage().equals(image)) {
                             imageToTile.add(placedTile);
                             checker = true;
                             break;
                         }
                     }
+                    // If the image does not correspond to a placed tile on the board,
+                    // check if it corresponds to a tile in the player's deck
                     if (!checker) {
                         for (Tile playerTile : listOfPlayerTiles) {
                             if (playerTile.getImage().equals(image)) {
@@ -285,7 +318,8 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
                             }
                         }
                     }
-
+                    // If the image still does not correspond to a placed tile on the board,
+                    // check if it corresponds to a tile in the pool of tiles
                     if (!checker) {
                         for (Tile placedTile : potOfTilesCopy) {
                             if (placedTile.getImage().equals(image)) {
@@ -296,7 +330,7 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
                     }
 
                 } else {
-                    imageToTile.add(null);
+                    imageToTile.add(null); // If the image is null, add a null tile to the current row
                 }
             }
             board2D.add(imageToTile);
@@ -304,25 +338,34 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
         return board2D;
     }
 
-
-    private boolean isGameEnding() { // check game ending conditions
+    /**
+     * Checks if the game is ending
+     * @return true if one of the conditions for the game to end is true, false otherwise
+     */
+    private boolean isGameEnding() { 
+        //condition 1: A player is out of tiles
         if (listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().isEmpty()) {
             return true;
         }
-
+        //condition 2: No more tiles to draw
         return potOfTiles.isEmpty();
     }
 
 
+    /**
+     * Draws a tile at random
+     * @return Randomly selected tile
+     */
     private Tile drawTile() {
-        int index = (int) Math.floor(Math.random() * potOfTiles.size());
-       // index=1;
-        Tile a = potOfTiles.get(index);
-        potOfTiles.remove(index);
+        int index = (int) Math.floor(Math.random() * potOfTiles.size()); //Picking a random number between 0 and the size of the pot of tiles
+        Tile a = potOfTiles.get(index); //Giving that tile to the player
+        potOfTiles.remove(index); //Removing the tile from the pot of tiles
         return a;
     }
 
-
+    /**
+     * Generate all tiles before the start of the game
+     */
     private void generateTiles() {
 
         //boolean isJoker = false;
@@ -335,13 +378,6 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
             }
         }
 
-//        potOfTilesCopy.addAll(potOfTiles);
-//        int a = potOfTiles.size();
-//        for (int i = 0; i < a; i++) {
-//            potOfTiles.add(potOfTiles.get(i));
-//        }
-
-        //potOfTiles.add(new Tile(0, "", true, "painted_tile_1.png"));
         potOfTiles.add(new Tile(0, "", true, "painted_tile_3.png"));
 
     }
@@ -381,7 +417,9 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
 
     private StringBuilder gameStateLog = new StringBuilder();
 
-    // New method to format the current game state into a CSV-compatible string
+    /**
+     * Formats the current game state into a CSV-compatible string
+     */
     private void logCurrentGameState() {
         StringJoiner sj = new StringJoiner(",");
         sj.add(String.valueOf(gameId)); // Logging gameId
