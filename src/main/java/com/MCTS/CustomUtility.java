@@ -178,9 +178,9 @@ public class CustomUtility {
         for (ArrayList<Integer> innerList : board) {
             // sum += number;
             // if run use n*(start+end)/2
-            int start = innerList.getFirst();
+            int start = innerList.get(0);
             int second = innerList.get(1); // to test if start or end are joker
-            int end = innerList.getLast();
+            int end = innerList.get(-1);
             // Difficulty here: Joker has the value of the tile its representing
             if(start == 53){
                 if(second%13 == end%13){
