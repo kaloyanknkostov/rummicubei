@@ -180,7 +180,7 @@ public class CustomUtility {
             // if run use n*(start+end)/2
             int start = innerList.get(0);
             int second = innerList.get(1); // to test if start or end are joker
-            int end = innerList.get(-1);
+            int end = innerList.get(innerList.size()-1);
             // Difficulty here: Joker has the value of the tile its representing
             if(start == 53){
                 if(second%13 == end%13){
