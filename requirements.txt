@@ -5,3 +5,4 @@ rich
 # Install pytorch for your system: https://pytorch.org/get-started/locally/
 # decide between cuda and cpu
 torchmetrics
+tqdm

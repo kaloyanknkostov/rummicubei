@@ -4,6 +4,7 @@
 import pandas as pd
 import re
 from rich import print
+from tqdm import tqdm
 
 # Target Columns:
 # tile, Current tiles in rack, (Current Board, Board-1)*times n, target (opponent, rest)
@@ -39,7 +40,7 @@ def encode_Tiles_2_number(input: str) -> str:
     return input
 
 
-def create_training_data(src: str):
+def create_training_data(src: str, dst: str):
     tiles = [
         color + "|" + str(n)
         for color in ["red", "blue", "yellow", "black"]
@@ -71,12 +72,29 @@ def create_training_data(src: str):
     print(df)
 
     # Go through every tile to generate the training data for it
-    for tile in tiles:
+    for tile in tqdm(list(range(0, 53))):
         # get the first n lines for the first n boards (ordered by move number asc)
-
-        pass
-    print(df["Board"].iloc[-1].index(1))
-    return df
+        # one line consists of player one rack + (board before current move (same line) + board of line before (difference represent the opportunities)) *times n
+        tile_df = []
+        for i in range(len(df)): # go through every line in our data
+            target = [0, 1]
+            if df["Player2"].iloc[i][tile] == 1:
+                target = [1, 0]
+            line = {
+                "target": target,
+                "rack": df["Player1"].iloc[i],
+                "board": df["Board"].iloc[i]
+                }
+            past_boards = 6
+            for j in range(past_boards + 1):
+                if i-j<0:
+                    line[f"board-{j}"] = [0] * 679
+                else:
+                    line[f"board-{j}"] = df["Board"].iloc[-j]
+            tile_df.append(line)
+        tile_df = pd.DataFrame(tile_df)  # convert list of dicts to df
+        tile_df.to_csv(dst+f"training_data_tile_{tile+1}.csv", index=False)
+    pass
 
 
 if __name__ == "__main__":
@@ -84,6 +102,6 @@ if __name__ == "__main__":
         ALL_SETS = [[int(x) for x in re.sub(r"\[|\]|\n", "", i).split(", ")]
                     for i in f.readlines()]
     src = r"data\raw_data\Game0.csv"
-    dst = r"data\training_data\test.csv"
+    dst = r"data\training_data\\"
     print(encode_Tiles_2_number("black|13"))
-    create_training_data(src=src).to_csv(dst, index=False)
+    create_training_data(src=src, dst=dst)
