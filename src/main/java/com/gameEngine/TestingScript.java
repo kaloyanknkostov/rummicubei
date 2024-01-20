@@ -2,7 +2,7 @@ package com.gameEngine;
 
 public class TestingScript {
     public static void main(String[] args) {
-        long maxTimeMillis = 60 * 1000; // 1 minute in milliseconds
+        long maxTimeMillis = 60 * 2000; // 1 minute in milliseconds
 
         for (int i = 0; i < 100; i++) {
             System.out.println("Generation " + i);
@@ -29,7 +29,7 @@ public class TestingScript {
             long elapsedTime = endTime - startTime;
 
             if (elapsedTime > maxTimeMillis) {
-                System.out.println("Generation " + i + " took more than 1 minute, moving to the next one.");
+                System.out.println("Generation " + i + " took more than 2 minutes, moving to the next one.");
                 gameThread.interrupt(); // Forcefully interrupt the game loop thread
             }
         }

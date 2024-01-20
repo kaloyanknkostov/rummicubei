@@ -94,7 +94,11 @@ public class GameEngine {
                     }
                 } else {
                     getCurrentPlayer().setDeckOfTiles(copy);
-                    System.out.println("NOT VALID");
+                    System.out.println("NOT VALID, DRAWING");
+                    getCurrentPlayer().setDeckOfTiles(copy);
+                    getCurrentPlayer().getDeckOfTiles().add(currentDraw);
+                    getThisDrawnTile();
+                    gameTurn();
                 }
             } else {
                 try {
