@@ -45,7 +45,6 @@ public class ComputerPlayer implements Player
 
 
 
-        System.out.println("Gave the bot this deck: "+deckOfIntTiles);
         ArrayList<ArrayList<Integer>> newBoard = null;
         if (type == "baseline"){
             BaselineAgent baselineAgent;
@@ -74,7 +73,6 @@ public class ComputerPlayer implements Player
             newBoard = nextNode.getGameState().getBoard();
         }
 
-        System.out.println("NEW BOARD WITH INTS: "+newBoard);
         ArrayList<Tile> oldBoardTilesInBoard =oldBoard.getTilesInBoard();
         Board board=new Board();
         if(newBoard == null)
@@ -119,7 +117,6 @@ public class ComputerPlayer implements Player
             }
             board.addSet(newSet);
         }
-        board.printBoard();
         // might break for mcts
         if(!isOut){
             for(Set set:oldBoard.getSetList()){

@@ -64,7 +64,6 @@ public class RandomMove {
 
         RandomMove randomMove = new RandomMove(exampleBoard, exampleRack);
 
-        //System.out.println(randomMove.getResultingBoards());
 
     }
 
@@ -80,7 +79,6 @@ public class RandomMove {
             int x = this.resultingBoards.size();
             //include the prob of not playing anything at all
             int y = this.rand.nextInt(x); //because of zero based indexing
-            //System.out.println("Rand number: "+y);
             this.randomMove = CustomUtility.deepCopy(this.resultingBoards.get(y));
             if(CustomUtility.decompose(this.resultingBoards.get(y)).equals(this.startingBoard) && this.resultingBoards.size() == 1){
                 //meaning the only possible move was not doing anything
