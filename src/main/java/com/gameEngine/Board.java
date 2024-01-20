@@ -73,4 +73,19 @@ public class Board {
         }
         return board;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < setList.size(); i++) {
+            for (Tile tile : setList.get(i).getTilesList()) {
+                sb.append(tile.turnToInt());
+            }
+            sb.append(" ");
+        }
+        if(sb.length() != 0){
+            sb.deleteCharAt(sb.length() -1);
+        }
+        return sb.toString();
+    }
 }
