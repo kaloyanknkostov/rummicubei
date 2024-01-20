@@ -427,17 +427,39 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
      * Formats the current game state into a CSV-compatible string
      */
     private void logCurrentGameState() {
-        StringJoiner sj = new StringJoiner(",");
-        sj.add(String.valueOf(gameId)); // Logging gameId
-        sj.add(board.toString()); // Logging the board
-        sj.add(listOfPlayers.stream()
-                .map(player -> player.getDeckOfTiles().stream()
-                        .map(Tile::toString)
-                        .collect(Collectors.joining(" ")))
-                .collect(Collectors.joining(";"))); // Logging player's hands
-        sj.add(String.valueOf(moveNumber)); // Logging moveNumber
-        sj.add(Integer.toString(currentPlayerIndex)); // Logging the current player
-        gameStateLog.append(sj.toString()).append("\n");
+        String gameIdAsString = String.valueOf(gameId) ; // encode gameId
+        String boardAsString = board.toString() ; //encode the board
+
+        ArrayList<Tile> handOne = listOfPlayers.get(0).getDeckOfTiles();
+        String handOneAsString = ""; // encode the first hand
+        boolean firstTile = true;
+        for (Tile tile : handOne) {
+            if (firstTile) {
+                firstTile = false;
+                handOneAsString += String.valueOf(tile.turnToInt());
+            } else {
+                handOneAsString += " " + String.valueOf(tile.turnToInt());
+            }
+        }
+
+        ArrayList<Tile> handTwo = listOfPlayers.get(1).getDeckOfTiles(); // encode the second hand
+        String handTwoAsString = "";
+        firstTile = true;
+        for (Tile tile : handTwo) {
+            if (firstTile) {
+                firstTile = false;
+                handTwoAsString += String.valueOf(tile.turnToInt());
+            } else {
+                handTwoAsString += " " + String.valueOf(tile.turnToInt());
+            }
+        }
+
+        String moveNumberAsString = String.valueOf(this.moveNumber); // encode the move number
+        String currentPlayerAsString = String.valueOf(this.currentPlayerIndex); // encode the current player index
+
+        String result = gameIdAsString + ", " + boardAsString + ", " +handOneAsString +", " +handTwoAsString +", " + moveNumberAsString +", " + currentPlayerAsString;
+        gameStateLog.append(result).append("\n");
+
     }
 
     private void startLog(){
