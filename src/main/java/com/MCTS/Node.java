@@ -123,6 +123,11 @@ public class Node {
         for(ArrayList<ArrayList<Integer>> board: resultingBoards){
             //for every action move it could make it copies the current gamestate and updates it based on the action
             GameState newState = this.gameState.copy();
+            if(board.isEmpty()){
+                ArrayList<Integer> tmp = new ArrayList<>();
+                tmp.add(-1);
+                board.add(tmp);
+            }
             int res = newState.updateGameState(board, currentPlayer);
             if(res == 2){
                 //its a draw

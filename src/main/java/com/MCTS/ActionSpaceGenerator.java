@@ -15,12 +15,12 @@ public class ActionSpaceGenerator {
     private HashMap<ArrayList<Integer>,HashSet<ArrayList<Integer>>> conflicts;
     private ArrayList<ArrayList<Integer>> possibleSets;
     private ArrayList<Integer> availableTilesStart;
+
     private ArrayList<ArrayList<Integer>> boardForActionSpace;
 
 
-
     public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
-        this.boardForActionSpace = CustomUtility.deepCopy(board);
+        boardForActionSpace = CustomUtility.deepCopy(board);
         this.allPossibleSets = AllSetGenerator.getInstance().getAllSets();
         this.conflicts = ConflictingSets.getInstance().getAllConflicts();
         this.resultingBoards = new ArrayList<>();
@@ -94,6 +94,8 @@ public class ActionSpaceGenerator {
             newBoard.add(rummikubSet);
             newConflicts.remove(rummikubSet);
             newConflicts.removeIf(this.conflicts.get(rummikubSet)::contains);
+            //97415
+            //2066
             if(!forwardCheck(newBoard, newConflicts)){
                 continue;
             }
@@ -128,10 +130,11 @@ public class ActionSpaceGenerator {
 
 
     public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
-        if(this.resultingBoards.isEmpty()){
+        if (this.resultingBoards.isEmpty()){
             this.resultingBoards.add(this.boardForActionSpace);
         }
-        return this.resultingBoards;
+        return resultingBoards;
+
     }
 
     public ArrayList<ArrayList<Integer>> sortPossibleSets(ArrayList<ArrayList<Integer>> possibleSets, ArrayList<Integer> board) {

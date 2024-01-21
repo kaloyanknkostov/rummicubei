@@ -224,7 +224,9 @@ public class GameEngine {
         if (listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().isEmpty()) {
             return true;
         }
-
+        if(potOfTiles.isEmpty()){
+            System.out.println("DRAW, no more tiles");
+        }
         return potOfTiles.isEmpty();
     }
 
