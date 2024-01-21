@@ -3,7 +3,6 @@ package com.gameEngine;
 public class TestingScript {
     public static void main(String[] args) {
         long maxTimeMillis = 60 * 2000; // 1 minute in milliseconds
-
         for (int i = 0; i < 100; i++) {
             System.out.println("Generation " + i);
             GameEngine engine = new GameEngine();
