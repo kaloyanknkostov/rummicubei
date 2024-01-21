@@ -4,7 +4,7 @@ from rich import print
 
 
 class TilePredNet(nn.Module):
-    def __init__(self, n_rounds=1, n_opponents=3, n_sets=1174, dropout=0.3):
+    def __init__(self, n_rounds=1, n_out=53, n_hidden=1000, n_sets=1174, dropout=0.3):
         super(TilePredNet, self).__init__()
 
         # Multi use variables
@@ -14,11 +14,9 @@ class TilePredNet(nn.Module):
         # self.softmax = nn.Softmax()
 
         # linear layers
-        self.fc_in = nn.Linear(
-            in_features=53 + n_sets * n_rounds, out_features=n_sets
-        )
-        self.fc_hidden_1 = nn.Linear(in_features=n_sets, out_features=100)
-        self.fc_out = nn.Linear(in_features=100, out_features=1 + n_opponents)
+        self.fc_in = nn.Linear(in_features=53 + n_sets * n_rounds, out_features=n_sets)
+        self.fc_hidden_1 = nn.Linear(in_features=n_sets, out_features=n_hidden)
+        self.fc_out = nn.Linear(in_features=n_hidden, out_features=n_out)
 
     # Define function which represents the model architecture (top-down)
     def forward(self, x):
@@ -62,7 +60,7 @@ if __name__ == "__main__":
     # Test model with input size --> no errors in fully connected layers
     n = 4
     n_opp = 3
-    model = TilePredNet(n_rounds=n, n_opponents=n_opp)
+    model = TilePredNet(n_rounds=n, n_out=n_opp)
     x = torch.randn((64, 53 + 679 * n))
     pred = model(x)
     print("Pred shape:", pred.shape)

@@ -121,9 +121,13 @@ def run_training(
     saving_annotation="",
     annotations_df=None,
 ):
-    dataset = TileDataset(annotations_file=r"data\training_data\training_data_tile_53.csv")
+    dataset = TileDataset(
+        annotations_file=r"data\training_data\training_data_TEST.csv", device=device
+    )
     generator = torch.Generator().manual_seed(42)
-    train_dataset, test_dataset = torch.utils.data.random_split(dataset, lengths=[.7, .3], generator=generator)
+    train_dataset, test_dataset = torch.utils.data.random_split(
+        dataset, lengths=[0.7, 0.3], generator=generator
+    )
 
     print("Train:", len(train_dataset))
     print("test", len(test_dataset))
@@ -192,8 +196,8 @@ def run_training(
     if saving:
         print("NORMAL SAVING")
         save_training_results(
-            task_path="segmentation",
-            path_prefix="",
+            task_path="",
+            path_prefix="machine_learning/",
             model=saving_model,
             csv=csv,
             csv_epoch=t,
@@ -215,17 +219,17 @@ if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device")
 
-    model = TilePredNet(n_rounds=8, n_opponents=1, n_sets=679, dropout=0.2).to(device)
+    model = TilePredNet(n_rounds=8, n_out=53, n_sets=679, dropout=0.2).to(device)
     # print(model)
 
     print("Model in use:", model._get_name())
 
     run_training(
         dataset_path=dataset_path,
-        epochs=30,
-        learning_rate=5e-4,
+        epochs=40,
+        learning_rate=5e-5,
         model=model,
-        batch_size=1,
+        batch_size=5,
         loss_fn=nn.CrossEntropyLoss,
         optimizer=torch.optim.AdamW,
         saving=False,
