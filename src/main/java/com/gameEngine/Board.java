@@ -26,12 +26,12 @@ public class Board {
     public ArrayList<Tile> getTilesInBoard() {
         ArrayList<Tile> returnable=new ArrayList<>();
         for(Set set:setList) {
-          returnable.addAll(set.getTilesList());
+            returnable.addAll(set.getTilesList());
         }
         return returnable;
     }
     public void addSet(Set set) {
-    setList.add(set);
+        setList.add(set);
     }
 
     public void printBoard() {
@@ -54,17 +54,20 @@ public class Board {
     public ArrayList<ArrayList<Integer>> turnToIntBoard()
     {
         ArrayList<ArrayList<Integer>> board=new ArrayList<>();
-       for (Set set:setList){
-          ArrayList<Integer> intSet=set.turnSetToInt();
-          board.add(intSet);
-       }
-       return board;
+        for (Set set:setList){
+            ArrayList<Integer> intSet=set.turnSetToInt();
+            board.add(intSet);
+        }
+        return board;
     }
 
     public ArrayList<ArrayList<Image>> turnIntoImages(){
         ArrayList<ArrayList<Image>> board=new ArrayList<>();
         for (Set set : setList){
             ArrayList<Image> ImageSet=new ArrayList<>();
+            for (Tile tile : set.getTilesList()){
+                ImageSet.add(tile.getImage());
+            }
             ImageSet.add(null);
             board.add(ImageSet);
         }
@@ -77,12 +80,14 @@ public class Board {
         for (int i = 0; i < setList.size(); i++) {
             for (Tile tile : setList.get(i).getTilesList()) {
                 sb.append(tile.turnToInt());
+                sb.append(" ");
             }
-            sb.append(" ");
+            sb.append(";"); // ; between the sets
         }
         if(sb.length() != 0){
             sb.deleteCharAt(sb.length() -1);
         }
         return sb.toString();
     }
+
 }
