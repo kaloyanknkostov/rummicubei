@@ -224,9 +224,7 @@ public class GameEngine {
         if (listOfPlayers.get(currentPlayerIndex).getDeckOfTiles().isEmpty()) {
             return true;
         }
-        if(potOfTiles.isEmpty()){
-            System.out.println("DRAW, no more tiles");
-        }
+
         return potOfTiles.isEmpty();
     }
 
@@ -262,11 +260,7 @@ public class GameEngine {
 
     public void addPlayers() {
         for (int i = 0; i < numberOfBots; i++) {
-            if(i ==0){
-                listOfPlayers.add(new ComputerPlayer("test", "mcts")); // player 0 is mcts
-            }else{
-                listOfPlayers.add(new ComputerPlayer("test", "baseline")); // player 1 is baseline
-            }
+            listOfPlayers.add(new ComputerPlayer("test", "baseline"));
             for (int k = 0; k < startingTiles; k++) {
                 listOfPlayers.get(listOfPlayers.size() - 1).drawTile(drawTile());
             }
