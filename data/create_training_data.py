@@ -1,6 +1,7 @@
 # Create training data depending on the number of players and make it model ready
 # Create a file for each tile -> test
 
+from glob import glob
 import pandas as pd
 import re
 from rich import print
@@ -25,8 +26,9 @@ def one_hot_encoding_board(board) -> list[int]:
 
 
 def create_training_data(src: str, dst: str) -> None:
-    df = pd.read_csv(src, sep=r",\s+", encoding="utf-8", skipinitialspace=True)
-    print(df.columns)
+    df = pd.read_csv(
+        src, sep=r",\s+", encoding="utf-8", skipinitialspace=True, engine="python"
+    )
     df = df.rename(columns={"HandOne": "RackOne", "HandTwo": "RackTwo"})
 
     # df["Board"] = df["Board"].str.split(";")
@@ -39,7 +41,6 @@ def create_training_data(src: str, dst: str) -> None:
         else ""
     )
 
-    print(df)
     df["Board"] = df["Board"].apply(one_hot_encoding_board)
 
     df["RackOne"] = df["RackOne"].apply(
@@ -49,11 +50,7 @@ def create_training_data(src: str, dst: str) -> None:
     df["RackTwo"] = df["RackTwo"].apply(
         lambda x: [int(i) for i in x.strip().split(" ")] if str(x) != "nan" else []
     )
-    print(df)
     df["RackTwo"] = df["RackTwo"].apply(one_hot_encoding_rack)
-
-    print("[green]One Hot df[/green]")
-    print(df)
 
     # get the first n lines for the first n boards (ordered by move number asc)
     # one line consists of player one rack + (board before current move (same line)
@@ -78,7 +75,9 @@ def create_training_data(src: str, dst: str) -> None:
 
         tile_df.append(line)
     tile_df = pd.DataFrame(tile_df)  # convert list of dicts to df
-    tile_df.to_csv(dst + "training_data_TEST.csv", index=False)
+    tile_df.to_csv(
+        dst + "training_data_game_" + re.findall(r"\d+", src)[-1] + ".csv", index=False
+    )
     pass
 
 
@@ -88,7 +87,13 @@ if __name__ == "__main__":
             [int(x) for x in re.sub(r"\[|\]|\n", "", i).split(", ")]
             for i in f.readlines()
         ]
-    src = r"data\raw_data\Game-1363988507.csv"
-    dst = r"data\training_data\\"
+    src_root = r"data\raw_data\baseline_vs_baseline\\"
+    dst = r"data\training_data\baseline_vs_baseline\\"
     # print(encode_Tiles_2_number("black|13"))
-    create_training_data(src=src, dst=dst)
+    for src in tqdm(list(glob(src_root + "**"))):
+        create_training_data(src=src, dst=dst)
+
+    dfs = [pd.read_csv(path) for path in glob(dst + "**")]
+    pd.concat(dfs).to_csv(
+        r"data\training_data\baseline_vs_baseline_data.csv", index=False
+    )
