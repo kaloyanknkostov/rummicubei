@@ -47,8 +47,9 @@ public class Board {
         for (int i = 0; i < setList.size(); i++) {
             for (Tile tile : setList.get(i).getTilesList()) {
                 sb.append(tile.turnToInt());
+                sb.append(" ");
             }
-            sb.append(" ");
+            sb.append(";"); // ; between the sets
         }
         if(sb.length() != 0){
             sb.deleteCharAt(sb.length() -1);
