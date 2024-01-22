@@ -33,7 +33,7 @@ public class InformationSetMCTS {
         for (int i = 0; i < loops*2; i++){//TODO only works for 2 players
             guessPlayer2DeckAndPile(this.numberTilesOpponent);
             this.gameState = new GameState(this.deck, this.guessedOppononetDeck, this.board ,this.guessedPile);
-            this.root = new NodeISMCTS(gameState, null, 0, this.melted, melted, null);
+            this.root = new NodeISMCTS(this.gameState, null, 0, false, this.melted);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
             time = LocalTime.now().format(formatter);
             System.err.println(time + " || Loop: " + i + " || SELECTION");
@@ -71,7 +71,7 @@ public class InformationSetMCTS {
         for(NodeISMCTS child: this.root.getChildList()){
             System.err.println(child.getGameState().getBoard()+"  "+child.getUCT());
         }
-        //System.err.println("Next move: "+ this.root.getBestChild(true).getGameState().getBoard());
+        System.err.println("Next move: "+ this.root.getBestChild(true).getGameState().getBoard());
     }
 
     private void guessPlayer2DeckAndPile(int opponentDeckSize){
@@ -89,6 +89,7 @@ public class InformationSetMCTS {
         for(int i = 0; i < allTiles.size(); i++){
             if(i < opponentDeckSize){
                 this.guessedOppononetDeck.add(allTiles.get(i));
+
             } else {
                 this.guessedPile.add(allTiles.get(i));
             }
@@ -99,3 +100,4 @@ public class InformationSetMCTS {
         return this.root;
     }
 }
+
