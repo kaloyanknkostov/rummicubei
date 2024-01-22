@@ -52,7 +52,7 @@ public class ComputerPlayer implements Player
             }
         }
         else if (type == "mcts"){
-            MCTS mctsAgent = new MCTS(oldBoard.turnToIntBoard(), deckOfIntTiles, deckLengths.get(0));
+            MCTS mctsAgent = new MCTS(oldBoard.turnToIntBoard(), deckOfIntTiles, deckLengths.get(0),this.isOut);
             mctsAgent.loopMCTS(5);
 
             double highestUCT = Double.NEGATIVE_INFINITY;
