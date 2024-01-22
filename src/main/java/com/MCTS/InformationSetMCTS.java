@@ -16,6 +16,7 @@ public class InformationSetMCTS {
     private String time;
     private ArrayList<Integer> guessedPile;
     private boolean melted;
+    private int numberTilesOpponent;
 
     public InformationSetMCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent, boolean melted){
         // get game state
@@ -24,12 +25,13 @@ public class InformationSetMCTS {
         this.guessedOppononetDeck = new ArrayList<>();
         this.guessedPile = new ArrayList<>();
         this.melted = melted;
+        this.numberTilesOpponent = numberTilesOpponent;
     }
 
-    public void loopInformationSetMCTS(int loops, int numberTilesOpponent){
+    public void loopInformationSetMCTS(int loops){
         // Should loop n* player count times
         for (int i = 0; i < loops*2; i++){//TODO only works for 2 players
-            guessPlayer2DeckAndPile(numberTilesOpponent);
+            guessPlayer2DeckAndPile(this.numberTilesOpponent);
             this.gameState = new GameState(this.deck, this.guessedOppononetDeck, this.board ,this.guessedPile);
             this.root = new NodeISMCTS(gameState, null, 0, this.melted, melted, null);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -87,7 +89,6 @@ public class InformationSetMCTS {
         for(int i = 0; i < allTiles.size(); i++){
             if(i < opponentDeckSize){
                 this.guessedOppononetDeck.add(allTiles.get(i));
-
             } else {
                 this.guessedPile.add(allTiles.get(i));
             }
