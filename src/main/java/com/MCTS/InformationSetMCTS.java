@@ -1,8 +1,9 @@
 package com.MCTS;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
 import java.lang.reflect.Array;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -18,7 +19,7 @@ public class InformationSetMCTS {
     private boolean melted;
     private int numberTilesOpponent;
 
-    public InformationSetMCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent, boolean melted){
+    public InformationSetMCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent, boolean melted, boolean ml){
         // get game state
         this.board = board;
         this.deck = deck;
@@ -26,6 +27,12 @@ public class InformationSetMCTS {
         this.guessedPile = new ArrayList<>();
         this.melted = melted;
         this.numberTilesOpponent = numberTilesOpponent;
+        if(ml){
+            guess2NDPlayerML(numberTilesOpponent);
+        }
+        else {
+            guessPlayer2DeckAndPile(numberTilesOpponent);
+        }
     }
 
     public void loopInformationSetMCTS(int loops){
@@ -94,6 +101,86 @@ public class InformationSetMCTS {
                 this.guessedPile.add(allTiles.get(i));
             }
         }
+    }
+
+
+
+    private void guess2NDPlayerML(int opponetDeckSize) {
+        String rack = "--rack=";
+        rack+=setToString(this.deck);
+        //ArrayList<ArrayList<Integer>> board
+        StringBuilder stringBoard = new StringBuilder("--board1=[");
+        for (ArrayList<Integer> set : this.board) {
+            //System.out.println(setToString(set));
+            stringBoard.append(setToString(set)).append(", ");
+        }
+        stringBoard.setLength(Math.max(stringBoard.length() - 2, 0));
+        stringBoard.append("]");
+        try {
+            //
+            ProcessBuilder processBuilder = new ProcessBuilder("python" ,"machine_learning/run_model.py",rack,stringBoard.toString()).redirectErrorStream(true);
+            Process process = processBuilder.start();
+
+            // Read current output
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder output = new StringBuilder();
+            String array = reader.readLine();
+            array = array.replace("[", "").replace("]", "");
+            array =array.replaceAll("\\s+", "");
+            ArrayList<String> list = new ArrayList<String>(Arrays.asList(array.split(",")));
+
+            ArrayList<Double> tileProbability = new ArrayList<>();
+            for (String s : list) {
+                tileProbability.add(Double.parseDouble(s));
+            }
+
+
+            HashMap<Integer,Double> map =new HashMap<>();
+            for (int i = 0; i <tileProbability.size(); i++) {
+                map.put(i, tileProbability.get(i));
+            }
+
+
+            List<Map.Entry<Integer, Double>> entryList = new ArrayList<>(map.entrySet());
+            Collections.sort(entryList, new Comparator<Map.Entry<Integer, Double>>() {
+                @Override
+                public int compare(Map.Entry<Integer, Double> entry1, Map.Entry<Integer, Double> entry2) {
+                    return Double.compare(entry1.getValue(), entry2.getValue());
+                }
+            });
+            Map<Integer, Double> sortedMap = new LinkedHashMap<>();
+            for (Map.Entry<Integer, Double> entry : entryList) {
+                sortedMap.put(entry.getKey(), entry.getValue());
+            }
+            Map<Integer,Double> saved = new LinkedHashMap<>();
+            for (Map.Entry<Integer, Double> entry : entryList) {
+                sortedMap.put(entry.getKey(), entry.getValue());
+            }
+            //index 52 last
+            int counter=0;
+            ArrayList<Integer> out=new ArrayList<>();
+            for (Map.Entry<Integer, Double> entry : sortedMap.entrySet()) {
+                counter++;
+                if(53-counter<opponetDeckSize){
+                    out.add(entry.getKey());
+                }
+            }
+            guessedOppononetDeck=out;
+            if(guessedOppononetDeck.size()!=opponetDeckSize) System.out.println("PROBELM");
+        }
+        catch (IOException e) {
+            System.out.println("PROBLEM");
+            e.printStackTrace();
+        }
+    }
+    //test method
+    public String setToString(ArrayList<Integer> set){
+        StringBuilder newString = new StringBuilder("[");
+        for (int i = 0; i < set.size()-1; i++) {
+            newString.append(set.get(i)).append(", ");
+        }
+        newString.append(set.get(set.size()-1)).append("]");
+        return newString.toString();
     }
 
     public NodeISMCTS getRoot(){
