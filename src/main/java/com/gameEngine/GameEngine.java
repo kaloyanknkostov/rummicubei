@@ -28,7 +28,7 @@ public class GameEngine {
     ;
     private int moveNumber = 0;
     private boolean logged = false;
-    private final int startingTiles = 7;
+    private final int startingTiles = 14;
 
     public static void main(String[] args) {
 

@@ -127,7 +127,7 @@ public class ComputerPlayer implements Player
         }
         board.printBoard();
         // might break for mcts
-        if(!isOut){
+        if(!isOut && type!="mcts"){
             for(Set set:oldBoard.getSetList()){
                 board.addSet(set);
             }

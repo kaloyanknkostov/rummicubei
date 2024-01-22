@@ -2,8 +2,8 @@ package com.gameEngine;
 
 public class TestingScript {
     public static void main(String[] args) {
-        long maxTimeMillis = 60 * 500; // 1 minute in milliseconds
-        for (int i = 0; i < 200; i++) {
+        long maxTimeMillis = 60 * 1000; // 1 minute in milliseconds
+        for (int i = 0; i < 1; i++) {
             System.out.println("Generation " + i);
             GameEngine engine = new GameEngine();
             engine.numberOfRealPlayers = 0;
