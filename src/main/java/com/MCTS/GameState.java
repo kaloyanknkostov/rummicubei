@@ -88,8 +88,11 @@ public class GameState {
         return this.racks;
     }
     public ArrayList<ArrayList<Integer>> getBoard(){
-
         return this.board;
+    }
+
+    public void setOpponentRack(ArrayList<Integer> opponentRack){
+        this.racks[1] = opponentRack;
     }
 
     // -1 if noone won yet

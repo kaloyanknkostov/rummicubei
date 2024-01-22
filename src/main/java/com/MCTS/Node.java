@@ -16,8 +16,9 @@ public class Node {
     private boolean isLeaf; // if its an endstate
     private double c = 0.6; // factor for uct (see lecture 4 slide 20)
     private int currentPlayer;
+    private Node root;
 
-    public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf, boolean playerMelted){
+    public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf, boolean playerMelted, Node root){
         this.results = new ArrayList<Float>();
         this.childList = new ArrayList<Node>();
         this.gameState = gameState;
@@ -26,6 +27,7 @@ public class Node {
         this.currentPlayer = currentPlayer;
         this.isLeaf = isleaf;
         this.uct = 0.0;
+        this.root = root;
     }
 
     public double getUCT(){
@@ -124,18 +126,13 @@ public class Node {
             //for every action move it could make it copies the current gamestate and updates it based on the action
             GameState newState = this.gameState.copy();
             int res = newState.updateGameState(board, currentPlayer);
-            if(res == 2){
-                //its a draw
-                Node child = new Node(newState, this, (currentPlayer +1) %2, true, true);
-                this.childList.add(child);
-                child.backpropagate(0.5f);
-            } else if(res == 1){
+            if(res == 1 || res == 2){
                 //one of the players won, we have to check which one
-                Node child = new Node(newState, this, (currentPlayer +1) %2, true, true);
+                Node child = new Node(newState, this, (currentPlayer +1) %2, true, true, root);
                 this.childList.add(child);
                 child.backpropagate(newState.getWinner());
             } else {
-                Node child = new Node(newState, this, (currentPlayer +1) %2, false, true);
+                Node child = new Node(newState, this, (currentPlayer +1) %2, false, true, root);
                 this.childList.add(child);
             }
             //only works for two players
@@ -157,32 +154,20 @@ public class Node {
             res = stateForPlayout.updateGameState((new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[playoutMaxer])).getRandomMove(),playoutMaxer);
             //if this loop terminates it means an endstate was reached, since startingstate is a reference it works in function before
         }
-        if(res == 2){
-            //its a draw
-            System.out.println("it was a draw");
-            backpropagate(0.5f);
-        } else {
-            //one of the players won, we have to check which one
-            System.out.println(stateForPlayout.getWinner());
-            backpropagate(stateForPlayout.getWinner());
-        }
+        //one of the players won, we have to check which one
+        System.out.println(stateForPlayout.getWinner());
+        backpropagate(stateForPlayout.getWinner());
     }
 
     public void backpropagate(float winner){
         if (this.parent == null){
             return;
         }
-        // propagate the result of the play-out back to the root of the tree
-        if(winner == 0.5){
-            //propagate the same result to everyone since its a draw
-            this.results.add(winner);
+        // at every node check if the winner is equal to the parent
+        if(this.parent.currentPlayer == winner){
+            this.results.add(1f);
         } else {
-            // at every node check if the winner is equal to the parent
-            if(this.parent.currentPlayer == winner){
-                this.results.add(1f);
-            } else {
-                this.results.add(0f);
-            }
+            this.results.add(0f);
         }
         this.calculateUCT(); // Calc new uct and save it to save on computation
 

@@ -7,9 +7,9 @@ import java.lang.reflect.Array;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public class MCTS {
+public class InformationSetMCTS {
     private GameState gameState;
-    private Node root;
+    private NodeISMCTS root;
     private ArrayList<ArrayList<Integer>> board;
     private ArrayList<Integer> deck;
     private ArrayList<Integer> guessedOppononetDeck;
@@ -17,42 +17,28 @@ public class MCTS {
     private ArrayList<Integer> guessedPile;
     private boolean melted;
 
-
-
-    public static void main(String[] args) {
-        ArrayList<ArrayList<Integer>> board = new ArrayList<>();
-        board.add(new ArrayList<>(Arrays.asList(1,2, 3)));
-        board.add(new ArrayList<>(Arrays.asList(5,6, 7)));
-        ArrayList<Integer> deck =  new ArrayList<>(Arrays.asList(10, 11, 12, 13));
-    }
-
-
-    public MCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent, boolean melted){
+    public InformationSetMCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent, boolean melted){
         // get game state
         this.board = board;
         this.deck = deck;
         this.guessedOppononetDeck = new ArrayList<>();
         this.guessedPile = new ArrayList<>();
         this.melted = melted;
-        // Get predictions of other players decks
-        // We can decide here if we want to create multiple trees by sampling the tiles based on the predictions/ probabilities we got (advanced stuff)
-        guessPlayer2DeckAndPile(numberTilesOpponent);
-        this.gameState = new GameState(this.deck, this.guessedOppononetDeck, this.board ,this.guessedPile);
-        this.root = new Node(this.gameState, null, 0, false, this.melted, this.root);// is this legal?
     }
 
-    public void loopMCTS(int loops){
+    public void loopInformationSetMCTS(int loops, int numberTilesOpponent){
         // Should loop n* player count times
         for (int i = 0; i < loops*2; i++){//TODO only works for 2 players
+            guessPlayer2DeckAndPile(numberTilesOpponent);
+            this.gameState = new GameState(this.deck, this.guessedOppononetDeck, this.board ,this.guessedPile);
+            this.root = new NodeISMCTS(gameState, null, 0, this.melted, melted, null);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-
             time = LocalTime.now().format(formatter);
             System.err.println(time + " || Loop: " + i + " || SELECTION");
-            Node selected_node = this.root.selectNode();
-
+            NodeISMCTS selected_node = this.root.selectNode();
             time = LocalTime.now().format(formatter);
             System.err.println(time + " || Loop: " + i + " || CHECKING FOR EARLY STOP");
-            Node bestChild = this.root.getBestChild(true);
+            NodeISMCTS bestChild = this.root.getBestChild(true);
             if(bestChild != null && bestChild.getLeaf()){
                 System.err.println("Winning move detected - SEARCH STOPPED!");
                 System.err.println("Best next board: " + bestChild.getGameState().getBoard().toString());
@@ -77,10 +63,10 @@ public class MCTS {
             System.err.println(time + " || Loop: " + i + " || PLAYOUT");
             selected_node.playOut();
         }
-        // Debugging prints to determine the outcome of MCTS
+        // Debugging prints to determine the outcome of InformationSetMCTS
         System.err.println("LOOP OVER");
         System.err.println("Child nodes of root: "+ this.root.getChildList().size());
-        for(Node child: this.root.getChildList()){
+        for(NodeISMCTS child: this.root.getChildList()){
             System.err.println(child.getGameState().getBoard()+"  "+child.getUCT());
         }
         System.err.println("Next move: "+ this.root.getBestChild(true).getGameState().getBoard());
@@ -108,7 +94,7 @@ public class MCTS {
         }
     }
 
-    public Node getRoot(){
+    public NodeISMCTS getRoot(){
         return this.root;
     }
 }
