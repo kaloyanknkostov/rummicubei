@@ -123,6 +123,11 @@ public class Node {
         // Create do nothing board
         resultingBoards.add(this.gameState.getBoard());
         for(ArrayList<ArrayList<Integer>> board: resultingBoards){
+            if(board.size()==0){
+                ArrayList<Integer> a = new ArrayList<>();
+                a.add(-1);
+                board.add(a);
+            }
             //for every action move it could make it copies the current gamestate and updates it based on the action
             GameState newState = this.gameState.copy();
             int res = newState.updateGameState(board, currentPlayer);
