@@ -69,7 +69,7 @@ public class GameEngine {
                 String fileName = "Game" + Integer.toString(gameId);
                 writeGameStateLogToFile(fileName);
                 System.out.println("DONE");
-            }
+            }//test
 
             if (gameModel.isNextTurn() || getCurrentPlayer() instanceof ComputerPlayer) {
                 gameModel.setNextTurn(false);
