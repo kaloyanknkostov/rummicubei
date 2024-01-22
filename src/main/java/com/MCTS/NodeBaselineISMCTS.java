@@ -56,27 +56,22 @@ public class NodeBaselineISMCTS {
      * This is an recursive method that searches for the highest UCT value in the children nodes.
      */
     public NodeBaselineISMCTS selectNode(){
-        // BIAS towards the first child all have the same uct value
+                // BIAS towards the first child all have the same uct value
         // if this Node has no children then we return this node (to execute play-out)
         // generate the children here
-        
-        if(this.parent == null){
-            this.visitCount += 1;
-            if(this.childList.isEmpty()){
-                return this;
-            }
-            return this.getBestChild(false).selectNode();
+
+        this.visitCount += 1;
+        if(this.childList.isEmpty()){
+            return this;
         }
-        else {
-            // generate the children and see if there are children already created, ONLY FOR OPPONENT!!!
-            if(this.currentPlayer == 0){
-                // we are the current player for this node 
-                return this.getBestChild(false).selectNode();
-            } else {
-                // its the opponents turn 
-                this.expand();
-                return this.getBestChild(false).selectNode();
-            }
+        // generate the children and see if there are children already created, ONLY FOR OPPONENT!!!
+        if(this.currentPlayer == 0){
+            // we are the current player for this node 
+            return this.getBestChild(false).selectNode();
+        } else {
+            // its the opponents turn 
+            this.expand();
+            return this.getBestChild(false).selectNode();
         }
     }
 
