@@ -28,7 +28,7 @@ public class GameEngine {
     ;
     private int moveNumber = 0;
     private boolean logged = false;
-    private final int startingTiles = 14;
+    private final int startingTiles = 7;
 
     public static void main(String[] args) {
 
@@ -262,8 +262,8 @@ public class GameEngine {
     }
 
     public void addPlayers() {
-        listOfPlayers.add(new ComputerPlayer("test 1", "mcts")); // player 0 is mcts
-        listOfPlayers.add(new ComputerPlayer("test 2", "mcts"));
+        listOfPlayers.add(new ComputerPlayer("mcts 1", "mcts")); // player 0 is mcts
+        listOfPlayers.add(new ComputerPlayer("mcts 2", "mcts"));
         for (int k = 0; k < startingTiles; k++) {
             listOfPlayers.get(0).drawTile(drawTile());
         }

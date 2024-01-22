@@ -14,11 +14,11 @@ public class NodeBaselineOpponentMCTS {
     private ArrayList<Float> results; // results of the playouts of all childs
     private double uct;
     private boolean isLeaf; // if its an endstate
-    private double c = 0.6; // factor for uct (see lecture 4 slide 20)
+    private double c; // factor for uct (see lecture 4 slide 20)
     private int currentPlayer;
     private NodeBaselineOpponentMCTS root;
 
-    public NodeBaselineOpponentMCTS(GameState gameState, NodeBaselineOpponentMCTS parent, int currentPlayer, boolean isleaf, boolean playerMelted, NodeBaselineOpponentMCTS root){
+    public NodeBaselineOpponentMCTS(GameState gameState, NodeBaselineOpponentMCTS parent, int currentPlayer, boolean isleaf, boolean playerMelted, NodeBaselineOpponentMCTS root,double c){
         this.results = new ArrayList<Float>();
         this.childList = new ArrayList<NodeBaselineOpponentMCTS>();
         this.gameState = gameState;
@@ -28,6 +28,7 @@ public class NodeBaselineOpponentMCTS {
         this.isLeaf = isleaf;
         this.root = root;
         this.uct = 0.0;
+        this.c=c;
     }
 
     public double getUCT(){
@@ -129,11 +130,11 @@ public class NodeBaselineOpponentMCTS {
                 int res = newState.updateGameState(board, currentPlayer);
                 if(res == 1 || res == 2){
                     //one of the players won, we have to check which one
-                    NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, (currentPlayer +1) %2, true, true, root);
+                    NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, (currentPlayer +1) %2, true, true, root,c);
                     this.childList.add(child);
                     child.backpropagate(newState.getWinner());
                 } else {
-                    NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, (currentPlayer +1) %2, false, true, root);
+                    NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, (currentPlayer +1) %2, false, true, root,c);
                     this.childList.add(child);
                 }
                 //only works for two players
@@ -170,11 +171,11 @@ public class NodeBaselineOpponentMCTS {
                 int res = newState.updateGameState(board, currentPlayer);
                 if(res == 1 || res == 2){
                     //one of the players won, we have to check which one
-                    NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, (currentPlayer +1) %2, true, true, root);
+                    NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, (currentPlayer +1) %2, true, true, root,c);
                     this.childList.add(child);
                     child.backpropagate(newState.getWinner());
                 } else {
-                    NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, (currentPlayer +1) %2, false, true, root);
+                    NodeBaselineOpponentMCTS child = new NodeBaselineOpponentMCTS(newState, this, (currentPlayer +1) %2, false, true, root,c);
                     this.childList.add(child);
                 }
                 //only works for two players
