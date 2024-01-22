@@ -110,12 +110,17 @@ public class InformationSetMCTS {
         rack+=setToString(this.deck);
         //ArrayList<ArrayList<Integer>> board
         StringBuilder stringBoard = new StringBuilder("--board1=[");
+
         for (ArrayList<Integer> set : this.board) {
             //System.out.println(setToString(set));
             stringBoard.append(setToString(set)).append(", ");
         }
         stringBoard.setLength(Math.max(stringBoard.length() - 2, 0));
         stringBoard.append("]");
+        if(stringBoard.toString().equals("--board1]"))
+            stringBoard = new StringBuilder("--board1=[]");
+        System.out.println(rack);
+        System.out.println(stringBoard);
         try {
             //
             ProcessBuilder processBuilder = new ProcessBuilder("python" ,"machine_learning/run_model.py",rack,stringBoard.toString()).redirectErrorStream(true);

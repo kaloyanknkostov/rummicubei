@@ -36,4 +36,7 @@ and beat it
 You can also download the whole source code and run it from your favorite editor.
 rummicubei/src/main/java/com/gameEngine/GameEngine.java is the file you need to run to achieve the same result as the jar
 file
-x
+
+### Bot selection
+In the main method of the game you can change the bot from baseline to mcts or mcts+ml beware that mcts take some time to
+generate a move

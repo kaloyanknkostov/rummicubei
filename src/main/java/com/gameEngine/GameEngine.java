@@ -27,6 +27,7 @@ public class GameEngine {
     private final int gameId = 0;
     private int moveNumber  = 0;
     private boolean logged = false;
+    private String botMode;
 
     public static void main(String[] args) {
         GameEngine engine = new GameEngine();
@@ -42,6 +43,10 @@ public class GameEngine {
         engine.numberOfRealPlayers = engine.gameModel.getNumberOfPlayers();
         engine.numberOfBots = 1;
         engine.board = new Board();
+        //set to "mcts+ml" for MCTS and deck prediction ml
+        //set to "mcts" for MCTS only
+        //set to "baseline" for move with most tile put
+        engine.botMode="baseline";
         engine.generateTiles();
         engine.gameLoop();
     }
@@ -401,7 +406,7 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
 
         }
         for (int i = 0; i < numberOfBots; i++) {
-            listOfPlayers.add(new ComputerPlayer("test","baseline"));
+            listOfPlayers.add(new ComputerPlayer("test",botMode));
             for (int k = 0; k < 15; k++) {
                 listOfPlayers.get(listOfPlayers.size() - 1).drawTile(drawTile());
             }
