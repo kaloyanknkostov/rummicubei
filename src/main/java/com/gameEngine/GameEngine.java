@@ -24,15 +24,29 @@ public class GameEngine {
     private final int gameId = 0;
     private int moveNumber  = 0;
     private boolean logged = false;
-    private final int startingTiles = 14;
+    private final int startingTiles = 4;
+    private static ArrayList<Integer> scores = new ArrayList();
+    private static ArrayList<Integer> wins = new ArrayList();
+
 
     public static void main(String[] args) {
+        wins.add(0);
+        scores.add(0);
+        wins.add(0);
+        wins.add(0);
+        scores.add(0);
+        for(int i=0; i<100;i++){
+            
         GameEngine engine = new GameEngine();
         engine.numberOfRealPlayers = 0;
         engine.numberOfBots = 2;
         engine.board = new Board();
         engine.generateTiles();
         engine.gameLoop();
+        
+        System.out.println("Scores: "+ scores);
+        System.out.println("wins: " +wins);
+    }
     }
 
     private Tile currentDraw;
@@ -109,7 +123,29 @@ public class GameEngine {
                 }
             }
         }
+        boolean winner=false;
+        for (int k=0; k<listOfPlayers.size();k++) {
+            if(listOfPlayers.get(k).getDeckOfTiles().isEmpty()){
+                System.out.println("Winner is: "+listOfPlayers.get(k).getUsername());
+                winner=true;
+                wins.set(k, wins.get(k)+1);
+                
+            }
+        }
+        if(!winner)System.out.println("tied");
+        for (Player player : listOfPlayers) {
+           System.out.println(player.getDeckOfTiles());
 
+        }
+        for (int k=0; k<listOfPlayers.size();k++) {
+            int temp=0;
+            for (Tile tile : listOfPlayers.get(k).getDeckOfTiles()) {
+                temp=temp+tile.getNumber();
+            }
+            scores.set(k,scores.get(k)+temp);
+        }
+        wins.set(2,wins.get(2)+1);
+        System.out.println(potOfTiles.size());
         System.out.println("GAME FINISHED");
     }
 
@@ -260,8 +296,15 @@ public class GameEngine {
                 potOfTiles.add(new Tile(i, color, false, "painted_tile_" + color + "_" + i + ".png"));
             }
         }
+        for (String color : colors) {
+            for (int i = 1; i < 14; i++) {
+                potOfTiles.add(new Tile(i, color, false, "painted_tile_" + color + "_" + i + ".png"));
+            }
+        }
 
         potOfTiles.add(new Tile(0, "", true, "painted_tile_3.png"));
+        potOfTiles.add(new Tile(0, "", true, "painted_tile_3.png"));
+
 
     }
 
@@ -271,7 +314,8 @@ public class GameEngine {
 
     public void addPlayers() {
         for (int i = 0; i < numberOfBots; i++) {
-            listOfPlayers.add(new ComputerPlayer("test","mcts"));
+            String a=Integer.toString(i);
+            listOfPlayers.add(new ComputerPlayer("test "+a,"mcts"));
             for (int k = 0; k < startingTiles; k++) {
                 listOfPlayers.get(listOfPlayers.size() - 1).drawTile(drawTile());
             }

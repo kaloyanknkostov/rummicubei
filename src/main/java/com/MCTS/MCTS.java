@@ -23,13 +23,14 @@ public class MCTS {
         board.add(new ArrayList<>(Arrays.asList(1,2, 3)));
         board.add(new ArrayList<>(Arrays.asList(5,6, 7)));
         ArrayList<Integer> deck =  new ArrayList<>(Arrays.asList(10, 11, 12, 13));
-
-        MCTS mcts = new MCTS(board, deck, 6);
+        double c=0.6;
+        int scalar=1;
+        MCTS mcts = new MCTS(board, deck, 6,c,scalar);
         mcts.loopMCTS(1);
     }
 
 
-    public MCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent){
+    public MCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent,double c,int scalar){
         // get game state
         this.board = board;
         this.deck = deck;
@@ -38,8 +39,8 @@ public class MCTS {
         // Get predictions of other players decks
         // We can decide here if we want to create multiple trees by sampling the tiles based on the predictions/ probabilities we got (advanced stuff)
         guessPlayer2DeckAndPile(numberTilesOpponent);
-        this.gameState = new GameState(this.deck, this.guessedOppononetDeck, this.board ,this.guessedPile);
-        this.root = new Node(this.gameState, null, 0, false, false);
+        this.gameState = new GameState(this.deck, this.guessedOppononetDeck, this.board ,this.guessedPile,scalar);
+        this.root = new Node(this.gameState, null, 0, false, false,c,scalar);
     }
 
     public void loopMCTS(int loops){

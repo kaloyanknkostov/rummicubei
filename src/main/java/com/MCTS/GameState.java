@@ -20,8 +20,9 @@ public class GameState {
     private boolean[] couldntPlay = new boolean[2];
     private int winner;
     private Random random;
+    private int scalar;
 
-    public GameState(ArrayList<Integer> rackPlayer1, ArrayList<Integer> rackPlayer2, ArrayList<ArrayList<Integer>>board, ArrayList<Integer> pile){
+    public GameState(ArrayList<Integer> rackPlayer1, ArrayList<Integer> rackPlayer2, ArrayList<ArrayList<Integer>>board, ArrayList<Integer> pile, int scalar){
         this.racks[0] = rackPlayer1;
         this.racks[1] = rackPlayer2;
         this.board = board;
@@ -30,13 +31,22 @@ public class GameState {
         this.couldntPlay[0] = false;
         this.couldntPlay[1] = false;
         this.winner = -1;
+        this.scalar=scalar;
     }
 
     // kinda wonky code but if nothing happened returns a 0,
     // if output is 1 someone won the game
     // if output is 2 the game ended in a draw
     public int updateGameState(ArrayList<ArrayList<Integer>> newBoard, int playerIndex){
+       // System.out.println("the board we want to update to:" +newBoard);
+      //  System.out.println("Rack player 0 "+ racks[0]);
+       // System.out.println("rack player 1 "+ racks[1]);
+       // System.out.println("Current player" + playerIndex);
+       // System.out.println("The rack before: "+this.racks[playerIndex]);
+
         this.racks[playerIndex].removeAll(CustomUtility.getDifference(newBoard, this.board));
+       // System.out.println("Difference: "+ CustomUtility.getDifference(newBoard, this.board));
+       // System.out.println("The rack after: "+this.racks[playerIndex]);
         //check if the player whos move it was now has an empty rack
         if(racks[playerIndex].isEmpty()){
             this.winner = playerIndex;
@@ -57,11 +67,12 @@ public class GameState {
                     //this means that the current player could not play and the player before it also couldnt play thus its a draw
                     //check which player won
                     int boardDiff = CustomUtility.sumOfRack(this.racks[0])-CustomUtility.sumOfRack(this.racks[1]);
-                    if(boardDiff > 0){
+                   /*  if(boardDiff > 0){
                         this.winner = 0;
                     } else if (boardDiff < 0) {
                         this.winner = 1;
-                    }
+                    }*/
+                    this.winner=2;
                     return 2;
                 }
             }
@@ -77,11 +88,12 @@ public class GameState {
             this.board = newBoard;
             this.couldntPlay[playerIndex] = false;
         }
+        //System.out.println("the updateed board: " + this.board);
         return 0;
     }
 
     public GameState copy(){
-        return new GameState(new ArrayList<>(this.racks[0]), new ArrayList<>(this.racks[1]), CustomUtility.deepCopy(this.board), new ArrayList<>(this.pile));
+        return new GameState(new ArrayList<>(this.racks[0]), new ArrayList<>(this.racks[1]), CustomUtility.deepCopy(this.board), new ArrayList<>(this.pile),scalar);
     }
 
     public ArrayList<Integer>[] getRacks(){
