@@ -140,19 +140,29 @@ public class NodeISMCTS {
             for(ArrayList<ArrayList<Integer>> board: resultingBoards){
                 //for every action move it could make it copies the current gamestate and updates it based on the action
                 if(board.isEmpty()){
+                    GameState newState = this.gameState.copy();
+                    ArrayList<Integer> a = new ArrayList<>();
+                    a.add(-1);
+                    board.add(a);
+                    int res = newState.updateGameState(board, currentPlayer);
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, false,c);
+                    this.childList.add(child);
+                    
                     continue;
-                }
-                GameState newState = this.gameState.copy();
-                int res = newState.updateGameState(board, currentPlayer);
-                if(res == 2 || res == 1){
-                    //one of the players won, we have to check which one
-                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true,c);
-                    this.childList.add(child);
-                    child.backpropagate(newState.getWinner());
                 } else {
-                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true,c);
-                    this.childList.add(child);
+                    GameState newState = this.gameState.copy();
+                    int res = newState.updateGameState(board, currentPlayer);
+                    if(res == 2 || res == 1){
+                        //one of the players won, we have to check which one
+                        NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true,c);
+                        this.childList.add(child);
+                        child.backpropagate(newState.getWinner());
+                    } else {
+                        NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true,c);
+                        this.childList.add(child);
+                    }
                 }
+
                 //only works for two players
             }
         } else {
