@@ -33,7 +33,7 @@ public class InformationSetMCTS {
         for (int i = 0; i < loops*2; i++){//TODO only works for 2 players
             guessPlayer2DeckAndPile(this.numberTilesOpponent);
             this.gameState = new GameState(this.deck, this.guessedOppononetDeck, this.board ,this.guessedPile);
-            this.root = new NodeISMCTS(gameState, null, 0, this.melted, melted, null);
+            this.root = new NodeISMCTS(this.gameState, null, 0, this.melted, melted, null);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
             time = LocalTime.now().format(formatter);
             System.err.println(time + " || Loop: " + i + " || SELECTION");

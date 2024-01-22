@@ -19,7 +19,7 @@ public class NodeISMCTS {
     private NodeISMCTS root;
 
     public NodeISMCTS(GameState gamestate, NodeISMCTS parent, int currentPlayer, boolean isLeaf, boolean playerMelted, NodeISMCTS root){
-        this.gameState = gameState;
+        this.gameState = gamestate;
         this.results = new ArrayList<Float>();
         this.childList = new ArrayList<NodeISMCTS>();
         this.parent = parent;
@@ -91,7 +91,7 @@ public class NodeISMCTS {
         ///System.err.println("CHILD LIST:" + this.childList);
         for (NodeISMCTS child: this.childList){
             //we can only consider nodes withing the current information set otherwise do nothing
-            if(this.currentPlayer == 0 || CustomUtility.canMakeBoard(this.gameState.getRacks()[this.currentPlayer], this.gameState.getBoard(), child.getGameState().getBoard())){
+            if(CustomUtility.canMakeBoard(this.gameState.getRacks()[this.currentPlayer], this.gameState.getBoard(), child.getGameState().getBoard())){
                 if(child.getUCT()>highestUCT){
                     if(!leaf && !child.getLeaf()){
                         highestUCT = child.getUCT();
