@@ -19,7 +19,7 @@ public class NodeISMCTS {
     private NodeISMCTS root;
 
     public NodeISMCTS(GameState gamestate, NodeISMCTS parent, int currentPlayer, boolean isLeaf, boolean playerMelted, NodeISMCTS root){
-        this.gameState = gameState;
+        this.gameState = gamestate;
         this.results = new ArrayList<Float>();
         this.childList = new ArrayList<NodeISMCTS>();
         this.parent = parent;
@@ -29,7 +29,7 @@ public class NodeISMCTS {
         this.uct = 0.0;
         this.root  = root;
     }
-    
+
 
     public double getUCT(){
         // returns -infinity as default as the highest UCT is selected -> see lecture 4 in RT
@@ -68,10 +68,10 @@ public class NodeISMCTS {
         }
         // generate the children and see if there are children already created, ONLY FOR OPPONENT!!!
         if(this.currentPlayer == 0){
-            // we are the current player for this node 
+            // we are the current player for this node
             return this.getBestChild(false).selectNode();
         } else {
-            // its the opponents turn 
+            // its the opponents turn
             this.expand();
             return this.getBestChild(false).selectNode();
         }
@@ -91,7 +91,7 @@ public class NodeISMCTS {
         ///System.err.println("CHILD LIST:" + this.childList);
         for (NodeISMCTS child: this.childList){
             //we can only consider nodes withing the current information set otherwise do nothing
-            if(this.currentPlayer == 0 || CustomUtility.canMakeBoard(this.gameState.getRacks()[this.currentPlayer], this.gameState.getBoard(), child.getGameState().getBoard())){
+            if(CustomUtility.canMakeBoard(this.gameState.getRacks()[this.currentPlayer], this.gameState.getBoard(), child.getGameState().getBoard())){
                 if(child.getUCT()>highestUCT){
                     if(!leaf && !child.getLeaf()){
                         highestUCT = child.getUCT();
@@ -139,6 +139,9 @@ public class NodeISMCTS {
             resultingBoards.add(this.gameState.getBoard());
             for(ArrayList<ArrayList<Integer>> board: resultingBoards){
                 //for every action move it could make it copies the current gamestate and updates it based on the action
+                if(board.isEmpty()){
+                    continue;
+                }
                 GameState newState = this.gameState.copy();
                 int res = newState.updateGameState(board, currentPlayer);
                 if(res == 2 || res == 1){
@@ -230,7 +233,7 @@ public class NodeISMCTS {
             return;
         }
         if(this.parent.currentPlayer == winner){
-                this.results.add(1f);
+            this.results.add(1f);
         } else {
             this.results.add(0f);
         }

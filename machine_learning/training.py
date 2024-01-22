@@ -51,9 +51,9 @@ def train_loop(dataloader, model, loss_fn, optimizer, epoch: int, csv: list = No
                 ]
             )
         #  TODO Get the metrics with sklearn!
-        if batch % 3 == 0:
+        if batch % 400 == 0:
             print(
-                f"loss: {loss:>7f}, Recall: {(recall):>0.4f}, "
+                f"loss: {loss:>7f}, Acc: {(acc):>0.4f}, Recall: {(recall):>0.4f}, "
                 + f"Precision: {precision:>0.4f}, MCC: {mcc:>.4f}"
                 + f" [{current:>5d}/{size:>5d}]"
             )
@@ -102,14 +102,16 @@ def test_loop(dataloader, model, loss_fn, epoch, csv=None):
             ]
         )
     print(
-        f"[magenta1]Testing:\nloss: {test_loss:>7f}, Recall: {(recall):>0.4f},",
-        f"Precision: {precision:>0.4f}, MCC: {mcc:>.4f}\n[/magenta1]",
+        f"[magenta1]Testing:\nloss: {test_loss:>7f}, Acc: {(acc):>0.4f},",
+        f"[magenta1]Recall: {(recall):>0.4f}, Precision: {precision:>0.4f},",
+        f"[magenta1]MCC: {mcc:>.4f}\n",
     )
     return test_loss
 
 
 def run_training(
-    dataset_path,
+    train_path,
+    test_path,
     epochs,
     learning_rate,
     model,
@@ -118,26 +120,15 @@ def run_training(
     optimizer=torch.optim.Adam,
     saving=True,
     saving_annotation="",
-    annotations_df=None,
 ):
-    # datasets
-    if annotations_df is None:
-        df = pd.read_csv(dataset_path + "/image_label_mapping.csv")
-        train_root_dir = dataset_path + "/training"
-        test_root_dir = dataset_path + "/validation"
-    else:
-        df = annotations_df
-        train_root_dir = ""
-        test_root_dir = ""
+    train_dataset = TileDataset(annotations_file=train_path, device=device)
+    test_dataset = TileDataset(annotations_file=test_path, device=device)
 
-    train_data = None  # TileDataset(train_root_dir)
-    test_data = None  # TileDataset()
+    print("Train:", len(train_dataset))
+    print("test", len(test_dataset))
 
-    print("Train:", len(train_data))
-    print("test", len(test_data))
-
-    train_dataloader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
-    test_dataloader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
 
     model_loss_fn = loss_fn()
     model_optimizer = optimizer(model.parameters(), lr=learning_rate)
@@ -150,7 +141,7 @@ def run_training(
     csv = [
         [
             "epoch",
-            "state",
+            "split",
             "accuracy",
             "loss",
             "current",
@@ -175,7 +166,7 @@ def run_training(
             if saving:
                 print("EARLY STOP SAVING ACTIVATED")
                 save_training_results(
-                    task_path="segmentation",
+                    task_path="machine_learning/",
                     path_prefix="",
                     model=early_stopper.best_model,
                     csv=csv,
@@ -200,8 +191,8 @@ def run_training(
     if saving:
         print("NORMAL SAVING")
         save_training_results(
-            task_path="segmentation",
-            path_prefix="",
+            task_path="",
+            path_prefix="machine_learning/",
             model=saving_model,
             csv=csv,
             csv_epoch=t,
@@ -218,24 +209,26 @@ def run_training(
 
 if __name__ == "__main__":
     print("Starting training...")
-    dataset_path = ""
+    train_path = r"data\training_data\train_baseline_vs_baseline_data.csv"
+    test_path = r"data\training_data\test_baseline_vs_baseline_data.csv"
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device")
 
-    model = TilePredNet(n_rounds=1, n_opponents=3, dropout=0.2).to(device)
+    model = TilePredNet(n_rounds=8, n_out=53, n_sets=679, dropout=0.2).to(device)
     # print(model)
 
     print("Model in use:", model._get_name())
 
     run_training(
-        dataset_path=dataset_path,
-        epochs=30,
-        learning_rate=5e-4,
+        train_path=train_path,
+        test_path=test_path,
+        epochs=50,
+        learning_rate=1e-5,
         model=model,
-        batch_size=1,
+        batch_size=5,
         loss_fn=nn.CrossEntropyLoss,
         optimizer=torch.optim.AdamW,
-        saving=False,
+        saving=True,
         saving_annotation="",
     )

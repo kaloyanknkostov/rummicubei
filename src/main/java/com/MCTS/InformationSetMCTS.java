@@ -71,7 +71,7 @@ public class InformationSetMCTS {
         for(NodeISMCTS child: this.root.getChildList()){
             System.err.println(child.getGameState().getBoard()+"  "+child.getUCT());
         }
-        System.err.println("Next move: "+ this.root.getBestChild(true).getGameState().getBoard());
+        //System.err.println("Next move: "+ this.root.getBestChild(true).getGameState().getBoard());
     }
 
     private void guessPlayer2DeckAndPile(int opponentDeckSize){
