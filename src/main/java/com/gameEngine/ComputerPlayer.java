@@ -51,8 +51,7 @@ public class ComputerPlayer implements Player
             else {
                 newBoard =BaselineAgent.getBestMove(new ArrayList<ArrayList<Integer>>(),deckOfIntTiles);
             }
-        }
-        else if (type == "mcts"){
+        } else if (type == "mcts"){
             MCTS mctsAgent = new MCTS(oldBoard.turnToIntBoard(), deckOfIntTiles, deckLengths.get(0));
             mctsAgent.loopMCTS(5);
 
