@@ -1,9 +1,7 @@
 package com.gameEngine;
 
-import com.MCTS.ActionSpaceGenerator;
-import com.MCTS.BaselineAgent;
-import com.MCTS.InformationSetMCTS;
-import com.MCTS.MCTS;
+import com.MCTS.*;
+
 import java.util.ArrayList;
 
 public class ComputerPlayer implements Player
@@ -71,6 +69,15 @@ public class ComputerPlayer implements Player
                 }
             }
             newBoard = nextNode.getGameState().getBoard();
+        }else if(type == "random"){
+            if(isOut){
+                RandomMove randomMove = new RandomMove(oldBoard.turnToIntBoard(),deckOfIntTiles);
+                newBoard = randomMove.getRandomMove();
+            }
+            else {
+                RandomMove randomMove = new RandomMove(new ArrayList<ArrayList<Integer>>(),deckOfIntTiles);
+                newBoard = randomMove.getRandomMove();
+            }
         }
 
         System.out.println("NEW BOARD WITH INTS: "+newBoard);

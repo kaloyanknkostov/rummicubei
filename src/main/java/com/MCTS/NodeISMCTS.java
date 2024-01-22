@@ -14,12 +14,12 @@ public class NodeISMCTS {
     private ArrayList<Float> results; // results of the playouts of all childs
     private double uct;
     private boolean isLeaf; // if its an endstate
-    private double c = 0.6; // factor for uct (see lecture 4 slide 20)
+    private double c; // factor for uct (see lecture 4 slide 20)
     private int currentPlayer;
     private NodeISMCTS root;
 
-    public NodeISMCTS(GameState gamestate, NodeISMCTS parent, int currentPlayer, boolean isLeaf, boolean playerMelted, NodeISMCTS root){
-        this.gameState = gameState;
+    public NodeISMCTS(GameState gamestate, NodeISMCTS parent, int currentPlayer, boolean isLeaf, boolean playerMelted, NodeISMCTS root,double c){
+        this.gameState = gamestate;
         this.results = new ArrayList<Float>();
         this.childList = new ArrayList<NodeISMCTS>();
         this.parent = parent;
@@ -28,6 +28,7 @@ public class NodeISMCTS {
         this.isLeaf = isLeaf;
         this.uct = 0.0;
         this.root  = root;
+        this.c=c;
     }
     
 
@@ -91,7 +92,7 @@ public class NodeISMCTS {
         ///System.err.println("CHILD LIST:" + this.childList);
         for (NodeISMCTS child: this.childList){
             //we can only consider nodes withing the current information set otherwise do nothing
-            if(this.currentPlayer == 0 || CustomUtility.canMakeBoard(this.gameState.getRacks()[this.currentPlayer], this.gameState.getBoard(), child.getGameState().getBoard())){
+            if(CustomUtility.canMakeBoard(this.gameState.getRacks()[this.currentPlayer], this.gameState.getBoard(), child.getGameState().getBoard())){
                 if(child.getUCT()>highestUCT){
                     if(!leaf && !child.getLeaf()){
                         highestUCT = child.getUCT();
@@ -139,15 +140,18 @@ public class NodeISMCTS {
             resultingBoards.add(this.gameState.getBoard());
             for(ArrayList<ArrayList<Integer>> board: resultingBoards){
                 //for every action move it could make it copies the current gamestate and updates it based on the action
+                if(board.isEmpty()){
+                    continue;
+                }
                 GameState newState = this.gameState.copy();
                 int res = newState.updateGameState(board, currentPlayer);
                 if(res == 2 || res == 1){
                     //one of the players won, we have to check which one
-                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true, this.root);
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true, this.root,c);
                     this.childList.add(child);
                     child.backpropagate(newState.getWinner());
                 } else {
-                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true, this.root);
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true, this.root,c);
                     this.childList.add(child);
                 }
                 //only works for two players
@@ -197,11 +201,11 @@ public class NodeISMCTS {
                 //otherwise just create the child node for the new state
                 if(res == 2 || res == 1){
                     //one of the players won, we have to check which one
-                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true, this.root);
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true, this.root,c);
                     this.childList.add(child);
                     child.backpropagate(newState.getWinner());
                 } else {
-                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true, this.root);
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true, this.root,c);
                     this.childList.add(child);
                 }
             }
