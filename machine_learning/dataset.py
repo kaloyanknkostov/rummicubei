@@ -1,28 +1,35 @@
 import os
 import pandas as pd
 from torch.utils.data import Dataset
-from PIL import Image
+import torch
+import re
+from ast import literal_eval
 
 
 # Create Dataset class which inherits from the PyTorch dataset class
 class TileDataset(Dataset):
-    def __init__(self, annotations_file, img_dir, split: str):
-        self.img_labels = pd.read_csv(annotations_file)
-        self.img_dir = img_dir
-        self.transform = T.ToTensor()
-        self.split = split
+    def __init__(self, annotations_file, device):
+        self.df = pd.read_csv(annotations_file)
+        self.device = device
+        for column in self.df.columns:
+            self.df[column] = self.df[column].apply(literal_eval)
 
     # method for getting the length of the dataset
     def __len__(self):
-        return len(self.img_labels)
+        return len(self.df)
 
     # Method for getting the next item in the dataset
     def __getitem__(self, idx):
-        img_path = os.path.join(self.img_dir, self.split, self.img_labels.iloc[idx, 0])
+        features = torch.cat(
+            [torch.Tensor(series) for series in self.df.iloc[idx, 1:].values]
+        ).to(self.device)
+        label = torch.Tensor(self.df.iloc[idx, 0]).to(self.device)
 
-        # Open image with PIL and transform it to a tensor
-        image = self.transform(Image.open(img_path))
+        return features, label
 
-        # Get the label corresponding to the image
-        label = self.img_labels.iloc[idx, 1]
-        return image, label
+
+if __name__ == "__main__":
+    from torch.utils.data import DataLoader
+
+    dataset = TileDataset(r"data\training_data\training_data_tile_53.csv")
+    print(dataset.__getitem__(0))
