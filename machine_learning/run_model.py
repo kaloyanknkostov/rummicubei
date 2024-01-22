@@ -31,9 +31,9 @@ if __name__ == "__main__":
         "20240122-09_05_14_model_epochs_39_batch_size1_l_0."
         + "0005_loss_CrossEntropyLoss_opt_type.pt",
     )
-
-    with open(r"data\allSets.txt", "r") as f:
+    with open(os.path.join("data", "allSets.txt"), "r") as f:
         ALL_SETS = [
+
             [int(x) for x in re.sub(r"\[|\]|\n", "", i).split(", ")]
             for i in f.readlines()
         ]
