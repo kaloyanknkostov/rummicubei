@@ -2,6 +2,7 @@ package com.gameEngine;
 
 import com.MCTS.ActionSpaceGenerator;
 import com.MCTS.BaselineAgent;
+import com.MCTS.InformationSetMCTS;
 import com.MCTS.MCTS;
 import java.util.ArrayList;
 
@@ -52,13 +53,13 @@ public class ComputerPlayer implements Player
             }
         }
         else if (type == "mcts"){
-            MCTS mctsAgent = new MCTS(oldBoard.turnToIntBoard(), deckOfIntTiles, deckLengths.get(0),this.isOut);
-            mctsAgent.loopMCTS(5);
+            InformationSetMCTS mctsAgent = new InformationSetMCTS(oldBoard.turnToIntBoard(), deckOfIntTiles, deckLengths.get(0),this.isOut);
+            mctsAgent.loopInformationSetMCTS(5);
 
             double highestUCT = Double.NEGATIVE_INFINITY;
-            com.MCTS.Node nextNode = null;
+            com.MCTS.NodeISMCTS nextNode = null;
             System.err.println(mctsAgent.getRoot().getChildList());
-            for (com.MCTS.Node child: mctsAgent.getRoot().getChildList()){
+            for (com.MCTS.NodeISMCTS child: mctsAgent.getRoot().getChildList()){
                 if(child.getUCT()>highestUCT){
                     highestUCT = child.getUCT();
                     nextNode = child;
