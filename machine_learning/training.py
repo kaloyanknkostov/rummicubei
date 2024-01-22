@@ -110,7 +110,8 @@ def test_loop(dataloader, model, loss_fn, epoch, csv=None):
 
 
 def run_training(
-    dataset_path,
+    train_path,
+    test_path,
     epochs,
     learning_rate,
     model,
@@ -120,11 +121,8 @@ def run_training(
     saving=True,
     saving_annotation="",
 ):
-    dataset = TileDataset(annotations_file=dataset_path, device=device)
-    generator = torch.Generator().manual_seed(42)
-    train_dataset, test_dataset = torch.utils.data.random_split(
-        dataset, lengths=[0.7, 0.3], generator=generator
-    )
+    train_dataset = TileDataset(annotations_file=train_path, device=device)
+    test_dataset = TileDataset(annotations_file=test_path, device=device)
 
     print("Train:", len(train_dataset))
     print("test", len(test_dataset))
@@ -143,7 +141,7 @@ def run_training(
     csv = [
         [
             "epoch",
-            "state",
+            "split",
             "accuracy",
             "loss",
             "current",
@@ -168,7 +166,7 @@ def run_training(
             if saving:
                 print("EARLY STOP SAVING ACTIVATED")
                 save_training_results(
-                    task_path="segmentation",
+                    task_path="machine_learning/",
                     path_prefix="",
                     model=early_stopper.best_model,
                     csv=csv,
@@ -211,7 +209,8 @@ def run_training(
 
 if __name__ == "__main__":
     print("Starting training...")
-    dataset_path = r"data\training_data\baseline_vs_baseline_data.csv"
+    train_path = r"data\training_data\train_baseline_vs_baseline_data.csv"
+    test_path = r"data\training_data\test_baseline_vs_baseline_data.csv"
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device")
@@ -222,9 +221,10 @@ if __name__ == "__main__":
     print("Model in use:", model._get_name())
 
     run_training(
-        dataset_path=dataset_path,
-        epochs=30,
-        learning_rate=5e-4,
+        train_path=train_path,
+        test_path=test_path,
+        epochs=50,
+        learning_rate=1e-5,
         model=model,
         batch_size=5,
         loss_fn=nn.CrossEntropyLoss,

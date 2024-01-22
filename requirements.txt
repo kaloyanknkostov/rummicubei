@@ -6,3 +6,4 @@ rich
 # decide between cuda and cpu
 torchmetrics
 tqdm
+seaborn

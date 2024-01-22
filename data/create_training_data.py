@@ -6,6 +6,7 @@ import pandas as pd
 import re
 from rich import print
 from tqdm import tqdm
+from sklearn.model_selection import train_test_split
 
 # Target Columns:
 # tile, Current tiles in rack, (Current Board, Board-1)*times n, target (opponent, rest)
@@ -94,6 +95,9 @@ if __name__ == "__main__":
         create_training_data(src=src, dst=dst)
 
     dfs = [pd.read_csv(path) for path in glob(dst + "**")]
-    pd.concat(dfs).to_csv(
-        r"data\training_data\baseline_vs_baseline_data.csv", index=False
-    )
+    combined_df = pd.concat(dfs)
+    train, test = train_test_split(combined_df, test_size=0.3, random_state=42)
+    print("Length of train:", len(train))
+    print("Length of test :", len(test))
+    train.to_csv(r"data\training_data\train_baseline_vs_baseline_data.csv", index=False)
+    test.to_csv(r"data\training_data\test_baseline_vs_baseline_data.csv", index=False)
