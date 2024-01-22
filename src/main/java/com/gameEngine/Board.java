@@ -65,9 +65,6 @@ public class Board {
         ArrayList<ArrayList<Image>> board=new ArrayList<>();
         for (Set set : setList){
             ArrayList<Image> ImageSet=new ArrayList<>();
-            for (Tile tile : set.getTilesList()){
-              ImageSet.add(tile.getImage());
-            }
             ImageSet.add(null);
             board.add(ImageSet);
         }
