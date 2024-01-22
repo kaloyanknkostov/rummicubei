@@ -139,6 +139,9 @@ public class NodeISMCTS {
             resultingBoards.add(this.gameState.getBoard());
             for(ArrayList<ArrayList<Integer>> board: resultingBoards){
                 //for every action move it could make it copies the current gamestate and updates it based on the action
+                if(board.isEmpty()){
+                    continue;
+                }
                 GameState newState = this.gameState.copy();
                 int res = newState.updateGameState(board, currentPlayer);
                 if(res == 2 || res == 1){
