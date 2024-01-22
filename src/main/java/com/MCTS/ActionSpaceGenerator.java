@@ -88,6 +88,7 @@ public class ActionSpaceGenerator {
     private void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard ,ArrayList<ArrayList<Integer>> setsNoConflicts){
         if(this.foundFinish){
             return;
+
         }
         if(new HashSet<>(CustomUtility.decompose(currentBoard)).equals(new HashSet<>(this.availableTilesStart))){
             this.foundFinish = true;
