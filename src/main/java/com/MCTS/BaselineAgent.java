@@ -17,14 +17,19 @@ public class BaselineAgent {
 
         for (ArrayList<ArrayList<Integer>> move : actionSpace) { // loop through each moves
             currentSize = 0;
+            
             for (ArrayList<Integer> set : move) {  // check each set of the move and add the size of that set to the current size
                 currentSize += set.size();
             }
+           
 
             if (currentSize > maxSize) {  //if the current size is bigger than max size we replace it and update all  the values
                 maxSize = currentSize;
                 bestMove = keepingTrack;
                 maxArrayList = actionSpace.get(bestMove);
+            if(currentSize == rack.size()){ // if the number of the tiles added is equal to the size of the rack we have already found a move that can end the game
+                    return actionSpace.get(bestMove); 
+            }
             } else if (currentSize == maxSize){   // if the size is the same we decide the move that gets rid of the higher valued tiles.
                 int newPossibility= 0;
 
