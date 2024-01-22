@@ -195,6 +195,8 @@ public class GameEngine {
             currentPlayerIndex++;
         }
         //move to end maybe
+        // System.out.println("NEW TURN " + String.valueOf(moveNumber)  + " current player: " + currentPlayerIndex );
+
         gameModel.setCurrentPlayer(getCurrentPlayer());
 
     }
@@ -259,12 +261,16 @@ public class GameEngine {
     }
 
     public void addPlayers() {
-        for (int i = 0; i < numberOfBots; i++) {
-            listOfPlayers.add(new ComputerPlayer("test", "baseline"));
-            for (int k = 0; k < startingTiles; k++) {
-                listOfPlayers.get(listOfPlayers.size() - 1).drawTile(drawTile());
-            }
+
+        listOfPlayers.add(new ComputerPlayer("test_random", "random")); // player 0 is mcts
+        listOfPlayers.add(new ComputerPlayer("test_baseline", "baseline"));
+        for (int k = 0; k < startingTiles; k++) {
+            listOfPlayers.get(0).drawTile(drawTile());
         }
+        for (int k = 0; k < startingTiles; k++) {
+            listOfPlayers.get(1).drawTile(drawTile());
+        }
+
     }
 
     public void printBoard(ArrayList<ArrayList<Image>> board) {
