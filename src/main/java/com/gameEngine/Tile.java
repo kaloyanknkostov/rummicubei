@@ -1,7 +1,6 @@
 package com.gameEngine;
 
 
-import javafx.scene.image.Image;
 
 public class Tile
 {
@@ -10,7 +9,6 @@ public class Tile
     private String color;
     private boolean isJoker;
     private final String pictureName;
-    private final Image image;
 
     public void setJoker(boolean joker) {
         isJoker = joker;
@@ -22,12 +20,9 @@ public class Tile
         this.color = color;
         this.isJoker = isJoker;
         this.pictureName=pictureName;
-        this.image=new Image(pictureName);
     }
 
-    public Image getImage() {
-        return image;
-    }
+
 
     public int getNumber() {
         return number;
