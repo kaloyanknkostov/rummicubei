@@ -1,5 +1,8 @@
 package com.MCTS;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,6 +27,8 @@ public class MCTS {
         board.add(new ArrayList<>(Arrays.asList(1,2, 3)));
         board.add(new ArrayList<>(Arrays.asList(5,6, 7)));
         ArrayList<Integer> deck =  new ArrayList<>(Arrays.asList(10, 11, 12, 13));
+        MCTS mcts =new MCTS(board,deck,1,false);
+        mcts.guess2NDPlayerML();
     }
 
 
@@ -85,6 +90,64 @@ public class MCTS {
         }
         System.err.println("Next move: "+ this.root.getBestChild(true).getGameState().getBoard());
     }
+
+    private void guess2NDPlayerML() {
+        String rack = "--rack \"";
+        rack+=setToString(this.deck);
+        rack+="\"";
+
+        //ArrayList<ArrayList<Integer>> board
+        StringBuilder stringBoard = new StringBuilder("--board1 \"[");
+        for (ArrayList<Integer> set : this.board) {
+            stringBoard.append(setToString(set)).append(", ");
+        }
+        stringBoard.setLength(Math.max(stringBoard.length() - 2, 0));
+        stringBoard.append("]\"");
+
+       // System.out.println(rack);//System.out.println(stringBoard);
+
+
+        //python machine_learning\run_model.py --rack "[40, 234, 234, 432, 342]" --board1 "" -- [[34, 35, 36], [], [], []]"
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder("python" ,"machine_learning\\run_model.py",rack,stringBoard.toString());
+            System.out.println("Created PB");
+            Process process = processBuilder.start();
+
+
+        // Read current output
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        StringBuilder output = new StringBuilder();
+        String line;
+            while ((line = reader.readLine()) != null) { // Account for multiple lines
+                output.append(line).append("\n");
+                System.out.println("line");
+            }
+
+            // Get results on how the process finished
+
+
+
+        //get array of size 53
+//        ArrayList<Integer> tileProbability = new ArrayList<>();
+//        for (int i = 1; i <= tileProbability.size(); i++) {
+//            if (tileProbability.get(i) == 1)
+//                guessedOppononetDeck.add(i);
+//        }
+    }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    //test method
+    public String setToString(ArrayList<Integer> set){
+        StringBuilder newString = new StringBuilder("[");
+        for (int i = 0; i < set.size()-1; i++) {
+            newString.append(set.get(i)).append(", ");
+        }
+        newString.append(set.get(set.size()-2)).append("]");
+        return newString.toString();
+    }
+
 
     private void guessPlayer2DeckAndPile(int opponentDeckSize){
         ArrayList<Integer> allTilesNotPile = CustomUtility.decompose(this.board);
