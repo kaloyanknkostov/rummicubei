@@ -15,18 +15,20 @@ public class ActionSpaceGenerator {
     private HashMap<ArrayList<Integer>,HashSet<ArrayList<Integer>>> conflicts;
     private ArrayList<ArrayList<Integer>> possibleSets;
     private ArrayList<Integer> availableTilesStart;
-
     private ArrayList<ArrayList<Integer>> boardForActionSpace;
+    private boolean foundFinish;
+
 
 
     public ActionSpaceGenerator(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> rack){
-        boardForActionSpace = CustomUtility.deepCopy(board);
+        this.boardForActionSpace = CustomUtility.deepCopy(board);
         this.allPossibleSets = AllSetGenerator.getInstance().getAllSets();
         this.conflicts = ConflictingSets.getInstance().getAllConflicts();
         this.resultingBoards = new ArrayList<>();
         this.startingBoard = CustomUtility.decompose(boardForActionSpace);
         this.startingRack = new ArrayList<>(rack);
         this.possibleSets = CustomUtility.possibleSets(this.startingRack,this.startingBoard, this.allPossibleSets);
+        this.foundFinish = false;
         //now this.possibleConflicts contains only the conflicts for possiblesets
         this.availableTilesStart = new ArrayList<>();
         for(Integer tile: startingRack){
@@ -41,24 +43,25 @@ public class ActionSpaceGenerator {
     public static void main(String[] args) {
         // Example board and rack for testing
         ArrayList<ArrayList<Integer>> exampleBoard = new ArrayList<>();
-        // Populate exampleBoard with your data
-        // Populate exampleBoard with two sets of integers
-        ArrayList<Integer> set1 = new ArrayList<>();
-        set1.add(1);
-        set1.add(2);
-        set1.add(3);
+        List<List<Integer>> listOfLists = Arrays.asList(
+                Arrays.asList(3, 4, 5),
+                Arrays.asList(9, 10, 11),
+                Arrays.asList(28, 29, 30),
+                Arrays.asList(50, 51, 52),
+                Arrays.asList(16, 17, 18, 19),
+                Arrays.asList(42, 43, 44, 45, 46, 53, 48),
+                Arrays.asList(1, 14, 27),
+                Arrays.asList(2, 15, 41),
+                Arrays.asList(7, 20, 33),
+                Arrays.asList(8, 21, 34),
+                Arrays.asList(23, 36, 49)
+        );
 
-        ArrayList<Integer> set2 = new ArrayList<>();
-        set2.add(4);
-        set2.add(5);
-        set2.add(6);
-
-        //exampleBoard.add(set1);
-        //exampleBoard.add(set2);
-        ArrayList<Integer> exampleRack = new ArrayList<>();
-        for (Integer i = 1; i < 33; i++) {
-            exampleRack.add(i);
+        // Create ArrayList<ArrayList<Integer>> and add the list of lists
+        for (List<Integer> list : listOfLists) {
+            exampleBoard.add(new ArrayList<>(list));
         }
+        ArrayList<Integer> exampleRack = new ArrayList<>(Arrays.asList(25,24,47));
         // Populate exampleRack with your data
 
         // Record the start time
@@ -83,19 +86,30 @@ public class ActionSpaceGenerator {
     }
 
     private void createAllMoves(ArrayList<ArrayList<Integer>> currentBoard ,ArrayList<ArrayList<Integer>> setsNoConflicts){
+        if(this.foundFinish){
+            return;
+        }
+        if(new HashSet<>(CustomUtility.decompose(currentBoard)).equals(new HashSet<>(this.availableTilesStart))){
+            this.foundFinish = true;
+            this.resultingBoards.clear();
+            this.resultingBoards.add(currentBoard);
+            System.out.println("should fully stop after this");
+            return;
+        }
         if(setsNoConflicts.isEmpty()){
             return;
         }
         ArrayList<ArrayList<Integer>> conflichtNext = CustomUtility.deepCopy(setsNoConflicts);
         for(ArrayList<Integer> rummikubSet: setsNoConflicts){
+            if(foundFinish){
+                continue;
+            }
             ArrayList<ArrayList<Integer>> newBoard = CustomUtility.deepCopy(currentBoard);
             ArrayList<ArrayList<Integer>> newConflicts = CustomUtility.deepCopy(conflichtNext);
             conflichtNext.remove(rummikubSet);
             newBoard.add(rummikubSet);
             newConflicts.remove(rummikubSet);
             newConflicts.removeIf(this.conflicts.get(rummikubSet)::contains);
-            //97415
-            //2066
             if(!forwardCheck(newBoard, newConflicts)){
                 continue;
             }
@@ -130,11 +144,10 @@ public class ActionSpaceGenerator {
 
 
     public ArrayList<ArrayList<ArrayList<Integer>>> getResultingBoards() {
-        if (this.resultingBoards.isEmpty()){
+        if(this.resultingBoards.isEmpty()){
             this.resultingBoards.add(this.boardForActionSpace);
         }
-        return resultingBoards;
-
+        return this.resultingBoards;
     }
 
     public ArrayList<ArrayList<Integer>> sortPossibleSets(ArrayList<ArrayList<Integer>> possibleSets, ArrayList<Integer> board) {
