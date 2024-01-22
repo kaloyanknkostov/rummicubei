@@ -16,9 +16,8 @@ public class NodeISMCTS {
     private boolean isLeaf; // if its an endstate
     private double c; // factor for uct (see lecture 4 slide 20)
     private int currentPlayer;
-    private NodeISMCTS root;
 
-    public NodeISMCTS(GameState gamestate, NodeISMCTS parent, int currentPlayer, boolean isLeaf, boolean playerMelted, NodeISMCTS root,double c){
+    public NodeISMCTS(GameState gamestate, NodeISMCTS parent, int currentPlayer, boolean isLeaf, boolean playerMelted, double c){
         this.gameState = gamestate;
         this.results = new ArrayList<Float>();
         this.childList = new ArrayList<NodeISMCTS>();
@@ -27,7 +26,6 @@ public class NodeISMCTS {
         this.currentPlayer = currentPlayer;
         this.isLeaf = isLeaf;
         this.uct = 0.0;
-        this.root  = root;
         this.c=c;
     }
     
@@ -91,6 +89,7 @@ public class NodeISMCTS {
         //System.err.println("STARTING UCT: "+ highestUCT);
         ///System.err.println("CHILD LIST:" + this.childList);
         for (NodeISMCTS child: this.childList){
+            System.out.println(child.getGameState().getBoard());
             //we can only consider nodes withing the current information set otherwise do nothing
             if(CustomUtility.canMakeBoard(this.gameState.getRacks()[this.currentPlayer], this.gameState.getBoard(), child.getGameState().getBoard())){
                 if(child.getUCT()>highestUCT){
@@ -147,11 +146,11 @@ public class NodeISMCTS {
                 int res = newState.updateGameState(board, currentPlayer);
                 if(res == 2 || res == 1){
                     //one of the players won, we have to check which one
-                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true, this.root,c);
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true,c);
                     this.childList.add(child);
                     child.backpropagate(newState.getWinner());
                 } else {
-                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true, this.root,c);
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true,c);
                     this.childList.add(child);
                 }
                 //only works for two players
@@ -201,11 +200,11 @@ public class NodeISMCTS {
                 //otherwise just create the child node for the new state
                 if(res == 2 || res == 1){
                     //one of the players won, we have to check which one
-                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true, this.root,c);
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true,c);
                     this.childList.add(child);
                     child.backpropagate(newState.getWinner());
                 } else {
-                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true, this.root,c);
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true,c);
                     this.childList.add(child);
                 }
             }
@@ -256,4 +255,15 @@ public class NodeISMCTS {
     public ArrayList<NodeISMCTS> getChildList(){
         return this.childList;
     }
+    private NodeISMCTS getRoot(){
+        if(this.parent == null){
+            return this;
+        } else {
+            return this.parent.getRoot();
+        }
+    }
+    public void setGameState(GameState gameState){
+        this.gameState = gameState;
+    }
 }
+
