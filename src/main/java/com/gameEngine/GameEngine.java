@@ -31,6 +31,7 @@ public class GameEngine {
     private final int startingTiles = 14;
 
     public static void main(String[] args) {
+
         GameEngine engine = new GameEngine();
         engine.numberOfRealPlayers = 0;
         engine.numberOfBots = 2;
@@ -261,8 +262,8 @@ public class GameEngine {
     }
 
     public void addPlayers() {
-        listOfPlayers.add(new ComputerPlayer("test_random", "random")); // player 0 is mcts
-        listOfPlayers.add(new ComputerPlayer("test_baseline", "baseline"));
+        listOfPlayers.add(new ComputerPlayer("test 1", "mcts")); // player 0 is mcts
+        listOfPlayers.add(new ComputerPlayer("test 2", "mcts"));
         for (int k = 0; k < startingTiles; k++) {
             listOfPlayers.get(0).drawTile(drawTile());
         }

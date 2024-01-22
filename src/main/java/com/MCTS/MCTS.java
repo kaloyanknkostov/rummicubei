@@ -27,7 +27,7 @@ public class MCTS {
     }
 
 
-    public MCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent, boolean melted){
+    public MCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent, boolean melted,double c){
         // get game state
         this.board = board;
         this.deck = deck;
@@ -38,7 +38,7 @@ public class MCTS {
         // We can decide here if we want to create multiple trees by sampling the tiles based on the predictions/ probabilities we got (advanced stuff)
         guessPlayer2DeckAndPile(numberTilesOpponent);
         this.gameState = new GameState(this.deck, this.guessedOppononetDeck, this.board ,this.guessedPile);
-        this.root = new Node(this.gameState, null, 0, false, this.melted, this.root);// is this legal?
+        this.root = new Node(this.gameState, null, 0, false, this.melted, this.root,c);// is this legal?
     }
 
     public void loopMCTS(int loops){

@@ -17,8 +17,9 @@ public class InformationSetMCTS {
     private ArrayList<Integer> guessedPile;
     private boolean melted;
     private int numberTilesOpponent;
+    private double c;
 
-    public InformationSetMCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent, boolean melted){
+    public InformationSetMCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent, boolean melted,double c){
         // get game state
         this.board = board;
         this.deck = deck;
@@ -26,6 +27,7 @@ public class InformationSetMCTS {
         this.guessedPile = new ArrayList<>();
         this.melted = melted;
         this.numberTilesOpponent = numberTilesOpponent;
+        this.c=c;
     }
 
     public void loopInformationSetMCTS(int loops){

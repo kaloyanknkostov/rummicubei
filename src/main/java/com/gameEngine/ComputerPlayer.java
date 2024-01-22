@@ -13,7 +13,7 @@ public class ComputerPlayer implements Player
     private ArrayList<Tile> deckOfTiles;
     private ArrayList<Integer> deckLengths;
     private String type;
-
+    private double c=0;
     public ComputerPlayer(String username, String type) {
         this.type = type;
         this.username = username;
@@ -53,7 +53,12 @@ public class ComputerPlayer implements Player
             }
         }
         else if (type == "mcts"){
-            InformationSetMCTS mctsAgent = new InformationSetMCTS(oldBoard.turnToIntBoard(), deckOfIntTiles, deckLengths.get(0),this.isOut);
+            if(this.username.equals("mcts 1")){
+                c=0.6;
+            }else{
+                c=0.4;
+            }
+            InformationSetMCTS mctsAgent = new InformationSetMCTS(oldBoard.turnToIntBoard(), deckOfIntTiles, deckLengths.get(0),this.isOut,c);
             mctsAgent.loopInformationSetMCTS(5);
 
             double highestUCT = Double.NEGATIVE_INFINITY;

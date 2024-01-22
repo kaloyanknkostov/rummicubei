@@ -14,11 +14,11 @@ public class Node {
     private ArrayList<Float> results; // results of the playouts of all childs
     private double uct;
     private boolean isLeaf; // if its an endstate
-    private double c = 0.6; // factor for uct (see lecture 4 slide 20)
+    private double c; // factor for uct (see lecture 4 slide 20)
     private int currentPlayer;
     private Node root;
 
-    public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf, boolean playerMelted, Node root){
+    public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf, boolean playerMelted, Node root, double c){
         this.results = new ArrayList<Float>();
         this.childList = new ArrayList<Node>();
         this.gameState = gameState;
@@ -28,6 +28,7 @@ public class Node {
         this.isLeaf = isleaf;
         this.uct = 0.0;
         this.root = root;
+        this.c=c;
     }
 
     public double getUCT(){
@@ -133,11 +134,11 @@ public class Node {
             int res = newState.updateGameState(board, currentPlayer);
             if(res == 1 || res == 2){
                 //one of the players won, we have to check which one
-                Node child = new Node(newState, this, (currentPlayer +1) %2, true, true, root);
+                Node child = new Node(newState, this, (currentPlayer +1) %2, true, true, root,c);
                 this.childList.add(child);
                 child.backpropagate(newState.getWinner());
             } else {
-                Node child = new Node(newState, this, (currentPlayer +1) %2, false, true, root);
+                Node child = new Node(newState, this, (currentPlayer +1) %2, false, true, root,c);
                 this.childList.add(child);
             }
             //only works for two players
