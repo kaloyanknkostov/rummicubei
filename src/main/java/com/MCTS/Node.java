@@ -14,11 +14,12 @@ public class Node {
     private ArrayList<Float> results; // results of the playouts of all childs
     private double uct;
     private boolean isLeaf; // if its an endstate
-    private double c = 0.6; // factor for uct (see lecture 4 slide 20)
+    private double c; // factor for uct (see lecture 4 slide 20)
     private int currentPlayer;
     private Node root;
+    private int scalar;
 
-    public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf, boolean playerMelted, Node root){
+    public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf, boolean playerMelted,double c,int scalar){
         this.results = new ArrayList<Float>();
         this.childList = new ArrayList<Node>();
         this.gameState = gameState;
@@ -27,6 +28,8 @@ public class Node {
         this.currentPlayer = currentPlayer;
         this.isLeaf = isleaf;
         this.uct = 0.0;
+        this.c=c;
+        this.scalar=scalar;
         this.root = root;
     }
 
@@ -123,6 +126,11 @@ public class Node {
         // Create do nothing board
         resultingBoards.add(this.gameState.getBoard());
         for(ArrayList<ArrayList<Integer>> board: resultingBoards){
+            if(board.size()==0){
+                ArrayList<Integer> a = new ArrayList<>();
+                a.add(-1);
+                board.add(a);
+            }
             //for every action move it could make it copies the current gamestate and updates it based on the action
             GameState newState = this.gameState.copy();
             int res = newState.updateGameState(board, currentPlayer);
@@ -157,6 +165,7 @@ public class Node {
         //one of the players won, we have to check which one
         System.out.println(stateForPlayout.getWinner());
         backpropagate(stateForPlayout.getWinner());
+        
     }
 
     public void backpropagate(float winner){
@@ -165,7 +174,7 @@ public class Node {
         }
         // at every node check if the winner is equal to the parent
         if(this.parent.currentPlayer == winner){
-            this.results.add(1f);
+            this.results.add(1f*scalar);
         } else {
             this.results.add(0f);
         }

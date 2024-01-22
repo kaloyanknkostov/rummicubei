@@ -24,10 +24,14 @@ public class MCTS {
         board.add(new ArrayList<>(Arrays.asList(1,2, 3)));
         board.add(new ArrayList<>(Arrays.asList(5,6, 7)));
         ArrayList<Integer> deck =  new ArrayList<>(Arrays.asList(10, 11, 12, 13));
+        double c=0.6;
+        int scalar=1;
+        MCTS mcts = new MCTS(board, deck, 6,c,scalar);
+        mcts.loopMCTS(1);
     }
 
 
-    public MCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent, boolean melted){
+    public MCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent){
         // get game state
         this.board = board;
         this.deck = deck;

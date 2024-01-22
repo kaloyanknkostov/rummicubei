@@ -44,21 +44,32 @@ public class ActionSpaceGenerator {
         // Populate exampleBoard with your data
         // Populate exampleBoard with two sets of integers
         ArrayList<Integer> set1 = new ArrayList<>();
-        set1.add(1);
-        set1.add(2);
-        set1.add(3);
+        set1.add(28);
+        set1.add(29);
+        set1.add(30);
 
         ArrayList<Integer> set2 = new ArrayList<>();
-        set2.add(4);
-        set2.add(5);
-        set2.add(6);
+        set2.add(20);
+        set2.add(33);
+        set2.add(46);
+        ArrayList<Integer> set3 = new ArrayList<>();
+        set3.add(5);
+        set3.add(6);
+        set3.add(7);
+        ArrayList<Integer> set4 = new ArrayList<>();
+        set4.add(16);
+        set4.add(17);
+        set4.add(18);
+        exampleBoard.add(set1);
+        exampleBoard.add(set2);
+        exampleBoard.add(set3);
+        exampleBoard.add(set4);
 
-        //exampleBoard.add(set1);
-        //exampleBoard.add(set2);
         ArrayList<Integer> exampleRack = new ArrayList<>();
-        for (Integer i = 1; i < 33; i++) {
+        exampleRack.add(48);
+        /*for (Integer i = 1; i < 33; i++) {
             exampleRack.add(i);
-        }
+        }*/
         // Populate exampleRack with your data
 
         // Record the start time
@@ -78,6 +89,7 @@ public class ActionSpaceGenerator {
 
         // Print the execution time
         System.out.println("Execution time: " + (endTime - startTime) + " milliseconds");
+        System.out.println(resultingBoards);
 
         //System.out.println("Pruned " + actionSpaceGenerator.pruningCounter + " times.");
     }
