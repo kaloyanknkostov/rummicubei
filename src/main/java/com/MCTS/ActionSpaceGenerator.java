@@ -43,25 +43,9 @@ public class ActionSpaceGenerator {
     public static void main(String[] args) {
         // Example board and rack for testing
         ArrayList<ArrayList<Integer>> exampleBoard = new ArrayList<>();
-        List<List<Integer>> listOfLists = Arrays.asList(
-                Arrays.asList(3, 4, 5),
-                Arrays.asList(9, 10, 11),
-                Arrays.asList(28, 29, 30),
-                Arrays.asList(50, 51, 52),
-                Arrays.asList(16, 17, 18, 19),
-                Arrays.asList(42, 43, 44, 45, 46, 53, 48),
-                Arrays.asList(1, 14, 27),
-                Arrays.asList(2, 15, 41),
-                Arrays.asList(7, 20, 33),
-                Arrays.asList(8, 21, 34),
-                Arrays.asList(23, 36, 49)
-        );
+        List<List<Integer>> listOfLists = new ArrayList<>();
 
-        // Create ArrayList<ArrayList<Integer>> and add the list of lists
-        for (List<Integer> list : listOfLists) {
-            exampleBoard.add(new ArrayList<>(list));
-        }
-        ArrayList<Integer> exampleRack = new ArrayList<>(Arrays.asList(25,24,47));
+        ArrayList<Integer> exampleRack = new ArrayList<>(Arrays.asList(1,2,3));
         // Populate exampleRack with your data
 
         // Record the start time
