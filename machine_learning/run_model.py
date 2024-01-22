@@ -32,7 +32,7 @@ if __name__ == "__main__":
         + "0005_loss_CrossEntropyLoss_opt_type.pt",
     )
 
-    with open(r"data\allSets.txt", "r") as f:
+    with open(os.path.join("data", "allSets.txt"), "r") as f:
         ALL_SETS = [
             [int(x) for x in re.sub(r"\[|\]|\n", "", i).split(", ")]
             for i in f.readlines()
@@ -62,6 +62,7 @@ if __name__ == "__main__":
     model = TilePredNet(n_rounds=8, n_out=53, n_sets=679, dropout=0.2)
     model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device(device)))
     model.to(device)
+    model.eval()
 
     preds = model(X)
     results = preds.round(decimals=3).tolist()
