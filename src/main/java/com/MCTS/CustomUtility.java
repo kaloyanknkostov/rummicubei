@@ -26,6 +26,19 @@ public class CustomUtility {
         return count;
     }
 
+    public static boolean canMakeBoard(ArrayList<Integer> rack, ArrayList<ArrayList<Integer>> board, ArrayList<ArrayList<Integer>> newBoard){
+        ArrayList<Integer> boardDecomposed = decompose(board);
+        ArrayList<Integer> newBoardDecomposed = decompose(newBoard);
+        boardDecomposed.addAll(rack);
+        Set<Integer> setBoard = new HashSet<>(boardDecomposed);
+        Set<Integer> setNewBoard = new HashSet<>(newBoardDecomposed);
+        if(setBoard.containsAll(setNewBoard)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Decomposes a 2D ArrayList representing a board into a 1D ArrayList of integers.
      *

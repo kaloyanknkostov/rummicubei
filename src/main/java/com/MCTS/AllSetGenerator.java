@@ -17,6 +17,13 @@ public class AllSetGenerator {
         return instance;
     }
 
+    public static void main(String[] args) {
+        ArrayList<ArrayList<Integer>> allSets = AllSetGenerator.getInstance().getAllSets();
+        for(ArrayList<Integer> set: allSets){
+            System.out.println(set);
+        }
+    }
+
     private AllSetGenerator() {
         allSets = generateAllSets();
     }

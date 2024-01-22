@@ -16,17 +16,20 @@ public class NodeISMCTS {
     private boolean isLeaf; // if its an endstate
     private double c = 0.6; // factor for uct (see lecture 4 slide 20)
     private int currentPlayer;
+    private NodeISMCTS root;
 
-    public NodeISMCTS(GameState gameState, NodeISMCTS parent, int currentPlayer, boolean isleaf, boolean playerMelted){
+    public NodeISMCTS(GameState gamestate, NodeISMCTS parent, int currentPlayer, boolean isLeaf, boolean playerMelted, NodeISMCTS root){
+        this.gameState = gameState;
         this.results = new ArrayList<Float>();
         this.childList = new ArrayList<NodeISMCTS>();
-        this.gameState = gameState;
         this.parent = parent;
         this.visitCount = 1; // visit count at generation is 1 (otherwise uct will not work)
         this.currentPlayer = currentPlayer;
-        this.isLeaf = isleaf;
+        this.isLeaf = isLeaf;
         this.uct = 0.0;
+        this.root  = root;
     }
+    
 
     public double getUCT(){
         // returns -infinity as default as the highest UCT is selected -> see lecture 4 in RT
@@ -57,11 +60,26 @@ public class NodeISMCTS {
     public NodeISMCTS selectNode(){
         // BIAS towards the first child all have the same uct value
         // if this Node has no children then we return this node (to execute play-out)
-        this.visitCount += 1;
-        if(this.childList.isEmpty()){
-            return this;
+        // generate the children here
+        
+        if(this.parent == null){
+            this.visitCount += 1;
+            if(this.childList.isEmpty()){
+                return this;
+            }
+            return this.getBestChild(false).selectNode();
         }
-        return this.getBestChild(false).selectNode();
+        else {
+            // generate the children and see if there are children already created, ONLY FOR OPPONENT!!!
+            if(this.currentPlayer == 0){
+                // we are the current player for this node 
+                return this.getBestChild(false).selectNode();
+            } else {
+                // its the opponents turn 
+                this.expand();
+                return this.getBestChild(false).selectNode();
+            }
+        }
     }
 
     public NodeISMCTS getBestChild(boolean leaf){
@@ -77,14 +95,17 @@ public class NodeISMCTS {
         //System.err.println("STARTING UCT: "+ highestUCT);
         ///System.err.println("CHILD LIST:" + this.childList);
         for (NodeISMCTS child: this.childList){
-            if(child.getUCT()>highestUCT){
-                if(!leaf && !child.getLeaf()){
-                    highestUCT = child.getUCT();
-                    nextNode = child;
-                }
-                else if(leaf){
-                    highestUCT = child.getUCT();
-                    nextNode = child;
+            //we can only consider nodes withing the current information set otherwise do nothing
+            if(CustomUtility.canMakeBoard(this.gameState.getRacks()[this.currentPlayer], this.gameState.getBoard(), child.getGameState().getBoard())){
+                if(child.getUCT()>highestUCT){
+                    if(!leaf && !child.getLeaf()){
+                        highestUCT = child.getUCT();
+                        nextNode = child;
+                    }
+                    else if(leaf){
+                        highestUCT = child.getUCT();
+                        nextNode = child;
+                    }
                 }
             }
         }
@@ -96,51 +117,100 @@ public class NodeISMCTS {
     }
 
     public void expand(){
-        ArrayList<ArrayList<ArrayList<Integer>>> resultingBoards;
-        if(playerMelted){
-            ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[currentPlayer]);
-            resultingBoards = actionSpace.getResultingBoards();
-        } else {
-            // if player has not melted yet, create actions without tiles on the board
-            // then filter actions to only include boards with value of at least 30
-            ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(new ArrayList<ArrayList<Integer>>(), this.gameState.getRacks()[currentPlayer]);
-            resultingBoards = actionSpace.getResultingBoards();
-            Iterator<ArrayList<ArrayList<Integer>>> boardIterator = resultingBoards.iterator();
-            while(boardIterator.hasNext()){
-                ArrayList<ArrayList<Integer>> current = boardIterator.next();
-                if(CustomUtility.sumOfBoard(current)<30){
-                    boardIterator.remove();
-                } else {
-                    // Add the original tiles of the board back to all results
-                    for(ArrayList<Integer> set: this.gameState.getBoard()){
-                        current.add(set);
+        if(this.childList.isEmpty()){
+            ArrayList<ArrayList<ArrayList<Integer>>> resultingBoards;
+            if(playerMelted){
+                ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[currentPlayer]);
+                resultingBoards = actionSpace.getResultingBoards();
+            } else {
+                // if player has not melted yet, create actions without tiles on the board
+                // then filter actions to only include boards with value of at least 30
+                ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(new ArrayList<ArrayList<Integer>>(), this.gameState.getRacks()[this.currentPlayer]);
+                resultingBoards = actionSpace.getResultingBoards();
+                Iterator<ArrayList<ArrayList<Integer>>> boardIterator = resultingBoards.iterator();
+                while(boardIterator.hasNext()){
+                    ArrayList<ArrayList<Integer>> current = boardIterator.next();
+                    if(CustomUtility.sumOfBoard(current)<30){
+                        boardIterator.remove();
+                    } else {
+                        // Add the original tiles of the board back to all results
+                        for(ArrayList<Integer> set: this.gameState.getBoard()){
+                            current.add(set);
+                        }
                     }
                 }
             }
-        }
-        // Create do nothing board
-        resultingBoards.add(this.gameState.getBoard());
-        for(ArrayList<ArrayList<Integer>> board: resultingBoards){
-            //for every action move it could make it copies the current gamestate and updates it based on the action
-            GameState newState = this.gameState.copy();
-            int res = newState.updateGameState(board, currentPlayer);
-            if(res == 2){
-                //its a draw
-                NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true);
-                this.childList.add(child);
-                child.backpropagate(0.5f);
-            } else if(res == 1){
-                //one of the players won, we have to check which one
-                NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true);
-                this.childList.add(child);
-                child.backpropagate(newState.getWinner());
-            } else {
-                NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true);
-                this.childList.add(child);
+            // Create do nothing board
+            resultingBoards.add(this.gameState.getBoard());
+            for(ArrayList<ArrayList<Integer>> board: resultingBoards){
+                //for every action move it could make it copies the current gamestate and updates it based on the action
+                GameState newState = this.gameState.copy();
+                int res = newState.updateGameState(board, currentPlayer);
+                if(res == 2 || res == 1){
+                    //one of the players won, we have to check which one
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true, this.root);
+                    this.childList.add(child);
+                    child.backpropagate(newState.getWinner());
+                } else {
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true, this.root);
+                    this.childList.add(child);
+                }
+                //only works for two players
             }
-            //only works for two players
+        } else {
+            ArrayList<ArrayList<ArrayList<Integer>>> resultingBoards;
+            if(playerMelted){
+                ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(this.gameState.getBoard(), this.gameState.getRacks()[currentPlayer]);
+                resultingBoards = actionSpace.getResultingBoards();
+            } else {
+                // if player has not melted yet, create actions without tiles on the board
+                // then filter actions to only include boards with value of at least 30
+                ActionSpaceGenerator actionSpace = new ActionSpaceGenerator(new ArrayList<ArrayList<Integer>>(), this.gameState.getRacks()[this.currentPlayer]);
+                resultingBoards = actionSpace.getResultingBoards();
+                Iterator<ArrayList<ArrayList<Integer>>> boardIterator = resultingBoards.iterator();
+                while(boardIterator.hasNext()){
+                    ArrayList<ArrayList<Integer>> current = boardIterator.next();
+                    if(CustomUtility.sumOfBoard(current)<30){
+                        boardIterator.remove();
+                    } else {
+                        // Add the original tiles of the board back to all results
+                        for(ArrayList<Integer> set: this.gameState.getBoard()){
+                            current.add(set);
+                        }
+                    }
+                }
+            }
+            // Create do nothing board
+            resultingBoards.add(this.gameState.getBoard());
+            for(ArrayList<ArrayList<Integer>> board: resultingBoards){
+                boolean alreadyExists = false;
+                //for every action move it could make it copies the current gamestate and updates it based on the action
+                GameState newState = this.gameState.copy();
+                int res = newState.updateGameState(board, currentPlayer);
+                //check if this board is already present in one of the existing children of this node
+                for(NodeISMCTS childNode: this.childList){
+                    if(CustomUtility.decompose(childNode.getGameState().getBoard()).equals(CustomUtility.decompose(board))){
+                        //if it is, just update the rack of the state to the new rack
+                        childNode.getGameState().setOpponentRack(newState.getRacks()[1]);//this updates the opponents rack
+                        alreadyExists = true;
+                        break;
+                    }
+                }
+                if(alreadyExists){
+                    continue; // we dont need to create the child node
+                }
+                //otherwise just create the child node for the new state
+                if(res == 2 || res == 1){
+                    //one of the players won, we have to check which one
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true, this.root);
+                    this.childList.add(child);
+                    child.backpropagate(newState.getWinner());
+                } else {
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true, this.root);
+                    this.childList.add(child);
+                }
+            }
         }
-
     }
 
 
@@ -157,7 +227,6 @@ public class NodeISMCTS {
             res = stateForPlayout.updateGameState((new RandomMove(stateForPlayout.getBoard(),stateForPlayout.getRacks()[playoutMaxer])).getRandomMove(),playoutMaxer);
             //if this loop terminates it means an endstate was reached, since startingstate is a reference it works in function before
         }
-        System.out.println(stateForPlayout.getWinner());
         backpropagate(stateForPlayout.getWinner());
     }
 

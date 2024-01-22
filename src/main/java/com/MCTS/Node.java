@@ -16,8 +16,9 @@ public class Node {
     private boolean isLeaf; // if its an endstate
     private double c = 0.6; // factor for uct (see lecture 4 slide 20)
     private int currentPlayer;
+    private Node root;
 
-    public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf, boolean playerMelted){
+    public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf, boolean playerMelted, Node root){
         this.results = new ArrayList<Float>();
         this.childList = new ArrayList<Node>();
         this.gameState = gameState;
@@ -26,6 +27,7 @@ public class Node {
         this.currentPlayer = currentPlayer;
         this.isLeaf = isleaf;
         this.uct = 0.0;
+        this.root = root;
     }
 
     public double getUCT(){
@@ -126,11 +128,11 @@ public class Node {
             int res = newState.updateGameState(board, currentPlayer);
             if(res == 1 || res == 2){
                 //one of the players won, we have to check which one
-                Node child = new Node(newState, this, (currentPlayer +1) %2, true, true);
+                Node child = new Node(newState, this, (currentPlayer +1) %2, true, true, root);
                 this.childList.add(child);
                 child.backpropagate(newState.getWinner());
             } else {
-                Node child = new Node(newState, this, (currentPlayer +1) %2, false, true);
+                Node child = new Node(newState, this, (currentPlayer +1) %2, false, true, root);
                 this.childList.add(child);
             }
             //only works for two players
@@ -155,7 +157,6 @@ public class Node {
         //one of the players won, we have to check which one
         System.out.println(stateForPlayout.getWinner());
         backpropagate(stateForPlayout.getWinner());
-        
     }
 
     public void backpropagate(float winner){
