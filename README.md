@@ -1,5 +1,5 @@
 # rummicubei
-This a AI robot that can play the game of Rummikub. The game is made in java. The robot consists of 2 parts
+This is an AI robot that can play the game of Rummikub. The game is made in Java. The robot consists of 2 parts
 Monte Carlo tree search that can find and play the best move possible and a prediction of opponents tiles made by ml to
 solve the problem of impartial information.
 
@@ -20,21 +20,20 @@ Done by group 8 DACS Maastricht 2023/2024: <br />
 Python version: 3.10.4
 
 Install the required packages with `pip install -r requirements.txt`.
-Pytorch has to be installed separately as it is dependent in the system. For more info
+Pytorch has to be installed separately as it is dependent on the system. For more info
 refer to the [documentation](https://pytorch.org/get-started/locally/).
 
 
 ## How to run
-Make sure python is set up and python prerequisites are installed properly
+Make sure Python is set up and Python prerequisites are installed properly
 
 ### JAR file
 Download the jar file and launch it you will be trowed in a game selection menu where you can play against other people
-on the same device or more importantly if you choose single player mode you will start a game vs our AI and you can try
+on the same device or more importantly, if you choose single-player mode you will start a game vs our AI and you can try
 and beat it
 
 ### Build from source
 You can also download the whole source code and run it from your favorite editor.
 rummicubei/src/main/java/com/gameEngine/GameEngine.java is the file you need to run to achieve the same result as the jar
 file
-
-## Structure
+x
