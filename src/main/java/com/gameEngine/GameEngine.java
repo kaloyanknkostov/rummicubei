@@ -262,7 +262,7 @@ public class GameEngine {
 
     public void addPlayers() {
         listOfPlayers.add(new ComputerPlayer("test_random", "mcts")); // player 0 is mcts
-        listOfPlayers.add(new ComputerPlayer("test_baseline", "random"));
+        listOfPlayers.add(new ComputerPlayer("test_baseline", "random"));  // player 1 is random
         for (int k = 0; k < startingTiles; k++) {
             listOfPlayers.get(0).drawTile(drawTile());
         }
