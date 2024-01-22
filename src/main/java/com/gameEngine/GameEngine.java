@@ -300,13 +300,7 @@ private Board createBoardFromTiles(ArrayList<ArrayList<Tile>> map) {
             for (Image image : row) {
                 if (image != null) { // Check if the image is not null
                     boolean checker = false;
-                    for (Tile placedTile : listOfBoardTiles) {  // Check if the image corresponds to a tile on the current board
-                        if (placedTile.getImage().equals(image)) {
-                            imageToTile.add(placedTile);
-                            checker = true;
-                            break;
-                        }
-                    }
+                 
                     // If the image does not correspond to a placed tile on the board,
                     // check if it corresponds to a tile in the player's deck
                     if (!checker) {
