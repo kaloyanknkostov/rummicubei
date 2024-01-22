@@ -26,10 +26,11 @@ public class MCTS {
         board.add(new ArrayList<>(Arrays.asList(5,6, 7)));
         ArrayList<Integer> deck =  new ArrayList<>(Arrays.asList(10, 11, 12, 13));
 
+
     }
 
 
-    public MCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent, boolean melted){
+    public MCTS(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> deck, int numberTilesOpponent, boolean melted,boolean ml){
         // get game state
         this.board = board;
         this.deck = deck;
@@ -38,7 +39,12 @@ public class MCTS {
         this.melted = melted;
         // Get predictions of other players decks
         // We can decide here if we want to create multiple trees by sampling the tiles based on the predictions/ probabilities we got (advanced stuff)
-        guessPlayer2DeckAndPile(numberTilesOpponent);
+        if(ml){
+        guess2NDPlayerML(numberTilesOpponent);
+        }
+        else {
+            guessPlayer2DeckAndPile(numberTilesOpponent);
+        }
         this.gameState = new GameState(this.deck, this.guessedOppononetDeck, this.board ,this.guessedPile);
         this.root = new Node(this.gameState, null, 0, false, this.melted, this.root);// is this legal?
     }
