@@ -16,7 +16,10 @@ public class Node {
     private boolean isLeaf; // if its an endstate
     private double c; // factor for uct (see lecture 4 slide 20)
     private int currentPlayer;
+<<<<<<< HEAD
     private Node root;
+=======
+>>>>>>> 325b42340ed13a8732db917d024804e13edbcccd
     private int scalar;
 
     public Node(GameState gameState, Node parent, int currentPlayer, boolean isleaf, boolean playerMelted,double c,int scalar){
@@ -30,7 +33,10 @@ public class Node {
         this.uct = 0.0;
         this.c=c;
         this.scalar=scalar;
+<<<<<<< HEAD
         this.root = root;
+=======
+>>>>>>> 325b42340ed13a8732db917d024804e13edbcccd
     }
 
     public double getUCT(){
@@ -136,11 +142,19 @@ public class Node {
             int res = newState.updateGameState(board, currentPlayer);
             if(res == 1 || res == 2){
                 //one of the players won, we have to check which one
+<<<<<<< HEAD
                 Node child = new Node(newState, this, (currentPlayer +1) %2, true, true, root);
                 this.childList.add(child);
                 child.backpropagate(newState.getWinner());
             } else {
                 Node child = new Node(newState, this, (currentPlayer +1) %2, false, true, root);
+=======
+                Node child = new Node(newState, this, (currentPlayer +1) %2, true, true,c,scalar);
+                this.childList.add(child);
+                child.backpropagate(newState.getWinner());
+            } else {
+                Node child = new Node(newState, this, (currentPlayer +1) %2, false, true,c,scalar);
+>>>>>>> 325b42340ed13a8732db917d024804e13edbcccd
                 this.childList.add(child);
             }
             //only works for two players

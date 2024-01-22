@@ -183,8 +183,8 @@ public class GameEngine {
         boolean gotOut = true; 
          for (Set set : board.getSetList()) {
                 boolean contained=false;
-                for (Set newSet : incomingBoard.getSetList()) { //compares every set of old board to every set of incomingBoard
-                    if (set.equals(newSet)) { //two identical sets
+                for (Set newSet : incomingBoard.getSetList()) {
+                    if (set.equals(newSet)) {
                         contained = true;
                         break;
                     }
@@ -192,8 +192,7 @@ public class GameEngine {
                 if(!contained){
                     gotOut = false;
                     //StartScreensApplication.getInstance().setMessageLabel(gameModel.playerNames.get(currentPlayerIndex), "You can't use the tiles on the board!");
-                    System.out.println("You can't use the tiles in the board!");
-
+                    System.out.println("You can't the tiles in the board!");
                     break;
                 }
 
@@ -346,13 +345,14 @@ public class GameEngine {
                 potOfTiles.add(new Tile(i, color, false, "painted_tile_" + color + "_" + i + ".png"));
             }
         }
-        for (String color : colors) {
-            for (int i = 1; i < 14; i++) {
-                potOfTiles.add(new Tile(i, color, false, "painted_tile_" + color + "_" + i + ".png"));
-            }
-        }
 
-        potOfTiles.add(new Tile(0, "", true, "painted_tile_3.png"));
+//        potOfTilesCopy.addAll(potOfTiles);
+//        int a = potOfTiles.size();
+//        for (int i = 0; i < a; i++) {
+//            potOfTiles.add(potOfTiles.get(i));
+//        }
+
+        //potOfTiles.add(new Tile(0, "", true, "painted_tile_1.png"));
         potOfTiles.add(new Tile(0, "", true, "painted_tile_3.png"));
 
 

@@ -47,10 +47,10 @@ of node, and made sure that its passed along the path from here to node itself. 
         ArrayList<ArrayList<Integer>> newBoard = null;
         if (type == "baseline"){
             if(isOut){
-                newBoard =BaselineAgent.getBestMove(oldBoard.turnToIntBoard(),deckOfIntTiles);
+                newBoard = BaselineAgent.getBestMove(oldBoard.turnToIntBoard(),deckOfIntTiles);
             }
             else {
-                newBoard =BaselineAgent.getBestMove(new ArrayList<ArrayList<Integer>>(),deckOfIntTiles);
+                newBoard = BaselineAgent.getBestMove(new ArrayList<ArrayList<Integer>>(),deckOfIntTiles);
             }
         }
         else if (type == "mcts"){
@@ -125,6 +125,7 @@ of node, and made sure that its passed along the path from here to node itself. 
         }
         board.printBoard();
         // might break for mcts
+        if(!isOut&&type!="mcts"){
         if(!isOut&&type!="mcts"){
             for(Set set:oldBoard.getSetList()){
                 board.addSet(set);
