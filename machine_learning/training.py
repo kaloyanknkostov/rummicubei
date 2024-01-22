@@ -51,7 +51,7 @@ def train_loop(dataloader, model, loss_fn, optimizer, epoch: int, csv: list = No
                 ]
             )
         #  TODO Get the metrics with sklearn!
-        if batch % 3 == 0:
+        if batch % 400 == 0:
             print(
                 f"loss: {loss:>7f}, Acc: {(acc):>0.4f}, Recall: {(recall):>0.4f}, "
                 + f"Precision: {precision:>0.4f}, MCC: {mcc:>.4f}"
@@ -119,11 +119,8 @@ def run_training(
     optimizer=torch.optim.Adam,
     saving=True,
     saving_annotation="",
-    annotations_df=None,
 ):
-    dataset = TileDataset(
-        annotations_file=r"data\training_data\training_data_TEST.csv", device=device
-    )
+    dataset = TileDataset(annotations_file=dataset_path, device=device)
     generator = torch.Generator().manual_seed(42)
     train_dataset, test_dataset = torch.utils.data.random_split(
         dataset, lengths=[0.7, 0.3], generator=generator
@@ -214,7 +211,7 @@ def run_training(
 
 if __name__ == "__main__":
     print("Starting training...")
-    dataset_path = ""
+    dataset_path = r"data\training_data\baseline_vs_baseline_data.csv"
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device")
@@ -226,12 +223,12 @@ if __name__ == "__main__":
 
     run_training(
         dataset_path=dataset_path,
-        epochs=40,
-        learning_rate=5e-5,
+        epochs=30,
+        learning_rate=5e-4,
         model=model,
         batch_size=5,
         loss_fn=nn.CrossEntropyLoss,
         optimizer=torch.optim.AdamW,
-        saving=False,
+        saving=True,
         saving_annotation="",
     )

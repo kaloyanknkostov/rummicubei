@@ -24,7 +24,7 @@ def save_training_results(
     if early_stop:
         saving_annotation = saving_annotation + "_early_stop"  # _{early_stop_thresh}"
 
-    TODAY = time.strftime(r"%Y%m%d", time.gmtime())
+    TODAY = time.strftime(r"%Y%m%d-%H_%M_%S", time.gmtime())
     root_path = join(
         path_prefix,
         "model_files",

@@ -11,7 +11,7 @@ class TilePredNet(nn.Module):
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(p=dropout)
         self.batch_norm1 = nn.BatchNorm2d(num_features=20)
-        # self.softmax = nn.Softmax()
+        self.sigmoid = nn.Sigmoid()
 
         # linear layers
         self.fc_in = nn.Linear(in_features=53 + n_sets * n_rounds, out_features=n_sets)
@@ -27,10 +27,9 @@ class TilePredNet(nn.Module):
 
         logits = self.relu(self.fc_hidden_1(logits))
 
-        logits = self.relu(self.fc_out(logits))
+        logits = self.fc_out(logits)
 
-        # No softmax, because the loss function already applies it
-        return logits
+        return self.sigmoid(logits)
 
     def load(self, path: str):
         """Loads the state_dict that is at the given path.
