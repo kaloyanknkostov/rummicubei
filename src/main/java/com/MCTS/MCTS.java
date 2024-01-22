@@ -109,8 +109,10 @@ public class MCTS {
 
         //python machine_learning\run_model.py --rack "[40, 234, 234, 432, 342]" --board1 "" -- [[34, 35, 36], [], [], []]"
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder("python" ,"machine_learning\\run_model.py",rack,stringBoard.toString());
-            System.out.println("Created PB");
+            //
+             ProcessBuilder processBuilder = new ProcessBuilder("python" ,"machine_learning/run_model.py",rack,stringBoard.toString()).inheritIO();
+           // ProcessBuilder processBuilder =new ProcessBuilder("python","machine_learning/test.py" ).inheritIO();
+
             Process process = processBuilder.start();
 
 
@@ -118,8 +120,9 @@ public class MCTS {
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         StringBuilder output = new StringBuilder();
         String line;
-            while ((line = reader.readLine()) != null) { // Account for multiple lines
-                output.append(line).append("\n");
+            System.out.println(reader.readLine());
+            while (reader.readLine() != null) { // Account for multiple lines
+                //output.append(line).append("\n");
                 System.out.println("line");
             }
 
@@ -135,6 +138,7 @@ public class MCTS {
 //        }
     }
         catch (IOException e) {
+            System.out.println("PROBLEM");
             e.printStackTrace();
         }
     }
