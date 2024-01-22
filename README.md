@@ -1,6 +1,9 @@
 # rummicubei
-The board game Rummikub made in java for the purpose of AI training Maastricht University DACS 2 year Project.
-Done by group 8: <br />
+This a AI robot that can play the game of Rummikub. The game is made in java. The robot consists of 2 parts
+Monte Carlo tree search that can find and play the best move possible and a prediction of opponents tiles made by ml to
+solve the problem of impartial information.
+
+Done by group 8 DACS Maastricht 2023/2024: <br />
 -Frederik Grüneberg <br />
 -Jakub Suszwedyk <br />
 -Kees van den Eijnden <br />
@@ -12,22 +15,26 @@ Done by group 8: <br />
 ## Prerequisites
 - java
 - maven
-
 ### Python prerequisites
 
 Python version: 3.10.4
 
 Install the required packages with `pip install -r requirements.txt`.
-Pytorch has to be installed separately as it is dependent on the system. For more info
+Pytorch has to be installed separately as it is dependent in the system. For more info
 refer to the [documentation](https://pytorch.org/get-started/locally/).
 
 
 ## How to run
+Make sure python is set up and python prerequisites are installed properly
 
-To initiate our program, the user needs to navigate to src -> main -> java -> com -> gameEngine and open the gameEngine class. After clicking the run button, the user gets a choice between single player and multiplayer modes. Single player allows for playing against our ai agents. When the user clicks the single player button, he gets transfered to the name selection page. If the textfields are not empty, the user should click the "start game" button in order to initiate the game. If the user choses multiplayer mode, he first needs to select the number of players (between 2 and 4). After submitting, the name selection page appears again. In multiplayer mode, there is an additional constraint that the nicknames of 2 players cannot be the same. After clicking "start game button", the game starts.
+### JAR file
+Download the jar file and launch it you will be trowed in a game selection menu where you can play against other people
+on the same device or more importantly if you choose single player mode you will start a game vs our AI and you can try
+and beat it
+
+### Build from source
+You can also download the whole source code and run it from your favorite editor.
+rummicubei/src/main/java/com/gameEngine/GameEngine.java is the file you need to run to achieve the same result as the jar
+file
 
 ## Structure
-
-- `OurCode`: The folder containing all our code.
-- `jarFile`: The folder containing jar file of our project.
-- `Readme.txt`: Our readme in a txt format.
