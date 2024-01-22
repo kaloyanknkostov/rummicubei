@@ -16,9 +16,8 @@ public class NodeISMCTS {
     private boolean isLeaf; // if its an endstate
     private double c = 0.6; // factor for uct (see lecture 4 slide 20)
     private int currentPlayer;
-    private NodeISMCTS root;
 
-    public NodeISMCTS(GameState gamestate, NodeISMCTS parent, int currentPlayer, boolean isLeaf, boolean playerMelted, NodeISMCTS root){
+    public NodeISMCTS(GameState gamestate, NodeISMCTS parent, int currentPlayer, boolean isLeaf, boolean playerMelted){
         this.gameState = gamestate;
         this.results = new ArrayList<Float>();
         this.childList = new ArrayList<NodeISMCTS>();
@@ -27,7 +26,6 @@ public class NodeISMCTS {
         this.currentPlayer = currentPlayer;
         this.isLeaf = isLeaf;
         this.uct = 0.0;
-        this.root  = root;
     }
     
 
@@ -146,11 +144,11 @@ public class NodeISMCTS {
                 int res = newState.updateGameState(board, currentPlayer);
                 if(res == 2 || res == 1){
                     //one of the players won, we have to check which one
-                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true, this.root);
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true);
                     this.childList.add(child);
                     child.backpropagate(newState.getWinner());
                 } else {
-                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true, this.root);
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true);
                     this.childList.add(child);
                 }
                 //only works for two players
@@ -200,11 +198,11 @@ public class NodeISMCTS {
                 //otherwise just create the child node for the new state
                 if(res == 2 || res == 1){
                     //one of the players won, we have to check which one
-                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true, this.root);
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, true, true);
                     this.childList.add(child);
                     child.backpropagate(newState.getWinner());
                 } else {
-                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true, this.root);
+                    NodeISMCTS child = new NodeISMCTS(newState, this, (currentPlayer +1) %2, false, true);
                     this.childList.add(child);
                 }
             }
@@ -254,5 +252,12 @@ public class NodeISMCTS {
 
     public ArrayList<NodeISMCTS> getChildList(){
         return this.childList;
+    }
+    private NodeISMCTS getRoot(){
+        if(this.parent == null){
+            return this;
+        } else {
+            return this.parent.getRoot();
+        }
     }
 }
